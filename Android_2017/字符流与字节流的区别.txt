@@ -1,0 +1,12 @@
+字符流和字节流的主要区别：
+
+
+       1.字节流读取的时候，读到一个字节就返回一个字节；  字符流使用了字节流读到一个或多个字节（中文对应的字节数是两个，在UTF-8码表中是3个字节）时。先去查指定的编码表，将查到的字符返回。
+
+       2.字节流可以处理所有类型数据，如：图片，MP3，AVI视频文件，而字符流只能处理字符数据。只要是处理纯文本数据，就要优先考虑使用字符流，除此之外都用字节流。
+类型	字符流	字节流
+File(文件)	FileReader
+FileWriter	FileInputStream     FileOutputSream
+Memory Array	CharArrayReader     CharArrayWriter	ByteArrayInputStream    ByteArrayOutputSream
+Memory String	StringReader        StringWriter	-
+Pipe(管道)	PipedReader         PipedWriter 	PipedInputSream         PipedOutputSream

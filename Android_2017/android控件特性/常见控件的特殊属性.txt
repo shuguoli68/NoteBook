@@ -1,0 +1,9 @@
+
+【Button显示字母为大写】
+解决方法： 
+手动添加属性：android:textAllCaps=”false”
+
+
+【timePicker的样式】datePicker一样
+android:timePickerMode="spinner"  列表样式
+android:timePickerMode="clock"  钟表样式

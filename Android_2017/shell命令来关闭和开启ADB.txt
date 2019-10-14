@@ -1,0 +1,33 @@
+
+http://www.cnblogs.com/langfei8818/p/7382900.html
+
+/**
+     * 执行Shell命令
+     * @param cmd
+     */
+    public static  void execShell(String cmd){
+        try{
+            //权限设置
+            Process p = Runtime.getRuntime().exec("su");
+            //获取输出流
+            OutputStream outputStream = p.getOutputStream();
+            DataOutputStream dataOutputStream=new DataOutputStream(outputStream);
+            //将命令写入
+            dataOutputStream.writeBytes(cmd);
+            //提交命令
+            dataOutputStream.flush();
+            //关闭流操作
+            dataOutputStream.close();
+            outputStream.close();
+        }
+        catch(Throwable t)
+        {
+            t.printStackTrace();
+        }
+    }
+
+就是这一个方法，来shell命令 
+
+stop adbd //关闭ADB
+start adbd //开启ADB
+调用的时候只需要在execShell方法里传入相对应的字符串即可

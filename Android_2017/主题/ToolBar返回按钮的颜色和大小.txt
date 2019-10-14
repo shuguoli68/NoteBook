@@ -1,0 +1,84 @@
+http://blog.csdn.net/lizhiying61f/article/details/51304378
+
+
+我在这里简单说一说关于Toolbar系统原生返回键，权作狗尾续貂吧。
+首先是我的布局文件：一个AppBarLayout里面套个Toolbar
+[html] view plain copy
+<android.support.design.widget.AppBarLayout  
+        android:id="@+id/about_appbar"  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"  
+        android:theme="@style/toolbar_theme">  
+        <android.support.v7.widget.Toolbar  
+            android:id="@+id/about_toolbar"  
+            android:layout_width="match_parent"  
+            android:layout_height="?attr/actionBarSize"  
+            android:background="#ffffff">  
+            <TextView  
+                android:layout_width="wrap_content"  
+                android:layout_height="wrap_content"  
+                android:layout_gravity="center_horizontal"  
+                android:text="About"  
+                android:textColor="#000000"  
+                android:textSize="18sp"/>  
+        </android.support.v7.widget.Toolbar>  
+    </android.support.design.widget.AppBarLayout>  
+这里AppBarLayout中的属性theme就是用来控制我的返回键的颜色的。
+下面是我在style.xml文件中定义的属性。
+[html] view plain copy
+<style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">  
+        <item name="colorControlNormal">@color/color_text_black</item>  
+<span style="white-space:pre">    </span><item name="android:actionBarSize">46dp</item>  
+</style>  
+[html] view plain copy
+<style name="toolbar_blue_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">  
+        <item name="colorControlNormal">@color/color_text_blue</item>  
+        <item name="android:actionBarSize">46dp</item>  
+</style>  
+
+colorControlNormal就是我们指定的返回键的颜色，android：actionBarSize 是我们可以另指定的Toolbar高度
+
+当我的AppBarLayout中使用toolbar_theme时，
+当换成toolbar_blue_theme时，
+当然，光写布局文件还不够，相关代码贴上：
+[java] view plain copy
+@Bind(R.id.about_toolbar)  
+    Toolbar mToolbar;  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_about);  
+  
+        ButterKnife.bind(this);  
+        setSupportActionBar(mToolbar);  
+        ActionBar actionBar =  getSupportActionBar();  
+        if(actionBar != null) {  
+            actionBar.setDisplayHomeAsUpEnabled(true);  
+            actionBar.setDisplayShowTitleEnabled(false);  
+        }  
+    }  
+  
+    @Override  
+    public boolean onOptionsItemSelected(MenuItem item) {  
+<span style="white-space:pre">    </span>//点击back键finish当前activity  
+        switch (item.getItemId()) {  
+            case android.R.id.home:  
+                finish();  
+                break;  
+        }  
+        return true;  
+    }  
+
+当需要设定与自己App风格一致的back键时，只要改变style中的颜色就可以啦。当然，可能你的UI设计师会给你切好的图，这时候怎么办呢，怎么用设计师切好的图替换我们系统原生的返回键呢？方法有两个。
+1、在我们引入的Appbar的theme中添加一个Item，将设计师给我们的图放进去
+[html] view plain copy
+<item name="android:homeAsUpIndicator">@drawable/web_detail_back</item>  
+2、在我们的Toolbar中添加属性
+[html] view plain copy
+app:navigationIcon="@drawable/web_detail_back"  
+添加这个属性需要我们在根布局中添加（AS会有提示的）
+[html] view plain copy
+xmlns:app="http://schemas.android.com/apk/res-auto"  
+
+最终的效果就是这样的了

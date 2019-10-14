@@ -1,0 +1,42 @@
+url: https://blog.csdn.net/wu996489865/article/details/72726177?utm_source=blogxgwz2
+
+
+
+//获取数据
+private fun getData(): Unit{
+        val model:HttpUtil by lazy {
+            HttpUtil()
+        }
+        /**
+        - 异步线程
+         */
+        Thread(object: Runnable{
+            override fun run() {
+                model.getBanner()
+                        .subscribe({ newsBean->
+                            LogUtils.i("数据："+newsBean)
+                            mMessage.what = 2;
+                            mMessage.obj = newsBean
+                            mHandler.sendMessage(mMessage)
+                        }) { throwable -> LogUtils.i("请求失败2："+throwable.message) }
+            }
+        }).start()
+    }
+
+
+
+
+//网络请求
+    implementation 'com.squareup.okhttp3:okhttp:3.8.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    //rxjava相关依赖
+    implementation  'io.reactivex.rxjava2:rxjava:2.1.16'
+    implementation  'io.reactivex.rxjava2:rxkotlin:2.2.0'
+    implementation  'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    //日志拦截器
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+

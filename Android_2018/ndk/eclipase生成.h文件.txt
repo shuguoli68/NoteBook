@@ -1,0 +1,5 @@
+打开CMD窗口，cd到项目的bin文件夹下面的classes，然后点右键运行项目，不需要真实运行，在选择设备的时候取消就是了，运行的目的是生成.class文件
+
+      在classes文件夹里面，找到JniSo.class，此时切换到CMD   输入  javah -classpath . -jni com.example.jniget.HelloJni(JniSo的包名加类名)
+
+      运行之后如果没报错，就会在classes文件夹下生成一个com_example_jniget_HelloJni.h，将他复制到项目的jni文件夹下

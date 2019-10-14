@@ -1,0 +1,3 @@
+16.PersistentSearch
+在点击搜索的时候控件在原有位置显示输入框。
+项目地址：https://github.com/Quinny898/PersistentSearch

@@ -1,0 +1,27 @@
+/** 
+ * 退出应用程序 
+ */  
+public void AppExit(Context context) {  
+    try {  
+        ActivityCollector.finishAll();  
+        ActivityManager activityMgr = (ActivityManager) context  
+                .getSystemService(Context.ACTIVITY_SERVICE);  
+        activityMgr.killBackgroundProcesses(context.getPackageName());  
+        System.exit(0);  
+    } catch (Exception ignored) {}  
+}  
+
+
+
+
+
+//杀死进程，资源回收
+public static void finishAll() {
+for (Activity activity : activities) {
+if (!activity.isFinishing()) {
+activity.finish();
+}
+}
+activities.clear();
+android.os.Process.killProcess(android.os.Process.myPid());
+}

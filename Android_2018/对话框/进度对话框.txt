@@ -1,0 +1,30 @@
+¡¾×¢Òâ£º¡¿pd.setButton(DialogInterface.BUTTON_NEUTRAL
+
+
+
+    public static ProgressDialog showProgress(Context mContext, String title, String msg, final MyCancelCall cancelCall){
+ProgressDialog pd;
+        pd = new ProgressDialog(mContext,R.style.my_dialog);
+        pd.setTitle(title);
+        pd.setMessage(msg);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setCancelable(false);
+        pd.setButton(DialogInterface.BUTTON_NEUTRAL, mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (pd.isShowing()){
+                    pd.dismiss();
+                }
+                cancelCall.cancelClick();
+            }
+        });
+        if (!pd.isShowing()){
+            pd.show();
+        }
+        return pd;
+    }
+
+public interface MyCancelCall{
+        void cancelClick();
+    }
+

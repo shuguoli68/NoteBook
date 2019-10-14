@@ -1,0 +1,72 @@
+文件的名称避免重复：
+/**
+     * 获取系统时间
+     */
+    public static String getDate(){
+        Calendar ca = Calendar.getInstance();
+        int year = ca.get(Calendar.YEAR);           // 获取年份
+        int month = ca.get(Calendar.MONTH);         // 获取月份
+        int day = ca.get(Calendar.DATE);            // 获取日
+        int minute = ca.get(Calendar.MINUTE);       // 分
+        int hour = ca.get(Calendar.HOUR);           // 小时
+        int second = ca.get(Calendar.SECOND);       // 秒
+
+        String date = "" + year + (month + 1 )+ day + hour + minute + second;
+        Log.d(TAG, "date:" + date);
+
+        return date;
+    }
+
+
+或
+
+SystemClock.currentThreadTimeMillis()//返在当前线程运行的毫秒数
+
+
+【最后文件为：】
+
+File targetDir = new File(Environment.getExternalStorageDirectory().getPath(),"SmallVideo");//（跟目录，文件夹）
+                if(!targetDir.exists()){
+                    targetDir.mkdirs();
+                }
+
+File mTargetFile = new File(targetDir,getDate() + ".mp4");
+
+File mTargetFile = new File(targetDir,SystemClock.currentThreadTimeMillis() + ".mp4");
+
+
+
+一、声明：
+
+public final class SystemClock extends Object 是一个不可变类。 二、结构：
+java.lang.Object
+?	android.os.SystemClock三、概述： 它是一个核心的技术设备。三种不同的时钟是可用的，他们不应该混淆：
+1、System.currentTimeMillis()是一个标准的“墙”时钟(时间和日期)，表示从纪元到现在的毫秒数。该墙时钟能够被用户或电话网络(见setCurrentTimeMillis(long))设置，所以该时间可能会向前或向后不可预知地跳越。该时钟应该仅仅被使用在当现实世界的对应的日期和时间是重要的情况，例如一个日历或闹钟应用程序。而间隔时间和经过时间应该使用不同的时钟。如果你使用System.currentTimeMillis()，可以考虑监听ACTION为ACTION_TIME_TICK、 ACTION_TIME_CHANGED、ACTION_TIMEZONE_CHANGED 的广播去监听时间变化。
+
+2、uptimeMillis()表示自系统启动时开始计数，以毫秒为单位。返回的是从系统启动到现在这个过程中的处于非休眠期的时间。当系统进入深度睡眠时(CPU关闭，设备变黑，等待外部输入装置)该时钟会停止。但是该时钟不会被时钟调整，闲置或其他节能机所影响。这是大多数间隔时间的基本点，例如Thread.sleep(millls)、Object.wait(millis)和System.nanoTime()。该时钟被保证是单调的，适用于检测不包含休眠的间隔时间的情况。大多数的方法接受一个时间戳的值除了uptimeMillis()时钟。
+
+3、elapsedRealtime() and elapsedRealtimeNanos() 返回系统启动到现在的时间，包含设备深度休眠的时间。该时钟被保证是单调的，即使CPU在省电模式下，该时间也会继续计时。该时钟可以被使用在当测量时间间隔可能跨越系统睡眠的时间段。
+
+有几种机制控制事件发生的时间：
+
+1、标准的方法像Thread.sleep(millis) 和 Object.wait(millis)总是可用的，这些方法使用的是uptimeMillis()时钟，如果设备进入深度休眠，剩余的时间将被推迟直到系统唤醒。这些同步方法可能被Thread.interrupt()中断，并且你必须处理InterruptedException异常。
+
+2、SystemClock.sleep(millis)是一个类似于Thread.sleep(millis)的实用方法，但是它忽略InterruptedException异常。使用该函数产生的延迟如果你不使用Thread.interrupt()，因为它会保存线程的中断状态。
+
+3、Handler可以在一个相对或者绝对的时间设置异步回调，Handler类对象也使用uptimeMillis()时钟，而且需要一个loop(经常出现在GUI程序中)。
+
+4、AlarmManager可以触发一次或重复事件，即使设备深度休眠或者应用程序没有运行。事件可以选择用 currentTimeMillis或者elapsedRealtime()(ELAPSED_REALTIME)来设置时间，当事件发生会触发一个广播。
+
+四、方法：
+
+1、public static long currentThreadTimeMillis () 返在当前线程运行的毫秒数。
+
+2、public static long elapsedRealtime () 返回系统启动到现在的毫秒数，包含休眠时间。
+
+3、public static long elapsedRealtimeNanos () 返回系统启动到现在的纳秒数，包含休眠时间。
+
+4、public static boolean setCurrentTimeMillis (long millis) 设置当前的"墙"时间，要求调用进程有许可权限。返回是否成功。
+
+5、public static void sleep (long ms) 等待给定的时间。和Thread.sleep(millis)类似，但是它不会抛出InterruptedException异常。事件被推迟到下一个中断操作。该方法直到指定的时间过去才返回。
+
+6、public static long uptimeMillis () 返回系统启动到现在的毫秒数，不包含休眠时间。就是说统计系统启动到现在的非休眠期时间。

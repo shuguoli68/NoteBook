@@ -1,0 +1,289 @@
+
+//分享给所有
+
+public class MainActivity extends Activity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+    /* 创建菜单 */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 0, 0, "分享");
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case 0:
+            // intent.setType("text/plain"); //纯文本
+            /*
+             * 图片分享 it.setType("image/png"); 　//添加图片 File f = new
+             * File(Environment.getExternalStorageDirectory()+"/name.png");
+             * 
+             * Uri uri = Uri.fromFile(f); intent.putExtra(Intent.EXTRA_STREAM,
+             * uri); 　
+             */
+             Intent intent=new Intent(Intent.ACTION_SEND);  
+            // intent.setType("image/*");  
+              intent.setType("text/plain");
+             intent.putExtra(Intent.EXTRA_SUBJECT, "Share");  
+             intent.putExtra(Intent.EXTRA_TEXT, "I have successfully share my message through my app");  
+             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
+             startActivity(Intent.createChooser(intent, getTitle()));  
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+//指定分享到微信
+
+ntent wechatIntent = new Intent(Intent.ACTION_SEND);
+wechatIntent.setPackage("com.tencent.mm");
+
+wechatIntent.setType("text/plain");
+wechatIntent.putExtra(Intent.EXTRA_TEXT, "分享到微信的内容");
+
+startActivity(wechatIntent);
+
+
+
+//指定分享到QQ
+
+Intent qqIntent = new Intent(Intent.ACTION_SEND);
+                
+qqIntent.setPackage("com.tencent.mobileqq");
+                
+qqIntent.setType("text/plain");
+                
+qqIntent.putExtra(Intent.EXTRA_TEXT, "分享到qq的内容");
+                
+startActivity(qqIntent);
+
+
+
+//分享文本信息
+
+（网址也能输入）  
+              
+Intent textIntent = new Intent(Intent.ACTION_SEND);
+                
+textIntent.setType("text/plain");
+                
+textIntent.putExtra(Intent.EXTRA_SUBJECT, "标题");
+itextIntent.putExtra(Intent.EXTRA_TEXT, "描述信息" + "这里你可以追加一个url连接");
+//textIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);            
+startActivity(Intent.createChooser(textIntent, "分享"));
+
+
+
+
+分享单张图片(drawable中的图片)
+
+
+String path = getResourcesUri(R.drawable.shu_1);
+                
+Intent imageIntent = new Intent(Intent.ACTION_SEND);
+                
+imageIntent.setType("image/jpeg");
+                
+imageIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+                
+startActivity(Intent.createChooser(imageIntent, "分享"));
+
+
+
+
+//分享多张图片              
+ArrayList<Uri> imageUris = new ArrayList<>();
+                
+Uri uri1 = Uri.parse(getResourcesUri(R.drawable.dog));
+                
+Uri uri2 = Uri.parse(getResourcesUri(R.drawable.shu_1));
+                
+imageUris.add(uri1);
+                
+imageUris.add(uri2);
+                
+Intent mulIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                
+mulIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                
+mulIntent.setType("image/jpeg");
+                
+startActivity(Intent.createChooser(mulIntent,"多文件分享"));
+
+
+
+
+
+分享本地图片
+String path = Environment.getExternalStorageDirectory() + File.separator+;//sd根目录
+File file = new File(path, "share" + ".jpg");//这里share.jpg是sd卡根目录下的一个图片文件
+Uri imageUri = Uri.fromFile(file);
+Intent shareIntent = new Intent();
+shareIntent.setAction(Intent.ACTION_SEND);
+shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+shareIntent.setType("image/*");
+startActivity(Intent.createChooser(shareIntent, "分享图片"));
+
+
+
+
+分享的是自己生成的图片获者网络图片
+这里简单给大家介绍一个仿好奇心日报那样的把本地布局截图分享出去
+
+1，首先获取截图
+/*
+    * 将布局转化为bitmap
+这里传入的是你要截的布局的根View
+    * */
+    public Bitmap getBitmapByView(View headerView) {
+        int h = headerView.getHeight();
+        Bitmap bitmap = Bitmap.createBitmap(headerView.getWidth(), h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        headerView.draw(canvas);
+        return bitmap;
+    }
+
+2,把截图获取的bitmap做简单的压缩
+ /*
+       * 压缩图片
+       * */
+    private Bitmap compressImage(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 10, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 400) {  //循环判断如果压缩后图片是否大于400kb,大于继续压缩（这里可以设置大些）
+            baos.reset();//重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;//每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
+    }
+
+
+3，把压缩过的图片先保存到本地才能调用系统分享出去，因为系统分享的是一个uri,我们需要先把bitmap转为本地file文件
+再把file转换为uri
+ /*
+  * 把bitmap转化为file
+  * */
+    public File bitMap2File(Bitmap bitmap) {
+
+
+        String path = "";
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            path = Environment.getExternalStorageDirectory() + File.separator;//保存到sd根目录下
+        }
+
+
+        //        File f = new File(path, System.currentTimeMillis() + ".jpg");
+        File f = new File(path, "share" + ".jpg");
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+            bitmap.recycle();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            return f;
+        }
+    }
+
+4,调用上面的方法获取到file,转换为uri并分享出去
+
+
+File file = bitMap2File(compressImage);
+if (file != null && file.exists() && file.isFile()) {
+//由文件得到uri
+        Uri imageUri = Uri.fromFile(file);
+Intent shareIntent = new Intent();
+shareIntent.setAction(Intent.ACTION_SEND);
+shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+shareIntent.setType("image/*");
+startActivity(Intent.createChooser(shareIntent, "分享图片"));
+}
+
+
+
+
+
+
+
+【运用ComponentName来指定分享到哪里 】
+1，指定是分享到微信好友
+String imagePath = Environment.getExternalStorageDirectory() + File.separator +
+                "huxiu.jpg";
+//由文件得到uri
+        Uri imageUri = Uri.fromFile(new File(imagePath));
+        Intent shareIntent = new Intent();      
+        //发送图片给好友。
+        ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
+        shareIntent.setComponent(comp);
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/*");
+        startActivity(Intent.createChooser(shareIntent, "分享图片"));
+
+2，指定分享到朋友圈
+String imagePath = Environment.getExternalStorageDirectory() + File.separator +
+                "huxiu.jpg";
+//由文件得到uri
+        Uri imageUri = Uri.fromFile(new File(imagePath));
+        Intent shareIntent = new Intent();      
+        //发送图片到朋友圈
+        ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+        shareIntent.setComponent(comp);
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/*");
+        startActivity(Intent.createChooser(shareIntent, "分享图片"));
+
+
+3，指定分享到qq 
+String imagePath = Environment.getExternalStorageDirectory() + File.separator +
+                "huxiu.jpg";
+//由文件得到uri
+        Uri imageUri = Uri.fromFile(new File(imagePath));
+        Intent shareIntent = new Intent();      
+        //发送图片到qq
+        ComponentName comp = new ComponentName("com.tencent.mobileqq", "com.tencent.mobileqq.activity.JumpActivity");
+        shareIntent.setComponent(comp);
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        shareIntent.setType("image/*");
+        startActivity(Intent.createChooser(shareIntent, "分享图片"));
+
+
+
+
+
+
+系统自带的分享           APP分享
+社会化分享的sdk也不少，只是都比较臃肿，其实我们可以使用android自带的发送功能"android.intent.action.SEND"，只要用户手机上安装了对
+应的app，即可简单并快速地完成分享动作。下面是几个常用分享对象的调用信息：
+
+微信 : 包名为com.tencent.mm，分享页面为com.tencent.mm.ui.tools.ShareImgUI
+
+微信朋友圈 : 包名为com.tencent.mm，分享页面为com.tencent.mm.ui.tools.ShareToTimeLineUI
+
+QQ : 包名为com.tencent.mobileqq，分享页面为com.tencent.mobileqq.activity.JumpActivity
+
+QQ空间 : 包名为com.qzone，分享页面为com.qzone.ui.operation.QZonePublishMoodActivity
+
+新浪微博 : 包名为com.sina.weibo，分享页面为com.sina.weibo.EditActivity
+
+腾讯微博 : 包名为com.tencent.WBlog，分享页面为com.tencent.WBlog.intentproxy.TencentWeiboIntent

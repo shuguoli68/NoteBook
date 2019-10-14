@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/menu_anima_img"
+        android:src="@mipmap/more"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <ImageView
+        android:id="@+id/menu_img_a"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/menu_anima_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/menu_img_b"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/menu_anima_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/menu_img_c"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/menu_anima_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/menu_img_d"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/menu_anima_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/menu_img_e"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/menu_anima_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+package com.example.menuAni;
+
+import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.example.animamenu.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Admin on 2017/8/30.
+ */
+public class MenuAniActivity extends Activity implements View.OnClickListener{
+    private ImageView menu_anima_img;
+    private int imgRes[] = new int[]{R.id.menu_img_a,R.id.menu_img_b,R.id.menu_img_c,R.id.menu_img_d,R.id.menu_img_e};
+    private List<ImageView> imageList = new ArrayList<ImageView>();
+    private Boolean isShow = false;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_menuani);
+        initView();
+    }
+    private void initView(){
+        menu_anima_img =(ImageView) findViewById(R.id.menu_anima_img);
+        menu_anima_img.setOnClickListener(this);
+        for (int i=0;i<imgRes.length;i++){
+            ImageView imageView = (ImageView) findViewById(imgRes[i]);
+            imageView.setOnClickListener(this);
+            imageList.add(imageView);
+        }
+    }
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.menu_anima_img:
+                if (isShow){
+                    startAnima();
+                    isShow = false;
+                    btnPositiveRotate();
+                }
+                else {
+                    closeAnima();
+                    isShow = true;
+                    btnReverseRotate();
+                }
+                break;
+            case R.id.menu_img_a:
+                Toast.makeText(MenuAniActivity.this,"menu_img_a",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_img_b:case R.id.menu_img_c:case R.id.menu_img_d:case R.id.menu_img_e:
+                Toast.makeText(MenuAniActivity.this,"menu_img_b_c_d_e",Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+    private void startAnima(){
+        for (int i=1;i<imageList.size();i++){
+            ObjectAnimator anima = ObjectAnimator.ofFloat(imageList.get(i),"translationY",0f,-i*200);
+            anima.setDuration(500);
+            anima.setStartDelay(200);
+            anima.setInterpolator(new BounceInterpolator());
+            anima.start();
+        }
+    }
+    private void closeAnima(){
+        for (int i=1;i<imageList.size();i++){
+            ObjectAnimator animator = ObjectAnimator.ofFloat(imageList.get(i),"translationY",-1*200,0f);
+            animator.setDuration(500);
+            animator.setStartDelay(200);
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.start();
+        }
+    }
+    /**
+     * 按钮正向旋转
+     */
+    private void btnPositiveRotate(){
+
+        RotateAnimation mRotateAnimation = new RotateAnimation(0F,45F,50,50);
+        mRotateAnimation.setFillAfter(true);
+        mRotateAnimation.setDuration(500);
+        menu_anima_img.startAnimation(mRotateAnimation);
+    }
+
+    /**
+     * 按钮反向旋转
+     */
+    private void btnReverseRotate(){
+        RotateAnimation mRotateAnimation = new RotateAnimation(45F,0F,50,50);
+        mRotateAnimation.setFillAfter(true);
+        mRotateAnimation.setDuration(500);
+        menu_anima_img.startAnimation(mRotateAnimation);
+    }
+}

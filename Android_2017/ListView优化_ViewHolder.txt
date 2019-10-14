@@ -1,0 +1,349 @@
+下面是listview的优化：
+
+增加优化一：convertView的使用，主要优化加载布局问题
+
+　　1.listivew每次滚动都会调用gitview()方法，所以优化gitview是重中之重。
+
+　　　　下面是getview()在Adapter类的源码，这个没有实现，要看重点部分已经颜色标记。无非是View convertView的介绍~
+
+复制代码
+/**
+     * Get a View that displays the data at the specified position in the data set. You can either
+     * create a View manually or inflate it from an XML layout file. When the View is inflated, the
+     * parent View (GridView, ListView...) will apply default layout parameters unless you use
+     * {@link android.view.LayoutInflater#inflate(int, android.view.ViewGroup, boolean)}
+     * to specify a root view and to prevent attachment to the root.
+     * 
+     * @param position The position of the item within the adapter's data set of the item whose view
+     *        we want.
+     * @param convertView The old view to reuse, if possible. Note: You should check that this view
+     *        is non-null and of an appropriate type before using. If it is not possible to convert
+     *        this view to display the correct data, this method can create a new view.
+     *        Heterogeneous lists can specify their number of view types, so that this View is
+     *        always of the right type (see {@link #getViewTypeCount()} and
+     *        {@link #getItemViewType(int)}).
+     * @param parent The parent that this view will eventually be attached to
+     * @return A View corresponding to the data at the specified position.
+     */
+    View getView(int position, View convertView, ViewGroup parent);
+复制代码
+
+大家对于 convertView = null优化方法的使用已经了然于胸，但是我那个纠结，就知道是缓存了listview里面已经加载好的view（下文会讲解）。
+
+核心代码如下：
+
+     这部分代码很简单，如果没有缓存就加载布局，如果有缓存就直接用convertView对象。所以这样就不用滑动listview的时候
+
+调用getView()方法每次都去加载布局了（如果改布局已经加载）。
+
+复制代码
+View view;
+if(convertView == null){
+view = LayoutInfalter.from(getContext()).inflate(resourceID，null)
+}
+else{
+view = convertView
+}
+复制代码
+表示宝宝一开始对 LayoutInfalter.from(getContext()).inflate(resourceID，null) 一脸蒙蔽，然后找到了解释。
+
+//加载布局管理器
+LayoutInflater inflater = LayoutInflater.from(context);
+//将xml布局转换为view对象
+convertView = inflater.inflate(R.layout.item_myseallist,parent, false);
+//利用view对象，找到布局中的组件
+convertView.findViewById(R.id.delete);// 删除
+ 
+
+增加优化二：内部类ViewHolder的使用。
+
+           代码如下：主要优化getView方法中每次回调用findviewByID()方法来获取一次控件的代码。
+
+新增加内部类ViewHolder,用于对控件的实力存储进行缓存。
+
+convertView为空时，viewHolder会将空间的实力存放在ViewHolder里，然后用setTag方法讲viewHolder对象存储在view里。
+convertView不为空时，用getTag方法获取viewHolder对象.
+复制代码
+//getView核心代码
+ViewHolder viewHolder;
+if(convertView == null){
+viewHolder = new ViewHolder();
+viewHolder.fruitImage = (ImageView) view.findViewByID(R.id.fruit_image);
+view.setTage(viewHolder);//讲ViewHolder存储在View中
+
+}else{
+view = convertView;
+viewHolder = ViewHolder view.getTag();//重获取viewHolder
+}
+viewHolder.fruitImage.setImageResource(fruit.getIMageID);
+
+
+
+//内部类
+class ViewHolder{
+ImageView fruitImage;
+}
+复制代码
+
+可以看到方案一二目的很明确：第一个是优化加载布局，第二个是优化加载控件。
+
+回到我问题~convertView存储的问题。
+
+有没有想过ListView加载成千上万的数据为什么不出OOM错误？
+
+最主要的是因为RecycleBin机制。
+
+ 
+
+listview的许多view呈现在Ui上，这样的View对我们来说是可见的，可以称为OnScreen的view(也为ActionView)。
+view被上滚移除屏幕，这样的view称为offScreenView（也称为ScrapView）。
+然后ScrapView会被listview删除，而RecycleView会将这部分保存。
+而listview底部需要显示的view会从RecycleBin里面取出一个ScrapView。
+将其作为convertView参数传递过去，
+
+从而达到View复用的目的，这样就不必在Adapter的getView方法中执行LayoutInflater.inflate()方法了（不用加载布局了有木有）。
+ 在RecycleBin里面有两个数组，看名字就知道了Actionview和ScrapViews.
+
+复制代码
+/**
+         * Views that were on screen at the start of layout. This array is populated at the start of
+         * layout, and at the end of layout all view in mActiveViews are moved to mScrapViews.
+         * Views in mActiveViews represent a contiguous range of Views, with position of the first
+         * view store in mFirstActivePosition.
+         */
+        private View[] mActiveViews = new View[0];
+
+        /**
+         * Unsorted views that can be used by the adapter as a convert view.
+         */
+        private ArrayList<View>[] mScrapViews;
+复制代码
+ 原理如下：
+
+
+
+Google推荐优化方案：　
+
+复制代码
+public View getView(int position, View convertView, ViewGroup parent) {
+   3:     Log.d("MyAdapter", "Position:" + position + "---"
+   4:             + String.valueOf(System.currentTimeMillis()));
+   5:     ViewHolder holder;
+   6:     if (convertView == null) {
+   7:         final LayoutInflater inflater = (LayoutInflater) mContext
+   8:                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+   9:         convertView = inflater.inflate(R.layout.list_item_icon_text, null);
+  10:         holder = new ViewHolder();
+  11:         holder.icon = (ImageView) convertView.findViewById(R.id.icon);
+  12:         holder.text = (TextView) convertView.findViewById(R.id.text);
+  13:         convertView.setTag(holder);
+  14:     } else {
+  15:         holder = (ViewHolder) convertView.getTag();
+  16:     }
+  17:     holder.icon.setImageResource(R.drawable.icon);
+  18:     holder.text.setText(mData[position]);
+  19:     return convertView;
+  20: }
+  21:  
+  22: static class ViewHolder {
+  23:     ImageView icon;
+  24:  
+  25:     TextView text;
+复制代码
+ 
+
+　　　　推荐几个链接：listview源码理解：很长，我是没看完~http://www.bkjia.com/Androidjc/1037874.html。取其中一张图，源码不是最新版本。
+
+　　　　　　　　　　　RecycleBin机制：http://www.2cto.com/kf/201604/497754.html。解决了我的疑问。
+
+                                列举下真正意义上的优化：http://www.xuanyusong.com/archives/1252。                     
+
+致敬前辈。如果有错误请提出。
+
+本文出处：http://www.cnblogs.com/yuhanghzsd/p/5595532.html       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class MainActivity extends Activity  
+{  
+    private ListView newsListView;  
+  
+    private ArrayList<NewsInfo> newsInfoList;  
+  
+    private List<Book> bookList;  
+  
+    private MyAdapter adapter;  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState)  
+    {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        newsListView = (ListView) findViewById(R.id.listView);  
+        try  
+        {  
+            bookList = PullParseService.getBooks(this);  
+        }  
+        catch(Exception e)  
+        {  
+            e.printStackTrace();  
+        }  
+        adapter = new MyAdapter(this, bookList);  
+  
+        newsListView.setAdapter(adapter);  
+  
+        newsListView  
+                .setOnItemClickListener(new AdapterView.OnItemClickListener()  
+                {  
+                    @Override  
+                    public void onItemClick(AdapterView<?> parent, View view,  
+                            int position, long id)  
+                    {  
+                        Toast.makeText(  
+                                MainActivity.this,  
+                                "position = " + position + "\n" + "第" + id  
+                                        + "行", 3000).show();  
+                    }  
+                });  
+    }  
+  
+    private class MyAdapter extends BaseAdapter  
+    {  
+        private Context context;  
+  
+        private List<Book> book;  
+  
+        private LayoutInflater inflater;  
+  
+        public MyAdapter(Context context, List<Book> book)  
+        {  
+            super();  
+            this.context = context;  
+            this.book = book;  
+            inflater = LayoutInflater.from(context);  
+  
+        }  
+  
+        class ViewHolder  
+        {  
+            ImageView picture;  
+  
+            TextView name;  
+  
+            TextView price;  
+  
+            ImageButton arrowPicture;  
+  
+        }  
+  
+        @Override  
+        public Object getItem(int position)  
+        {  
+  
+            return book.get(position);  
+        }  
+  
+        @Override  
+        public long getItemId(int position)  
+        {  
+  
+            return position;  
+        }  
+  
+        @Override  
+        public View getView(final int position, View convertView,  
+                ViewGroup parent)  
+        {  
+            ViewHolder holder = new ViewHolder();  
+            if (convertView == null)  
+            {  
+                convertView = inflater.inflate(R.layout.news_item, null);  
+                holder.picture = (ImageView) convertView  
+                        .findViewById(R.id.newsImage);  
+                convertView.setTag(holder);  
+                holder.name = (TextView) convertView  
+                        .findViewById(R.id.newsTitle);  
+                holder.price = (TextView) convertView  
+                        .findViewById(R.id.newsDate);  
+  
+                holder.arrowPicture = (ImageButton) convertView  
+                        .findViewById(R.id.menuSend);  
+            }  
+            else  
+            {  
+                holder = (ViewHolder) convertView.getTag();  
+            }  
+  
+            holder.name.setText(book.get(position).getName());  
+            holder.price.setText(String.valueOf(book.get(position).getPrice()));  
+            holder.arrowPicture  
+                    .setImageResource(android.R.drawable.ic_menu_more);  
+            holder.picture.setImageResource(R.drawable.ic_launcher);  
+  
+            holder.arrowPicture.setOnClickListener(new View.OnClickListener()  
+            {  
+  
+                @Override  
+                public void onClick(View v)  
+                {  
+                    showDetailDialog(book, position);  
+                }  
+            });  
+  
+            return convertView;  
+        }  
+  
+        @Override  
+        public int getCount()  
+        {  
+            return book.size();  
+        }  
+  
+    }  
+  
+    @Override  
+    public boolean onCreateOptionsMenu(Menu menu)  
+    {  
+        // Inflate the menu; this adds items to the action bar if it is  
+        // present.  
+        getMenuInflater().inflate(R.menu.activity_main, menu);  
+        return true;  
+    }  
+  
+    public void showDetailDialog(List<Book> book, int position)  
+    {  
+        if (book != null && position >= 0)  
+        {  
+  
+            new AlertDialog.Builder(MainActivity.this)  
+                    .setTitle("详细信息")  
+                    .setMessage(  
+                            "Name :" + "\n" + book.get(position).getName()  
+                                    + "\n\n" + "Price :" + "\n"  
+                                    + +book.get(position).getPrice() + "\n")  
+                    .setPositiveButton("ok",  
+                            new DialogInterface.OnClickListener()  
+                            {  
+  
+                                @Override  
+                                public void onClick(DialogInterface dialog,  
+                                        int which)  
+                                {  
+                                    dialog.cancel();  
+                                }  
+                            }).show();  
+        }  
+    }  
+  
+}  

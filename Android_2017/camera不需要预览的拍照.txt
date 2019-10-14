@@ -1,0 +1,104 @@
+【不用预览拍照与图片缩放剪裁】
+http://blog.csdn.net/lincyang/article/details/49873635
+
+
+（网友Sam给出的将preview设置成1x1大小的方案起了作用。下面的demo就是演示此方案： 
+界面甚是简单，一个按钮用以拍照，onClick事件方法名为onTakePhotoClicked。）
+
+
+
+public void onTakePhotoClicked(View view) {
+        final SurfaceView preview = new SurfaceView(this);
+        SurfaceHolder holder = preview.getHolder();
+        // deprecated setting, but required on Android versions prior to 3.0
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        holder.addCallback(new SurfaceHolder.Callback() {
+            @Override
+            //The preview must happen at or after this point or takePicture fails
+            public void surfaceCreated(SurfaceHolder holder) {
+                Log.d("tag", "Surface created");
+                Camera camera = null;
+                try {
+                    camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+                    Log.d("tag2", "Opened camera");
+
+                    try {
+                        camera.setPreviewDisplay(holder);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    camera.startPreview();
+                    Log.d("tag3", "Started preview");
+                    camera.takePicture(null, null, pictureCallback);
+                } catch (Exception e) {
+                    if (camera != null)
+                        camera.release();
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {}
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+        });
+
+        WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                1, 1, //Must be at least 1x1
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                0,
+                //Don't know if this is a safe default
+                PixelFormat.UNKNOWN);
+
+        //Don't set the preview visibility to GONE or INVISIBLE
+        wm.addView(preview, params);
+    }
+	private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            Log.d("tag", "onPictureTaken");
+            if(null == data){
+                return;
+            }
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            camera.stopPreview();
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) 90.0);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, false);
+            Log.d("tag", "original bitmap width: " + bitmap.getWidth() +
+                    " height: " + bitmap.getHeight());
+            Bitmap sizeBitmap = Bitmap.createScaledBitmap(bitmap,
+                    bitmap.getWidth()/3, bitmap.getHeight()/3, true);
+            Log.d("tag","size bitmap width "+sizeBitmap.getWidth()+" height "+sizeBitmap.getHeight());
+
+            //裁剪bitmap
+            int leftOffset = (int)(sizeBitmap.getWidth() * 0.25);
+            int topOffset = (int)(sizeBitmap.getHeight() * 0.25);
+            Rect rect = new Rect(leftOffset, topOffset, sizeBitmap.getWidth() - leftOffset,
+                    sizeBitmap.getHeight() - topOffset);
+            Bitmap rectBitmap = Bitmap.createBitmap(sizeBitmap,
+                    rect.left, rect.top, rect.width(), rect.height());
+            try {
+                FileOutputStream outputStream = new FileOutputStream(Environment
+                        .getExternalStorageDirectory().toString()+"/photoResize.jpg");
+                sizeBitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream);
+                outputStream.close();
+                FileOutputStream outputStreamOriginal = new FileOutputStream(Environment
+                        .getExternalStorageDirectory().toString()+"/photoOriginal.jpg");
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, outputStreamOriginal);
+                outputStreamOriginal.close();
+
+                FileOutputStream outputStreamCut = new FileOutputStream(Environment
+                        .getExternalStorageDirectory().toString()+"/photoCut.jpg");
+                rectBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCut);
+                outputStreamCut.close();
+                Log.d("tag","picture saved!");
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };

@@ -1,0 +1,57 @@
+
+//得到跟目录       （推荐，推荐，推荐）
+
+Environment.getExternalStorageDirectory().getPath()
+
+例如：根目录下的一张图片：
+
+Sreing url = Environment.getExternalStorageDirectory().getPath() + "pick.jpg";
+
+
+
+
+
+
+
+Environment 常用方法： 
+
+* 方法：getDataDirectory()
+解释：返回 File ，获取 Android 数据目录。
+* 方法：getDownloadCacheDirectory()
+解释：返回 File ，获取 Android 下载/缓存内容目录。
+* 方法：getExternalStorageDirectory()
+解释：返回 File ，获取外部存储目录即 SDCard
+* 方法：getExternalStoragePublicDirectory(String type)
+解释：返回 File ，取一个高端的公用的外部存储器目录来摆放某些类型的文件
+* 方法：getExternalStorageState()
+解释：返回 File ，获取外部存储设备的当前状态
+* 方法：getRootDirectory()
+解释：返回 File ，获取 Android 的根目录
+
+
+
+
+
+
+
+
+
+
+获取sd卡路径 
+方法一： private String folder = "/sdcard/DCIM/Camera/"（SD卡上拍照程序的图片存储路径）; //写死绝对路径，不赞成使用 
+
+方法二： 
+public String getSDPath(){ 
+       File sdDir = null; 
+       boolean sdCardExist = Environment.getExternalStorageState()   
+                           .equals(android.os.Environment.MEDIA_MOUNTED);   //判断sd卡是否存在 
+       if   (sdCardExist)   
+       {                               
+         sdDir = Environment.getExternalStorageDirectory();//获取跟目录 
+      }   
+       return sdDir.toString(); 
+       
+} 
+
+然后：在后面加上斜杠，在加上文件名 
+String fileName = getSDPath() +"/" + name;//以name存在目录中 

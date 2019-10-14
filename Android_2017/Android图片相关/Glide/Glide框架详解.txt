@@ -1,0 +1,442 @@
+Android图片加载Glide框架使用详解
+原创 2016年03月21日 16:21:00 4865713
+在Android开发中，图片加载已经是必不可少的一部分，无论是新闻类App，购物类、社交类等等，已经不可能不涉及到图片加载。现在的图片加载框架也是很多，我们最熟悉的应该是UIL了，今天就来记录一下Glide的使用。
+
+老规矩，在节目开始之前，我们先来一个搞笑段子：
+
+虽然我不会赚钱，但是我会省钱啊。我早上就看上一辆兰博基尼，我一咬牙、一跺脚，不买！！ 
+一下子就省了七百多万。。
+
+1、当前比较好的图片加载框架 
+Universal Image Loader：使用最广，很强大，但现在官方已停止维护。 
+Picasso：和Glide非常像，Square开发的牛逼框架。 
+Volley：Google官方出品。 
+Fresco：FaceBook出品，数据相当厉害。 
+Glide：今天的主角，官方推荐，专注于界面流畅的滚动。
+
+2、简介 
+创建Glide的主要目的有两个，一个是实现平滑的图片列表滚动效果，另一个是支持远程图片的获取、大小调整和展示。它还可以加载Gif动态图，后面再说。
+
+3、jar包 
+https://github.com/bumptech/glide/releases 
+https://github.com/bumptech/glide/wiki
+
+4、Gradle编译
+
+dependencies {  
+    compile 'com.github.bumptech.glide:glide:3.5.2'  
+    compile 'com.android.support:support-v4:22.0.0'  
+}
+1
+2
+3
+4
+5、基本使用
+
+Glide.with(context)  
+    .load("xxxx.png")  
+    .into(imageView);
+1
+2
+3
+Glide的代码设计采用现在流行的“流式代码”，方法调用都是一路点点点调用，这个好处就是调用逻辑非常清晰，无论以后某个具体的实现怎么变化，整体的流程都非常清晰，一目了然。
+
+下面分别解释三个函数
+
+6、Glide的with()可以接受的类型有如下：
+
+    Context context;
+    Activity activity;
+    FragmentActivity fragmentActivity;
+    Fragment fragment;
+1
+2
+3
+4
+相比Picasso只能接受Context要稍微好一点。
+
+7、load()是加载目标资源，可以接受的参数类型有如下：
+
+    Uri uri;
+    String uriString;
+    File file;
+    Integer resourceId;
+    byte[] model;
+    String model;
+1
+2
+3
+4
+5
+6
+这么多种加载方式，是不是很方便。
+
+8、into()就是加载资源完成后作什么处理，它接受三种参数：
+
+1）into(ImageView imageView);//显示在控件上。
+    Glide.with(context)  
+        .load("xxxx.png")  
+        .into(imageView);
+
+2）into(Target target);//通过回调获得加载结果。
+    Glide.with(context)  
+        .load(url)   
+        .into(new SimpleTarget<Bitmap>(width, height) {  
+            @Override   
+            public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {  
+
+            }   
+        };
+
+3）into(int w, int h);//指定期望的图片大小，返回一个future对象，要在子线程中获取。
+new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Bitmap bitmap = Glide.with(context)  
+                .load("xxxx.png")  
+                .into(200， 200)
+                .get();
+        }
+    }).start();
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+into的三种用法区别是什么呢？ 
+第一种是直接把图片加载出来显示在ImageView上，你并不会得到中间结果，也就是bitmap对象。 
+第二种、第三种都是可以获取到bitmap的，获取到后怎么处理自己决定。 
+第三种需要在子线程中调用。
+
+除了with(),load(),into()三个基本的方法，Glide还有很多使用的Api。
+
+9、设置图片大小 
+.override(int w, int h); 
+指定加载bitmap的大小，比如原图是500 x 500，into(100， 100)，加载出的bitmap就是100 x 100。
+
+10、加载完成动画 
+.animate(Animator animator);//或者int animationId 
+初次加载出Bitmap时展示的动画，可以是属性动画，也可以是Tween动画。 
+**注意：这个动画只在初次加载出来时使用，已经加载过了，下载再从缓存中取是不会动画的。
+
+11、裁剪策略 
+.centerCrop() 
+裁剪，相当于ImageView设置scaleType为centerCrop，大图的裁剪策略。
+
+12、占位和错误显示 
+.placeHolder(int resourceId); 
+.error(int resourceId); 
+加载时和加载过程中显示的图片，这个图片通常就是本地的一张资源图片，因为它本身就是为了解决加载网络图延迟的手段，自己如果还要从网络获取就不合适了。
+
+13、缓存策略 
+.diskCacheStrategy(DiskCacheStrategy.ALL) 
+这个是设置缓存策略。 
+DiskCacheStrategy.NONE：不缓存 
+DiskCacheStrategy.SOURCE：缓存原始图片 
+DiskCacheStrategy.RESULT：缓存压缩过的结果图片 
+DiskCacheStrategy.ALL：两个都缓存
+
+14、加载gif动态图 
+.asBitmap() 
+.asGif() 
+只需要加一行代码，Glide就可以直接在ImageView上加载gif动态图，这个还是很方便的。
+
+Glide.with(context)
+    .load("xxx.gif")
+    .asGif()
+    .into(imageView);
+1
+2
+3
+4
+关键就是asGif()这行代码，它就会自动加载成gif动态图，如果改成asBitmap()，就是静态图。
+
+15、图片转换transform 
+.tranform(Tranformation tranformation) 
+Tranformation：转换，用于对bitmap进行转换。 
+官方解释：所设置的转换方式会应用在每一帧图片或者是gif图片的每一个bitmap
+
+比如我们要用Glide加载出圆角图片，或者是圆形图片，就要用到Transformation。 
+这里写图片描述
+
+具体的方法就是写一个类继承BitmapTransformation，然后重写transform()方法。
+
+<圆角图片>
+
+public class GlideRoundTransform extends BitmapTransformation {
+
+    public static final int DEFAULT_CORNER_RADIO = 10;
+
+    private static float radius = 0f;
+
+    public GlideRoundTransform(Context context) {
+        this(context, DEFAULT_CORNER_RADIO);
+    }
+
+    public GlideRoundTransform(Context context, int dp) {
+        super(context);
+        this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
+    }
+
+    @Override protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return roundCrop(pool, toTransform);
+    }
+
+    private static Bitmap roundCrop(BitmapPool pool, Bitmap source) {
+        if (source == null) return null;
+
+        Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+        if (result == null) {
+            result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+        paint.setAntiAlias(true);
+        RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
+        canvas.drawRoundRect(rectF, radius, radius, paint);
+        return result;
+    }
+
+    @Override public String getId() {
+        return getClass().getName() + Math.round(radius);
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+<圆形图片>
+
+public class GlideCircleTransform extends BitmapTransformation {
+    public GlideCircleTransform(Context context) {
+        super(context);
+    }
+
+    @Override protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return circleCrop(pool, toTransform);
+    }
+
+    private static Bitmap circleCrop(BitmapPool pool, Bitmap source) {
+        if (source == null) return null;
+
+        int size = Math.min(source.getWidth(), source.getHeight());
+        int x = (source.getWidth() - size) / 2;
+        int y = (source.getHeight() - size) / 2;
+
+        // TODO this could be acquired from the pool too
+        Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
+
+        Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
+        if (result == null) {
+            result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
+        paint.setAntiAlias(true);
+        float r = size / 2f;
+        canvas.drawCircle(r, r, r, paint);
+        return result;
+    }
+
+    @Override public String getId() {
+        return getClass().getName();
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+16、移除当前Transformation 
+.dontTransform()
+
+17、移除所有的动画 
+.dontAnimate()
+
+18、跳过内存缓存 
+.skipMemoryCache(true)
+
+19、色彩模式 
+Glide 在默认的 RGB_565 格式下加载的图片质量可以接受的话，可以什么都不做。但如果你觉得难以接受，或者是你的实际需求对图片的质量有更高的要求的话，你可以像下面的代码那样创建一个 GlideModule 子类，把 Bitmap 的格式转换到 ARGB_8888：
+
+public class GlideConfiguration implements GlideModule {  
+    @Override  
+    public void applyOptions(Context context, GlideBuilder builder) {  
+        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);  
+    }  
+    @Override  
+    public void registerComponents(Context context, Glide glide) {  
+
+    }  
+}
+
+//manifest
+<meta-data android:name="com.inthecheesefactory.lab.glidepicasso.GlideConfiguration" android:value="GlideModule"/>
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+20、暂停\回复请求 
+Glide.with(context).resumeRequests(); 
+Glide.with(context).pauseRequests(); 
+当列表在滑动的时候，调用pauseRequests()取消请求，滑动停止时，调用resumeRequests()恢复请求。
+
+21、清空请求列表 
+Glide.clear()
+
+22、下载图片，并且获取下载路径
+
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+        try {
+            Future<File> fu = Glide.with(MainActivity.this)
+                    .load("https://www.baidu.com/img/bdlogo.png")
+                    .downloadOnly(200, 200);
+            File file = file;
+            Log.e("TAG", "## path=" + file.getAbsoluteFile());
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[fis.available()];
+            fis.read(data, 0, fis.available());
+            fis.close();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            //do something...
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}).start();
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+注意：必须是在子线程中使用

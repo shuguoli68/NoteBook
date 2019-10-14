@@ -1,0 +1,84 @@
+注册广播监听WIFI连接状态改变
+
+1 . 需要的权限
+
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
+2 . 注册广播
+
+<receiver android name=".WifiReceiver">
+     <intent-filter>
+         <action android:name="android.net.wifi.RSSI_CHANGED" />
+         <action android:name="android.net.wifi.STATE_CHANGE" />
+         <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+     </intent-filter>
+</receiver>
+
+
+3 . 广播接收者
+
+public class WifiReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+            NetworkInfo info =intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+            if (info.getState().equals(NetworkInfo.State.DISCONNECTED)) {
+                /**
+                 * wifi断开连接
+                 */
+            } else if (info.getState().equals(NetworkInfo.State.CONNECTED)) {
+                WifiManager wifiManager=(WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                /**
+                 * wifi以连接wifiInfo.getSSID();获取连接的wifi名称
+                 */
+                     Log.d("TAG",wifiInfo.getSSID());
+                }
+            }else if(intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {//wifi打开与否
+            int wifistate = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_DISABLED);
+            if (wifistate == WifiManager.WIFI_STATE_DISABLED) {
+                /**
+                 * 系统关闭wifi
+                 */
+            } else if (wifistate == WifiManager.WIFI_STATE_ENABLED) {
+                /**
+                 * 系统开启wifi
+                 */
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+监听WIFI热点的状态
+
+1.广播注册(需要注意的是这个Action自动提示里根本就找不到，貌似是被隐藏了起来)
+<receiver android:name="com.qdzn.home.wifi.WifiApReceiver">
+    <intent-filter>
+        <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+    </intent-filter>
+</receiver>
+
+
+2 . 广播接收者
+
+public class WifiApReceiver extends BroadcastReceiver {
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if ("android.net.wifi.WIFI_AP_STATE_CHANGED".equals(action)) {
+            //便携式热点的状态为：10---正在关闭；11---已关闭；12---正在开启；13---已开启
+            int state = intent.getIntExtra("wifi_state", 0);
+            Log.d("TAG", state + "---");
+        }
+    }
+}

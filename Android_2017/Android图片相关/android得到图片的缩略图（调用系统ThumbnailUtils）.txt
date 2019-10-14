@@ -1,0 +1,66 @@
+
+
+在Android 2.2版本中，新增了一个ThumbnailUtils工具类来是实现缩略图，此工具类的功能是强大的，使用是简单，它提供了一个常量和三个方法。利用这些常数和方法，可以轻松快捷的实现图片和视频的缩略图功能。
+
+
+
+main.xml
+[java] view plain copy
+<?xml version="1.0" encoding="utf-8"?>  
+ <LinearLayout   
+     xmlns:android="http://schemas.android.com/apk/res/android"   
+     android:orientation="vertical"  
+     android:background="#999999"   
+     android:layout_width="fill_parent"   
+     android:layout_height="fill_parent">  
+     <ImageView    
+         android:layout_width="wrap_content"   
+         android:layout_height="wrap_content"   
+         android:src="@drawable/v"  
+         android:layout_marginLeft="10dip"/>  
+     <TextView    
+         android:layout_width="wrap_content"   
+         android:layout_height="wrap_content"   
+         android:text="缩略图："   
+         android:textColor="#000000"/>  
+     <ImageView android:id="@+id/image"   
+         android:layout_width="wrap_content"   
+         android:layout_height="wrap_content"  
+         android:layout_marginLeft="10dip"/>  
+ </LinearLayout>  
+
+
+
+
+
+
+
+
+
+package xiaosi.thumbnail;  
+  
+import android.app.Activity;  
+import android.graphics.Bitmap;  
+import android.graphics.BitmapFactory;  
+import android.graphics.drawable.BitmapDrawable;  
+import android.graphics.drawable.Drawable;  
+import android.media.ThumbnailUtils;  
+import android.os.Bundle;  
+import android.widget.ImageView;  
+  
+public class ThumbnailActivity extends Activity {    
+    
+    private Bitmap bitmap = null;  
+    private ImageView image;  
+     @Override    
+     public void onCreate(Bundle savedInstanceState) {    
+        super.onCreate(savedInstanceState);    
+        setContentView(R.layout.main);    
+        image = (ImageView) findViewById(R.id.image);    
+        //得到原图片  
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.v);  
+        //得到缩略图  
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100);    
+        image.setImageBitmap(bitmap);    
+    }    
+}    

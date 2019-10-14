@@ -1,0 +1,29 @@
+关于使用DrawerLayout建立侧滑菜单时,下层布局依然可响应点击事件的解决方法：
+
+drawer_layout= (DrawerLayout) findViewById(R.id.drawer_layout);  
+drawer_layout.setDrawerListener(new DrawerLayout.DrawerListener() {  
+    @Override  
+    public void onDrawerSlide(View drawerView, float slideOffset) {  
+  
+    }  
+  
+    @Override  
+    public void onDrawerOpened(View drawerView) {  
+        drawerView.setClickable(true);  
+  
+    }  
+  
+    @Override  
+    public void onDrawerClosed(View drawerView) {  
+  
+    }  
+  
+    @Override  
+    public void onDrawerStateChanged(int newState) {  
+  
+    }  
+});  
+
+
+
+如标题所述,当使用DrawerLayout建立侧滑菜单时,如果主布局是个listView或者其他可点击的控件,那么,当侧滑菜单被滑出来时,正常情况来说,点击侧滑菜单任何地方,应该和下层被遮盖一部分的主布局没有关系,自然下层的主布局不会响应点击事件,但是实际上,当侧滑菜单被滑出来时,下层被遮盖住的主布局依然可以响应点击事件,当时想,应该和侧滑菜单的焦点获取有关,于是把listView的焦点设为false,把侧滑菜单的焦点设为true,但是并没有用,后来又想可能跟Clickable有关,于是又在DrawerLayout的xml布局中,写了clickable为true,但依然没有用,后来实在没招了,想想既然静态设置没用,那就动态监听,于是设置了DrawerLayout的setDrawerListener()监听方法,该监听方法会回调4个监听函数,onDrawerSlide,onDrawerOpened,onDrawerClosed和onDrawerStateChanged,我想要的就是在当侧滑菜单已经被打开时,即onDrawerOpened方法里进行监听,要做的就是当侧滑菜单已经打开时,只让侧滑菜单能够点击,下层主布局不做任何响应,于是我在这个方法里面设置了drawerView.setClickable(true),果然就好了,然后我又试了其他的一些方法,比如获取焦点啊,设置可按压啊,设置下层的listView不可点击啊,失去焦点啊什么的,结果一概没用,只有设置clickable为true才有用,想想之前我也在xml布局中为drawerLayout设置了clickable为true,但是并没有用,为什么动态设置就有用了呢?现在我也没想明白,不过能解决我的问题也算可以,至于为什么动态设置有用,静态设置没用还是等以后研究懂了源码在说吧.  

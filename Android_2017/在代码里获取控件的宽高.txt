@@ -1,0 +1,7 @@
+int w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        btn_commit.measure(w,h);
+        int height = btn_commit.getMeasuredHeight();
+        int width = btn_commit.getMeasuredWidth();
+        my_spinner.setMinimumWidth(width);
+        edit_modify.setWidth(width);

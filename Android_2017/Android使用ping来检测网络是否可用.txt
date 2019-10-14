@@ -1,0 +1,42 @@
+/**
+     * @author cat
+     * @category 判断是否有外网连接（普通方法不能判断外网的网络是否连接，比如连接上局域网）
+     * @return
+     */
+    public final boolean ping(String urld) {
+
+        String result = null;
+        try {
+            String ip = urld;// 除非百度挂了，否则用这个应该没问题(也可以换成自己要连接的服务器地址)
+            Process p = Runtime.getRuntime().exec("ping -c 1 -w 1 " + ip);// ping3次
+            // 读取ping的内容，可不加。
+            InputStream input = p.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(input));
+            StringBuffer stringBuffer = new StringBuffer();
+            String content = "";
+            while ((content = in.readLine()) != null) {
+                stringBuffer.append(content);
+            }
+            Log.i("TTT", "result content : " + stringBuffer.toString());
+            // PING的状态
+            int status = p.waitFor();
+            if (status == 0) {
+                result = "successful~";
+                return true;
+            } else {
+                result = "failed~ cannot reach the IP address";
+                return false;
+            }
+
+        } catch (IOException e) {
+            result = "failed~ IOException";
+        } catch (InterruptedException e) {
+            result = "failed~ InterruptedException";
+        } finally {
+            Log.i("TTT", "result = " + result);
+        }
+        return false;
+    }
+
+
+//其中-c 1 是代表次数   -w 1代表的是时间，这里要注意下时间是秒，之前刚找到他的时候是写的100，一开始我以为是毫秒，后面接的IP是你服务器的地址，

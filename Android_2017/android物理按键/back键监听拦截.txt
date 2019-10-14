@@ -1,0 +1,29 @@
+¼àÌý£º
+@Override
+    public void onBackPressed() {
+        App.log("back");
+        App.toast("back");
+        super.onBackPressed();
+    }
+
+
+¼àÌý²¢À¹½Ø£º
+@Override
+    public void onBackPressed() {
+        App.log("back");
+        App.toast("back");
+        //super.onBackPressed();
+    }
+
+»ò
+
+@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if (keyCode == event.KEYCODE_BACK) {
+            App.toast("ºóÍË¼ü");
+            App.log("ºóÍË¼ü");
+            return false;
+        }
+return super.onKeyDown(keyCode, event);
+    }

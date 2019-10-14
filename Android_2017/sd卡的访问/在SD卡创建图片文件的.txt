@@ -1,0 +1,17 @@
+//定义一个保存图片的File变量
+private File currentImageFile = null;
+
+//在按钮点击事件处写上这些东西，这些是在SD卡创建图片文件的:
+          
+                File dir = new File(Environment.getExternalStorageDirectory(),"pictures");
+                if(dir.exists()){
+                    dir.mkdirs();
+                }
+                currentImageFile = new File(dir,System.currentTimeMillis() + ".jpg");
+                if(!currentImageFile.exists()){
+                    try {
+                        currentImageFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }

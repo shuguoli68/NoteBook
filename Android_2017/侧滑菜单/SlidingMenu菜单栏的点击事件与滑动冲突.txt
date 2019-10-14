@@ -1,0 +1,26 @@
+参考：https://github.com/jfeinstein10/SlidingMenu/issues/446，亲测有效！
+
+
+如果SlidingMenu设置：
+sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+sm.setTouchModeBehind(SlidingMenu.TOUCHMODE_FULLSCREEN);
+
+会发现侧边菜单的点击事件不响应。
+
+解决办法：
+1、在CustomViewAbove中的onInterceptTouchEvent()，将ACTION_DOWN的break改为return mQuickReturn；
+
+2、在CustomViewAbove中的onTouchEvent，将ACTION_DOWN的break改为return mQuickReturn；
+
+3、在CustomViewAbove中的initCustomViewAbove()，注释掉setInternalPageChangeListener监听；
+
+4、在CustomViewBehind ，修改onInterceptTouchEvent 和 onTouchEvent：
+@Override
+	public boolean onInterceptTouchEvent(MotionEvent e) {
+		return mViewAbove.onInterceptTouchEvent(e);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent e) {
+		return mViewAbove.onTouchEvent(e);
+	}

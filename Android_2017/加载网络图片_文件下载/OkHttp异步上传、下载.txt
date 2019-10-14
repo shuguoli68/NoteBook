@@ -1,0 +1,332 @@
+导包：okhttp3.2.0+okio1.7.0
+
+
+<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/bt_send"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="get请求"
+            />
+        <Button
+            android:id="@+id/bt_postsend"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="post请求"
+            />
+        <Button
+            android:id="@+id/bt_sendfile"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="发送文件"
+            />
+
+        <Button
+            android:id="@+id/bt_downfile"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="下载文件"
+            />
+    </LinearLayout>
+</RelativeLayout>
+
+
+
+
+
+package com.example.okHttp;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.example.testadminapp.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+/**
+ * Created by Admin on 2017/8/18.
+ */
+public class OkHttpActivity extends Activity implements View.OnClickListener {
+    private OkHttpClient mOkHttpClient;
+    private Button bt_send;
+    private Button bt_postsend;
+    private Button bt_sendfile;
+    private Button bt_downfile;
+
+    public static final MediaType MEDIA_TYPE_MARKDOWN
+            = MediaType.parse("text/x-markdown; charset=utf-8");
+    private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+        } else {
+            doBack();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                doBack();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    private void doBack() {
+        Toast.makeText(this, "1成功获取权限后的操作", Toast.LENGTH_SHORT).show();
+        Log.i("TAG","1成功获取权限后的操作");
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_okhttp);
+        permissionTest();
+        initOkHttpClient();
+        bt_send = (Button) this.findViewById(R.id.bt_send);
+        bt_sendfile = (Button) this.findViewById(R.id.bt_sendfile);
+        bt_postsend = (Button) this.findViewById(R.id.bt_postsend);
+        bt_downfile = (Button) this.findViewById(R.id.bt_downfile);
+        bt_send.setOnClickListener(this);
+        bt_postsend.setOnClickListener(this);
+        bt_sendfile.setOnClickListener(this);
+        bt_downfile.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_send:
+                getAsynHttp();
+                break;
+            case R.id.bt_postsend:
+                postAsynHttp();
+                break;
+            case R.id.bt_sendfile:
+                postAsynFile();
+                break;
+            case R.id.bt_downfile:
+                downAsynFile();
+                //             sendMultipart();
+                break;
+        }
+    }
+
+    private void initOkHttpClient() {
+        File sdcache = getExternalCacheDir();
+        int cacheSize = 10 * 1024 * 1024;
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .cache(new Cache(sdcache.getAbsoluteFile(), cacheSize));
+        mOkHttpClient = builder.build();
+    }
+
+    /**
+     * get异步请求
+     */
+    private void getAsynHttp() {
+
+        Request.Builder requestBuilder = new Request.Builder().url("http://www.baidu.com");
+        requestBuilder.method("GET", null);
+        Request request = requestBuilder.build();
+        Call mcall = mOkHttpClient.newCall(request);
+        mcall.enqueue(new Callback() {
+
+            public void onFailure(Call call, IOException e) {
+                Log.i("wangshu", "get异步请求失败");
+            }
+
+
+            public void onResponse(Call call, Response response) throws IOException {
+                if (null != response.cacheResponse()) {
+                    String str = response.cacheResponse().toString();
+                    Log.i("wangshu", "cache---" + str);
+                } else {
+                    response.body().string();
+                    String str = response.networkResponse().toString();
+                    Log.i("wangshu", "network---" + str);
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "请求成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * post异步请求
+     */
+    private void postAsynHttp() {
+        RequestBody formBody = new FormBody.Builder()
+                .add("size", "10")
+                .build();
+        Request request = new Request.Builder()
+                .url("http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0824/3355.html")
+                .post(formBody)
+                .build();
+        Call call = mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("wangshu", "post异步请求失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String str = response.body().string();
+                Log.i("wangshu", str);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "请求成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+        });
+    }
+
+    /**
+     * 异步上传文件
+     */
+    private void postAsynFile() {
+        File file = new File("/sdcard/wangshu.txt");
+        Request request = new Request.Builder()
+                .url("https://api.github.com/markdown/raw")
+                .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, file))
+                .build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("wangshu", "异步上传文件失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.i("wangshu", response.body().string());
+            }
+        });
+    }
+
+
+    /**
+     * 异步下载文件
+     */
+    private void downAsynFile() {
+        String url = "http://img.my.csdn.net/uploads/201603/26/1458988468_5804.jpg";
+        Request request = new Request.Builder().url(url).build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("wangshu", "异步下载文件失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                InputStream inputStream = response.body().byteStream();
+                FileOutputStream fileOutputStream = null;
+                try {
+                    fileOutputStream = new FileOutputStream(new File("/sdcard/wangshu.jpg"));
+                    byte[] buffer = new byte[2048];
+                    int len = 0;
+                    while ((len = inputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, len);
+                    }
+                    fileOutputStream.flush();
+                } catch (IOException e) {
+                    Log.i("wangshu", "IOException");
+                    e.printStackTrace();
+                }
+
+                Log.d("wangshu", "文件下载成功");
+            }
+        });
+    }
+
+    private void sendMultipart() {
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("title", "wangshu")
+                .addFormDataPart("image", "wangshu.jpg",
+                        RequestBody.create(MEDIA_TYPE_PNG, new File("/sdcard/wangshu.jpg")))
+                .build();
+
+        Request request = new Request.Builder()
+                .header("Authorization", "Client-ID " + "...")
+                .url("https://api.imgur.com/3/image")
+                .post(requestBody)
+                .build();
+
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.i("wangshu", response.body().string());
+            }
+        });
+    }
+}

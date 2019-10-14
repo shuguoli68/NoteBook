@@ -1,0 +1,60 @@
+【Android】Android防止过快点击造成多次事件执行（防止按钮重复点击）
+原创 2016年11月03日 15:15:20 标签：android 9322
+在用户使用 Android 应用的时候，经常会出现过快且多次点击同一按钮的情况，一方面这是因为应用或手机当前有些卡顿，另一方面也可能是由于很多应用并没有设置按钮点击时的 selector 或者其它按钮响应方式(例如点击按钮时按钮放大，常见于游戏)，导致用户误认为没有点击到当前按钮，当然，除了相对应的对应用进行优化和设置点击selector以外，我们还可以做一些其它的工作，例如，判断按钮的 onClick 事件在规定事件段内只响应一次（在论坛的搜索功能中，我们常见到每10秒才可以进行一次搜索的设置，这就在一定程度上减少了无效的网络访问量，减轻服务器压力，APP同理），就如下面代码所示：
+
+public class Utils {
+    // 两次点击按钮之间的点击间隔不能少于1000毫秒
+    private static final int MIN_CLICK_DELAY_TIME = 1000;
+    private static long lastClickTime;
+
+    public static boolean isFastClick() {
+        boolean flag = false;
+        long curClickTime = System.currentTimeMillis();
+        if ((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
+            flag = true;
+        }
+        lastClickTime = curClickTime;
+        return flag;
+    }
+}
+
+btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utils.isFastClick()) {
+                    // 进行点击事件后的逻辑操作
+                }
+            }
+        });
+上面的代码可以保证同一按钮在1秒内只会响应一次点击事件，这也是大家最常用的方法，不过我更喜欢另一种方法：
+
+public abstract class OnMultiClickListener implements View.OnClickListener{
+    // 两次点击按钮之间的点击间隔不能少于1000毫秒
+    private static final int MIN_CLICK_DELAY_TIME = 1000;
+    private static long lastClickTime;
+
+    public abstract void onMultiClick(View v);
+
+    @Override
+    public void onClick(View v) {
+        long curClickTime = System.currentTimeMillis();
+        if((curClickTime - lastClickTime) >= MIN_CLICK_DELAY_TIME) {
+            // 超过点击间隔后再将lastClickTime重置为当前点击时间
+            lastClickTime = curClickTime;
+            onMultiClick(v);
+        }
+    }
+}
+
+btn.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View v) {
+                // 进行点击事件后的逻辑操作
+            }
+        });
+
+题外话
+
+我个人是非常建议给按钮都设置点击 selector 的，这样可以清楚的给用户提示，不过在 Android 项目中并不都是因为没有设置 selector 而导致用户感觉没有点击中这个按钮的，还有一种情况就是这个按钮的可点击热区太小了，或者较小的区域内承载了过多的可点击按钮。
+
+针对按钮的可点击热区较小的情况，我觉得可以使用控件的 paddingxxx 属性替代部分 marginxxx 属性，margin属性指的控件之外的区域，padding则可以将这些区域归为自身所有，这样既可在不改变 UI 的情况下扩大点击热区。

@@ -1,0 +1,14 @@
+//定义一个方法
+
+private void startActivity(Class<?> clz){
+		Intent intent = new Intent();
+		intent.setClass(this, clz);
+		startActivity(intent);
+	}
+
+
+
+
+//需要使用Intent时，调用方法
+
+startActivity(AddActivity.class);

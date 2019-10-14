@@ -1,0 +1,75 @@
+Student.java
+
+@Entity
+public class Student {
+    @Id
+    private String id;
+    private String name;
+    private int age;
+    @ToMany
+    @JoinEntity(entity = TeachJoinStudent.class,
+    sourceProperty = "sId",
+    targetProperty = "tId")
+    private List<Teacher> teacherList;
+}
+
+
+
+Teacher.java
+
+@Entity
+public class Teacher {
+    @Id
+    private String id;
+    private String type;
+
+    @ToMany
+    @JoinEntity(entity = TeachJoinStudent.class,
+    sourceProperty = "tId",
+    targetProperty = "sId")
+    private List<Student> studentList;
+}
+
+
+TeachJoinStudent.java
+
+@Entity
+public class TeachJoinStudent {
+    @Id
+    private String id;
+    private String tId;
+    private String sId;
+}
+
+
+
+//初始化，插入数据
+studentDao = App.getInstance().getDaoSession().getStudentDao();
+        teacherDao = App.getInstance().getDaoSession().getTeacherDao();
+        teachJoinStudentDao = App.getInstance().getDaoSession().getTeachJoinStudentDao();
+        studentDao.insertOrReplace(new Student("1401","bob",19));
+        studentDao.insertOrReplace(new Student("1402","jason",21));
+        studentDao.insertOrReplace(new Student("1403","lisa",22));
+
+        teacherDao.insertOrReplace(new Teacher("1006","Chinese"));
+        teacherDao.insertOrReplace(new Teacher("1007","English"));
+        teacherDao.insertOrReplace(new Teacher("1008","Math"));
+
+        teachJoinStudentDao.insertOrReplace(new TeachJoinStudent("01","1007","1402"));
+        teachJoinStudentDao.insertOrReplace(new TeachJoinStudent("02","1007","1403"));
+        teachJoinStudentDao.insertOrReplace(new TeachJoinStudent("03","1006","1402"));
+
+
+//查询
+Query<Teacher> query = teacherDao.queryBuilder().where(TeacherDao.Properties.Type.eq("English")).build();
+                for (Teacher teacher : query.list()) {
+                    for (int i=0;i<teacher.getStudentList().size();i++){
+                        Log.i("t_db",teacher.getStudentList().get(i).getName());
+                    }
+                }
+                Query<Student> query2 = studentDao.queryBuilder().where(StudentDao.Properties.Name.eq("jason")).build();
+                for (Student student : query2.list()) {
+                    for (int i=0;i<student.getTeacherList().size();i++){
+                        Log.i("s_db",student.getTeacherList().get(i).getType());
+                    }
+                }

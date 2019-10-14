@@ -1,0 +1,175 @@
+/** 
+ * apk相关帮助类 
+ *  
+ */  
+public class PackageUtils {  
+    /** 
+     * 获取app版本名称 
+     *  
+     * @param context 
+     * @return 获取失败返回""，否则返回版本名称 
+     */  
+    public static String getVersionName(Context ctx) {  
+        String versionName = "";  
+        if (ctx == null)  
+            return versionName;  
+        try {  
+            PackageManager pm = ctx.getPackageManager();  
+            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), 0);  
+            versionName = pi.versionName;  
+            if (TextUtils.isEmpty(versionName)) {  
+                return "";  
+            }  
+        } catch (Exception e) {  
+        }  
+        return versionName;  
+    }  
+  
+    /** 
+     * 获取app版本号 
+     *  
+     * @param context 
+     * @return 获取失败返回-1，否则返回版本号 
+     */  
+    public static int getVersionCode(Context ctx) {  
+        int versionCode = -1;  
+        if (ctx == null)  
+            return versionCode;  
+        try {  
+            PackageManager pm = ctx.getPackageManager();  
+            PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), 0);  
+            versionCode = pi.versionCode;  
+        } catch (Exception e) {  
+        }  
+        return versionCode;  
+    }  
+  
+    /** 
+     * 返回程序包名 
+     *  
+     * @param context 
+     * @return 获取失败返回""，否则返回程序包名 
+     */  
+    public static String getPackageName(Context ctx) {  
+        if (ctx == null)  
+            return "";  
+        return ctx.getPackageName();  
+    }  
+  
+    /** 
+     *  
+     * 检查包名所在的程序是否有某项权限 
+     *  
+     * @param context 
+     * @param permName 
+     *            权限名称 
+     * @param pkgName 
+     *            程序所在的包名 
+     * @return 
+     */  
+    public static boolean checkPermission(Context ctx, String permName,  
+            String pkgName) {  
+        PackageManager pm = ctx.getPackageManager();  
+        try {  
+            boolean isHave = (PackageManager.PERMISSION_GRANTED == pm  
+                    .checkPermission(permName, pkgName));  
+            return isHave;  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+        return false;  
+  
+    }  
+  
+    /** 
+     * 检查当前应用是否有某项权限 
+     *  
+     * @param permName 
+     * @return 
+     */  
+    public static boolean checkPermission(Context ctx, String permName) {  
+        return checkPermission(ctx, permName, ctx.getPackageName());  
+    }  
+  
+    // 获取ApiKey  
+    public static String getMetaValue(Context context, String metaKey) {  
+        Bundle metaData = null;  
+        String apiKey = null;  
+        if (context == null || metaKey == null) {  
+            return null;  
+        }  
+        try {  
+            ApplicationInfo ai = context.getPackageManager()  
+                    .getApplicationInfo(context.getPackageName(),  
+                            PackageManager.GET_META_DATA);  
+            if (null != ai) {  
+                metaData = ai.metaData;  
+            }  
+            if (null != metaData) {  
+                apiKey = metaData.getString(metaKey);  
+            }  
+        } catch (NameNotFoundException e) {  
+  
+        }  
+        return apiKey;  
+    }  
+    /** 
+     * 判断程序的运行在前台还是后台 
+     *  
+     * @param context 
+     * @return 0在后台运行  大于0在前台运行  2表示当前主界面是com.xy.demo.activity.MainFragmentActivity 
+     */  
+    public static int isBackground(Context context,String packageName,String bingMapMainActivityClassName) {  
+        ActivityManager activityManager = (ActivityManager) context  
+                .getSystemService(Context.ACTIVITY_SERVICE);  
+          
+        List<RunningTaskInfo> tasksInfo = activityManager.getRunningTasks(1);  
+        if (tasksInfo.size() > 0) {  
+            ComponentName topConponent = tasksInfo.get(0).topActivity;  
+            LogUtil.d("TAG",  
+                    "topConponent.getPackageName()..."  
+                            + topConponent.getPackageName());  
+            if (packageName.equals(topConponent.getPackageName())) {  
+                // 当前的APP在前台运行  
+                if (topConponent.getClassName().equals(  
+                        bingMapMainActivityClassName)) {  
+                    // 当前正在运行的是不是期望的Activity  
+                    LogUtil.d("TAG", bingMapMainActivityClassName+"在运行");  
+                    return 2;  
+                }  
+                LogUtil.d("TAG", packageName+"前台运行");  
+                return 1;  
+            } else {  
+                // 当前的APP在后台运行  
+                LogUtil.d("TAG", packageName+"后台运行");  
+                return 0;  
+            }  
+        }  
+        return 0;  
+    }  
+    /** 
+     * 判断app服务是否已经在运行，如果是 则先停止服务 防止后面查询数据时超时获取其他异常 
+     */  
+    public static boolean checkServerFun(Context ctx,String serviceStr)  
+    {  
+        // 获取Activity管理器  
+        ActivityManager activityManger = (ActivityManager) ctx.getSystemService(ctx.ACTIVITY_SERVICE);  
+        // 从窗口管理器中获取正在运行的Service  
+        List<ActivityManager.RunningServiceInfo> serviceList = activityManger  
+                .getRunningServices(60);  
+  
+        // 判断app服务是否已经在运行，如果是 则先停止服务 防止后面查询数据时超时获取其他异常  
+        if (serviceList != null && serviceList.size() > 0)  
+        {  
+            for (int i = 0; i < serviceList.size(); i++)  
+            {  
+                if (serviceStr.equals(serviceList.get(i).service.getClassName()))  
+                {  
+                    return true;  
+                }  
+            }  
+        }  
+  
+        return false;  
+    }  
+}  

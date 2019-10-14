@@ -1,0 +1,21 @@
+ android 解决在列表条目中刷新或者加载 Glide 圆形头像会闪烁，位置错乱
+
+刚开始以为是listview或者Recyclerview的缓存复用问题，结果研究了半天才知道是Glide圆形头像CircleImageView的问题。 
+直接贴代码，代码很简单，直接在Recyclerview的onBinderViewHolder里面或者Listview的getView里面把把设置头像的代码加上Tag。
+
+  String tag = (String) holder.contacts.getTag();    //获取头像空间的Tag进行比较
+
+//如果不一样，则设置为默认头像/图片
+  if(!TextUtils.equals(datalist.get(position).getMailpath(),tag)) {               holder.contacts.setImageResource(R.drawable.addtk);
+ }
+
+//使用Glide展示头像
+ Glide.with(EmailBaseActivity.this)
+                    .load(datalist.get(position).getMailpath())
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            holder.contacts.setTag(datalist.get(position).getMailpath());
+                            holder.contacts.setImageDrawable(resource);
+                        }
+                    });

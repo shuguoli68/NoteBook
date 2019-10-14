@@ -1,0 +1,17 @@
+//判断是否第一次进入app
+
+private String SHARE_APP_TAG = "share_File_Name";
+
+
+SharedPreferences setting = getSharedPreferences(SHARE_APP_TAG, 0);  
+	    	    Boolean user_first = setting.getBoolean("FIRST",true);  
+	    	    if(user_first){//第一次  
+	    	        setting.edit().putBoolean("FIRST", false).commit();  
+	    	        Toast.makeText(WelcomeActivity.this, "第一次", Toast.LENGTH_LONG).show(); 
+	    	        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);    
+	 	            startActivity(intent);  
+	    	     }else{  
+	    	        Toast.makeText(WelcomeActivity.this, "不是第一次", Toast.LENGTH_LONG).show();  
+	    	        Intent intent = new Intent(WelcomeActivity.this, TestMain.class);    
+		            startActivity(intent);  
+	    	    }  

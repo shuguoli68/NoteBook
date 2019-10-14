@@ -1,0 +1,48 @@
+long id;
+    DownloadManager downloadManager;
+    String url = "http://dlsw.baidu.com/sw-search-sp/soft/80/10547/QQMusicForYQQ_12.57.3805.413_setup.1460617481.exe";
+    private static final String DIR = "AutoUpdate";
+    private static final String APK = "QQ.exe";
+    public void down(){
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        // WIFI状态下下载
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        // 设置通知栏
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        request.setTitle("更新");
+        request.setDescription("正在下载更新文件...");
+        // 存放路径
+        request.setDestinationInExternalPublicDir(DIR, APK);
+
+        // 1、开始下载
+        downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        id = downloadManager.enqueue(request);
+
+        //2、取消下载，将下载任务和已经下载的文件同时删除
+//        downloadManager.remove(id);
+    }
+
+
+
+
+监听下载进度的广播：
+
+public class AutoUpdateBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+            Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
+
+
+
+AndroidManifest.xml:
+
+<receiver android:name=".AutoUpdateBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>

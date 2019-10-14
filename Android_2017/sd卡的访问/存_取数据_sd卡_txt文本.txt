@@ -1,0 +1,191 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:id="@+id/file_LinearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <EditText
+            android:id="@+id/file_edit"
+            android:hint="out_to_file"
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/out_to_file"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="保存到文件"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/file_LinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <Button
+            android:id="@+id/out_from_file"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="从文件中读取"
+            />
+        <TextView
+            android:id="@+id/file_txt"
+            android:layout_weight="6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:hint="out_from_file"
+            />
+    </LinearLayout>
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+package com.example.iotest.FileOperate;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.iotest.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+/**
+ * Created by Admin on 2017/8/22.
+ */
+public class FileOperateActivity extends Activity implements View.OnClickListener{
+    private Button out_to_file,out_from_file;
+    private EditText edit;
+    private TextView txt;
+    static final String FILENAME = "/mnt/sdcard/aaa/my.txt";
+    File file = new File(FILENAME);
+
+    private static final String READ_FILENAME = "my.txt" ;	// 设置文件名称
+    private static final String DIR = "aaa" ;	// 操作文件夹的名称
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_fileoperate);
+        if(!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();    // 创建父文件夹路径
+        }
+        permissionTest();
+    }
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        } else {
+            init();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                init();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    private void init(){
+        edit = (EditText) findViewById(R.id.file_edit);
+        txt =  (TextView) findViewById(R.id.file_txt);
+        out_to_file = (Button) findViewById(R.id.out_to_file);
+        out_from_file = (Button) findViewById(R.id.out_from_file);
+        out_to_file.setOnClickListener(this);
+        out_from_file.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.out_to_file:
+                FileOutputStream outputStream = null;
+                PrintStream out= null;
+                try {
+                    //outputStream = super.openFileOutput(FILENAME, MODE_PRIVATE);
+                    outputStream = new FileOutputStream(file);
+                    out = new PrintStream(outputStream);
+                    out.print(edit.getText().toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    if (out==null)
+                        out.close();
+                }
+                break;
+            case R.id.out_from_file:
+                if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    File file = new File(Environment.getExternalStorageDirectory()
+                            + File.separator + DIR + File.separator + READ_FILENAME); // 定义要操作的文件
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs(); // 创建父文件夹路径
+                    }
+                    FileInputStream inputStream = null;
+                    Scanner scanner = null;
+                    try {
+                        //inputStream = super.openFileInput(FILENAME);
+                        inputStream = new FileInputStream(file);
+                        scanner = new Scanner(inputStream);
+                        while (scanner.hasNext()) {
+                            txt.append(scanner.next() + "\n");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    finally {
+                        if (!scanner.hasNext())
+                            scanner.close();
+                    }
+                }
+                else{
+                    Toast.makeText(FileOperateActivity.this,"no sd card",Toast.LENGTH_SHORT);
+                }
+                break;
+        }
+    }
+}

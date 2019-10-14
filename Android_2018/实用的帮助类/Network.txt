@@ -1,0 +1,169 @@
+/**
+     * 判断网络类型  wifi还是手机网络（2G、3G、4G）
+     * @param context
+     * @return
+     */
+    public static String getNetWorkType(Context context){
+        String netWorkState = "";
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isAvailable()){
+            if(networkInfo.getType() == ConnectivityManager.TYPE_WIFI){
+                //网络状态为wifi
+                netWorkState = "WIFI";
+                return netWorkState;
+            }
+            else if(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE){
+                //网络状态为手机
+                //判断手机网络是2g , 3g, 以及4g
+                //String subtypeName = networkInfo.getSubtypeName();
+                //System.out.println("网络类型: subtypeName:" + subtypeName);
+                //这里我根据的是电话管理器中的类型来进行判断,
+                //当然你也可以根据subtuypeName来判断,这个是从连接管理器中拿到的
+                int type = telephonyManager.getNetworkType();
+                System.out.println("网络类型: type:" + type);
+                switch (type){
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                    case TelephonyManager.NETWORK_TYPE_IDEN:
+                        netWorkState = "2G";
+                        return netWorkState;
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:
+                        netWorkState = "3G";
+                        return netWorkState;
+                    case TelephonyManager.NETWORK_TYPE_LTE:
+                        netWorkState = "4G";
+                        return netWorkState;
+                    case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+                    default:
+                        netWorkState = "unknown network type";
+                        return netWorkState;
+
+                }
+
+            }
+        }
+        return "";
+    }
+
+    public static boolean isNet (Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo == null || !networkInfo.isAvailable())
+        {
+            return false;
+            //当前无可用网络
+        }
+        else
+        {
+            return true;
+            //当前有可用网络
+
+        }
+    }
+    /**
+     * 判断网络情况
+     * @param context 上下文
+     * @return false 表示没有网络 true 表示有网络
+     */
+    public static boolean isNetworkAvalible(Context context) {
+        // 获得网络状态管理器
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager == null) {
+            return false;
+        } else {
+            // 建立网络数组
+            NetworkInfo[] net_info = connectivityManager.getAllNetworkInfo();
+
+            if (net_info != null) {
+                for (int i = 0; i < net_info.length; i++) {
+                    // 判断获得的网络状态是否是处于连接状态
+                    if (net_info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断当前网络是否可用(通用方法)
+     * 耗时12秒
+     * @return
+     */
+    public static boolean isNetPingUsable(){
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("ping -c 3 www.baidu.com");
+            int ret = process.waitFor();
+            if (ret == 0){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static String getIPAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
+                try {
+                    //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+                return ipAddress;
+            }
+        } else {
+            //当前无网络连接,请在设置中打开网络
+        }
+        return null;
+    }
+
+
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip
+     * @return
+     */
+    public static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }

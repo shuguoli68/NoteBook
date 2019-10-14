@@ -1,0 +1,32 @@
+菜单资源文件：menu_pop.xml：
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/lpig" android:title="小猪" />
+    <item android:id="@+id/bpig" android:title="大猪" />
+</menu>
+在布局中添加一个按钮，然后添加点击事件：
+MainActivity.java:
+btn_show_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(MainActivity.this,btn_show_menu);
+                popup.getMenuInflater().inflate(R.menu.menu_pop, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.lpig:
+                                Toast.makeText(MainActivity.this,"你点了小猪~",
+                                Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.bpig:
+                                Toast.makeText(MainActivity.this,"你点了大猪~",
+                                Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });

@@ -1,0 +1,249 @@
+Android视频播放项目总结之 使用第三方Vitamio库，开发万能播放器(二)
+http://blog.csdn.net/zhaihaohao1/article/details/45417625
+
+
+
+http://blog.csdn.net/huaxun66/article/details/53367079
+
+http://www.cnblogs.com/cherrylv/p/6207222.html
+
+
+android使用Vitamio实现视频播放大小屏流畅切换 - luojing0208的博客 - CSDN博客
+http://blog.csdn.net/luojing0208/article/details/53537508
+
+
+右击app，open Module Setrings ，在Dependencies中点击绿色的加号选择Library，输入vitamio就可以找到，选择第一个com.charonchui.vitamio:vitamio点击ok，点击finish，就可以自动编译
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.example.loadvideo">
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#696969"
+                tools:context=".MainActivity"
+    >
+    
+
+    <io.vov.vitamio.widget.CenterLayout
+        android:id="@+id/dd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <io.vov.vitamio.widget.VideoView
+            android:id="@+id/vitamio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+    </io.vov.vitamio.widget.CenterLayout>
+
+    <TextView
+        android:id="@+id/buffer_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/dd"
+        android:layout_marginLeft="12dp"
+        android:textColor="#e6ff01" />
+
+    <TextView
+        android:id="@+id/net_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/dd"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/buffer_percent"
+        android:textColor="#04fa00" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@mipmap/ic_launcher"
+        android:onClick="changeLayout" />
+
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+package com.example.loadvideo;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import io.vov.vitamio.LibsChecker;
+import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.Vitamio;
+import io.vov.vitamio.widget.MediaController;
+import io.vov.vitamio.widget.VideoView;
+
+public class MainActivity extends Activity {
+    private VideoView videoView;
+    private TextView percentTv;
+    private TextView netSpeedTv;
+    private int mVideoLayout = 0;
+    private String url1 = "http://112.253.22.157/17/z/z/y/u/zzyuasjwufnqerzvyxgkuigrkcatxr/hc.yinyuetai.com/D046015255134077DDB3ACA0D7E68D45.flv";
+    private String url2 = "http://flashmedia.eastday.com/newdate/news/2016-11/shznews1125-19.mp4";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //检查vitamio框架是否可用
+        if (!LibsChecker.checkVitamioLibs(this)) {
+            return;
+        }
+        setContentView(R.layout.activity_main);
+        permissionTest();
+    }
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WAKE_LOCK}, 2);
+        } else {
+            initView();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initView();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    private void initView(){
+        //显示缓冲百分比的TextView
+        percentTv = (TextView) findViewById(R.id.buffer_percent);
+        //显示下载网速的TextView
+        netSpeedTv = (TextView) findViewById(R.id.net_speed);
+        //初始化加载库文件
+        if (Vitamio.isInitialized(this)) {
+            videoView = (VideoView) findViewById(R.id.vitamio);
+            videoView.setVideoURI(Uri.parse(url1));
+            videoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
+            MediaController controller = new MediaController(this);
+            videoView.setMediaController(controller);
+            videoView.setBufferSize(10240); //设置视频缓冲大小。默认1024KB，单位byte
+            videoView.requestFocus();
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    // optional need Vitamio 4.0
+                    mediaPlayer.setPlaybackSpeed(1.0f);
+                    //mediaPlayer.setLooping(true);
+                }
+            });
+
+            videoView.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                @Override
+                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    percentTv.setText("已缓冲：" + percent + "%");
+                }
+            });
+            videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                @Override
+                public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                    switch (what) {
+                        //开始缓冲
+                        case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                            percentTv.setVisibility(View.VISIBLE);
+                            netSpeedTv.setVisibility(View.VISIBLE);
+                            mp.pause();
+                            break;
+                        //缓冲结束
+                        case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                            percentTv.setVisibility(View.GONE);
+                            netSpeedTv.setVisibility(View.GONE);
+                            mp.start(); //缓冲结束再播放
+                            break;
+                        //正在缓冲
+                        case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
+                            netSpeedTv.setText("当前网速:" + extra + "kb/s");
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+    public void changeLayout(View view) {
+        mVideoLayout++;
+        if (mVideoLayout == 4) {
+            mVideoLayout = 0;
+        }
+        switch (mVideoLayout) {
+            case 0:
+                mVideoLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
+                view.setBackgroundResource(R.mipmap.red);
+                break;
+            case 1:
+                mVideoLayout = VideoView.VIDEO_LAYOUT_SCALE;
+                view.setBackgroundResource(R.mipmap.right);
+                break;
+            case 2:
+                mVideoLayout = VideoView.VIDEO_LAYOUT_STRETCH;
+                view.setBackgroundResource(R.mipmap.sea);
+                break;
+            case 3:
+                mVideoLayout = VideoView.VIDEO_LAYOUT_ZOOM;
+                view.setBackgroundResource(R.mipmap.xiala);
+
+                break;
+        }
+        videoView.setVideoLayout(mVideoLayout, 0);
+    }
+}

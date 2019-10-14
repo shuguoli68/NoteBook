@@ -1,0 +1,135 @@
+1. 游戏音效SoundPool
+游 戏中会根据不同的动作 , 产生各种音效 , 这些音效的特点是短暂(叫声,爆炸声可能持续不到一秒) , 重复(一个文件不断重复播放) , 并且同时播放(比如打怪时怪的叫声 , 和技能释放的声音需要同时播放) , 即时(技能用处之后声音马上随着玩家操作发出,不能有延迟).
+
+MediaPlayer会占用大量的系统资源 , 并且不能同时播放 , 并且无法实现即时音效 , 这里引入了一个新的类 -- SoundPool , 这个类完全满足上面提出的四点要求 , 可以无延时播放游戏中的短暂音效 .
+
+
+
+2. 相关API介绍
+(1) SoundPool
+构造方法 : SoundPool(int maxStreams, int streamType, int srcQuality) ;
+
+参数解析 : 
+
+maxStream : 该参数是定义最多能同时播放的多少音效 .
+
+streamType : 该参数定义音频类型 , 游戏中一般设置为AudioManager.STREAM_MUSIC .
+
+srcQuality : 该参数用来设置音频质量 , 这个参数目前没有作用 , 这里设置为 0;
+
+
+
+加载音频文件方法 : int load(Context context, int resId, int priority);
+
+参数解析 :
+
+context : 上下文对象;
+
+resId : 要加载的资源文件 , 即R.raw.music...
+
+priority : 优先级别 , 这里没有作用 , 设置为1.
+
+
+
+播放音效方法 : int play(int soundId, float leftVolume, float rightVolume, int priority, int loop, float rate);
+
+参数解析 :
+
+soundId : 这个id不是资源id , 指的是利用load方法加载资源文件返回的id值 , 这个要区别清楚.
+
+leftVolume : 左声道的音量 , 这个音量是一个 0 ~ 1的数 , 这个小数是当前音量/最大音量的结果;
+
+rightVolume : 右声道的音量 , 这个音量与左声道的音量是同一种音量;
+
+priority : 优先级参数 , 0为最低, 这里设置为1;
+
+loop : 音效循环的次数 , 0为不循环 , -1为永远循环;
+
+rate : 音效回放的速度 , 这个值是在0.5~2.0f之间 , 1f是正常速度;
+
+ 
+
+暂停音效播放方法 : pause(int streamId);
+
+参数streamId : 这个参数是play()方法执行完之后的返回值 , 这个返回值是正在播放的音效的一个标识 , 对正在播放的音效进行操作的时候 , 就需要这个标识来对其进行操作;
+
+通知音效播放方法 : stop(int streamId) , 这个参数与上面的pause()方法中的streamId参数是一个效果.
+
+ 
+
+(2)AudioManager
+获取方法 : AudioManager对象时系统服务, 可以通过调用上下文对象的getSystemService(Context.AUDIO_SERVICE)获取 , 注意获取到之后 , 需要将对象墙砖为AudioManager对象才可以使用.
+
+eg : AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+
+
+
+利用AudioManager获取当前音量的方法 : float currVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+利用AudioManager获取当前系统最大音量方法 : float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+
+
+使用这两个音量就可以计算出运行SoundPool音效的音量 , 当前音量 / 系统最大音量 , 结果就是soundPool.play()方法中需要传入的音量 ; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.概述
+
+Android中除了MediaPlayer播放音频之外还提供了SoundPool来播放音效，SoundPool使用音效池的概念来管理多个短促的音效，例如它可以开始就加载20个音效，以后在程序中按音效的ID进行播放。
+
+SoundPool主要用于播放一些较短的声音片段，与MediaPlayer相比，SoundPool的优势在于CPU资源占用量低和反应延迟小。另外，SoundPool还支持自行设置声音的品质、音量、 播放比率等参数。
+
+2.基本用法
+
+方法解读：
+
+SoundPool(int maxStreams, int streamType, int srcQuality)
+：构造器，其初始化一个SoundPool,
+
+maxStreams：指定了这个池的大小，也就是可以加载多少个音频
+streamType：指定声音的类型，简单来说，就是播放的时候，以哪种声音类型的音量播放。如：STREAM_ALARM ，是警报的声音类型。
+srcQuality：the sample-rate converter quality. Currently has no effect. Use 0 for the default.音频的质量，现在是没有效果，设置为0代表默认。
+int load(Context context, int resld, int priority)
+：加载音频，其提供不同的加载方式，可以从res/raw中加载，或者是从StringPath中加载，并指定优先级。优先级越高当然越优先播放。加载完成后返回一个资源ID，代表这个音频在SoundPool池中的ID，之后的播放play需要指定这个ID才能播放。
+
+int play(int soundID, float leftVolume, float rightVolume, int priority, int loop, float rate)
+:
+
+该方法的第一个参数指定播放哪个声音，就是上面load后返回的ID
+leftVolume 、
+rightVolume 指定左、右的音量：
+priority 指定播放声音的优先级，数值越大，优先级越高；
+loop 指定是否循环， 0 为不循环， -1 为循环；
+rate 指定播放的比率，数值可从 0.5 到 2 ， 1 为正常比率。
+onLoadComplete(SoundPool soundPool, int sampleId, int status)
+：加载完成的回调。虽然是加载一个很小的音频，但还是需要一点时间。所以，就有这个回调。sampleId就是音频的ID，用于标识哪个音频，status，加载完成的状态，0为成功。
+
+简单示例：
+
+//定义一个HashMap用于存放音频流的ID
+HashMap musicId = new HashMap();
+//初始化soundPool,设置可容纳12个音频流，音频流的质量为5，
+SoundPool soundPool = new SoundPool(12, 0,5);
+//通过load方法加载指定音频流，并将返回的音频ID放入musicId中
+musicId.put(1, soundPool.load(this, R.raw.awooga, 1));
+musicId.put(2, soundPool.load(this, R.raw.evillaugh, 1));
+musicId.put(3, soundPool.load(this, R.raw.jackinthebox, 1));
+//播放指定的音频流
+soundPool.play(musicId.get(1),1,1, 0, 0, 1);

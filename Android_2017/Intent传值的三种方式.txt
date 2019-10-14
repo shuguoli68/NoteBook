@@ -1,0 +1,140 @@
+一、一般方式传值跳转：startActivity()方法
+
+/* 在MainActivity中定义如下代码 */
+ 
+button1.setOnClickListener(new OnClickListener() {
+ 
+    @Override
+    public void onClick(View v) {
+            Intent _intent = new
+            Intent(MainActivity.this,TwoActivity.class);
+            //在Intent对象当中添加一个键值对
+            _intent.putExtra(key,value);                 
+            startActivity(_intent);
+    }
+});
+
+public class TwoActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.second_layout);
+        Button button2 = (Button) findViewById(R.id.button_2);
+        button2.setOnClickListener(new OnClickListener() {
+ 
+            @Override
+            public void onClick(View v) {
+                //取得从上一个Activity当中传递过来的Intent对象
+                Intent _intent = getIntent();
+                //从Intent当中根据key取得value
+                if (_intent != null) {
+                    String _value = _intent.getStringExtra(key);
+                    Toast.makeText(TwoActivity.this, _value, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
+
+二、回调数据式传值跳转：startActivityForResult()方法
+
+
+
+/* 在MainActivity中定义如下代码 */
+ 
+button1.setOnClickListener(new OnClickListener() {
+ 
+    @Override
+    public void onClick(View v) {
+             Intent _intent = new Intent(MainActivity.this,TwoActivity.class);
+             _intent.putExtra(key, value);
+             // 第二个参数是请求码，只要是一个唯一值
+             startActivityForResult(_intent, 1234);
+    }
+});
+ 
+ // 由于我们是使用startActivityForResult()方法来启动TwoActivity的
+ // 在TwoActivity被销毁之后会回调上一个活动的onActivityResult()方法
+ 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch (requestCode) {
+            case 1234:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = intent.getStringExtra(key1);
+                    Toast.makeText(MainActivity.this, returnedData, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+        }
+    }
+
+onActivityResult()方法带有三个参数，第一个参数requestCode，即我们在启动活动时传入的请求码。第二个参数resultCode，即我们在返回数据时传入结果码。第三个参数data，即携带着返回数据的Intent。由于在一个活动中有可能调用startActivityForResult()方法去启动很多不同的活动，每一个活动返回的数据都会回调到onActivityResult()这个方法中，因此我们首先要做的就是通过检查requestCode的值来判断数据来源。确定数据是从TwoActivity返回的之后，我们再通过resultCode的值来判断处理结果是否成功。最后从data中取值并打印出来，这样就完成了向上一个活动返回数据的工作。
+
+public class TwoActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.second_layout);
+        Button button2 = (Button) findViewById(R.id.button_2);
+ 
+        // 接收从MainaActivity传递的数据
+        Intent _intent = getIntent();
+        if (_intent != null) {
+            String _value = _intent.getStringExtra(key);
+            Toast.makeText(TwoActivity.this, _value, Toast.LENGTH_SHORT).show();
+        }
+ 
+        button2.setOnClickListener(new OnClickListener() {
+ 
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(key1,value　two activity);
+                // 专门用于向上一个活动返回数据
+                // 第一个参数用于向上一个活动返回结果码，一般只使用RESULT_OK或RESULT_CANCELED这两个值
+                // 第二个参数则是把带有数据的Intent传递回去
+                setResult(RESULT_OK, intent);
+                // 调用了finish()方法来销毁当前活动
+                finish();
+            }
+        });
+    }
+}
+
+三、启动活动的最佳写法
+
+在真正的项目开发中经常会有对接的问题出现。比如TwoActivity并不是由你开发的，但现在你负责的部分需要有启动TwoActivity这个功能，而你却不清楚启动这个活动需要传递哪些数据。这时无非就有两种办法，一个是你自己去阅读TwoActivity中的代码，二是询问负责编写TwoActivity的同事。你会不会觉得很麻烦呢？其实只需要换一种写法，就可以轻松解决掉上面的窘境。
+
+/* 在MainActivity中定义如下代码 */
+ 
+button1.setOnClickListener(new OnClickListener() {
+ 
+    @Override
+    public void onClick(View v) {
+            /*最佳数据传值方法：调用在下个activity自定义的方法*/
+            TwoActivity.actionStart(MainActivity.this, data1, data2);
+    }
+});
+
+
+
+public class TwoActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.second_layout);
+    }
+ 
+    /*最佳数据传值方法*/
+    public static void actionStart(Context context, String data1, String data2) {
+        Intent intent = new Intent(context, TwoActivity.class);
+        intent.putExtra(param1, data1);
+        intent.putExtra(param2, data2);
+        context.startActivity(intent);
+    }
+}
+实现后，所有TwoActivity中需要的数据都是通过actionStart()方法的参数传递过来的，然后把它们存储到Intent中，最后调用startActivity()方法启动TwoActivity。

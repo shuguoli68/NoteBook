@@ -1,0 +1,159 @@
+
+
+public class App extends Application{
+    private static App instance;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = App.this;
+    }
+
+    public static void toast(String str){
+        Toast.makeText(instance,str,Toast.LENGTH_SHORT).show();
+    }
+
+    public static void log(String str){
+        Log.i("log",str);
+    }
+}
+
+
+
+
+
+public class PhysicalReceiver extends BroadcastReceiver{
+
+    private static final String LOG_TAG = "HomeReceiver";
+    private static final String SYSTEM_DIALOG_REASON_KEY = "reason";
+    private static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+    private static final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+    private static final String SYSTEM_DIALOG_REASON_LOCK = "lock";
+    private static final String SYSTEM_DIALOG_REASON_ASSIST = "assist";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+            // android.intent.action.CLOSE_SYSTEM_DIALOGS
+            String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+
+            if (SYSTEM_DIALOG_REASON_HOME_KEY.equalsIgnoreCase(reason)) {
+                App.toast("短按Home键");
+                App.log("短按Home键");
+            }
+            else if (SYSTEM_DIALOG_REASON_RECENT_APPS.equalsIgnoreCase(reason)) {
+                // activity切换键
+                App.toast("long press home");
+                App.log("long press home");
+            }
+            else if (SYSTEM_DIALOG_REASON_LOCK.equalsIgnoreCase(reason)) {
+                // 锁屏
+                App.toast("lock");
+                App.log("lock");
+            }
+            else if (SYSTEM_DIALOG_REASON_ASSIST.equalsIgnoreCase(reason)) {
+                App.log("长按Home键");
+                App.toast("长按Home键");
+            }
+            else if (reason.equalsIgnoreCase("globalactions")){
+                App.log("长按电源键");
+                App.toast("长按电源键");
+            }
+            else if (reason.equalsIgnoreCase(Intent.ACTION_SCREEN_OFF)){
+                App.log("screen_off");
+                App.toast("screen_off");
+            }
+            else if (reason.equalsIgnoreCase(Intent.ACTION_SCREEN_ON)){
+                App.log("screen_on");
+                App.toast("screen_on");
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        findViewById(R.id.btn1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                registerHomeKeyReceiver(MainActivity.this);
+            }
+        });
+        findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                unregisterHomeKeyReceiver(MainActivity.this);
+            }
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        App.log("back");
+        App.toast("back");
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if (keyCode == event.KEYCODE_BACK) {
+            App.toast("后退键");
+            App.log("后退键");
+            return false;
+        } else if (keyCode == event.KEYCODE_VOLUME_UP) {
+            App.toast("声音+");
+            App.log("声音+");
+            return false;
+        } else if (keyCode == event.KEYCODE_VOLUME_DOWN) {
+            App.toast("声音-");
+            App.log("声音-");
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerHomeKeyReceiver(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterHomeKeyReceiver(this);
+    }
+
+    private static PhysicalReceiver mHomeKeyReceiver = null;
+
+    private static void registerHomeKeyReceiver(Context context) {
+        mHomeKeyReceiver = new PhysicalReceiver();
+        final IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        context.registerReceiver(mHomeKeyReceiver, homeFilter);
+        App.toast("注册");
+        App.log("注册");
+    }
+
+    private static void unregisterHomeKeyReceiver(Context context) {
+        if (null != mHomeKeyReceiver) {
+            context.unregisterReceiver(mHomeKeyReceiver);
+            App.toast("取消");
+            App.log("取消");
+        }
+    }
+}

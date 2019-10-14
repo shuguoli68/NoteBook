@@ -1,0 +1,26 @@
+
+//子线程转换到主线程
+public void downloadImage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = "http://att.bbs.duowan.com/forum/201210/20/210446opy9p5pghu015p9u.jpg";
+                    final Context context = getApplicationContext();
+                    FutureTarget<File> target = Glide.with(context)
+                            .load(url)
+                            .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                    final File imageFile = target.get();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, imageFile.getPath(), Toast.LENGTH_LONG).show();
+                            glideTxt.setText(imageFile.getPath());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }

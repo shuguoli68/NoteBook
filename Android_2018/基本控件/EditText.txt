@@ -1,0 +1,2 @@
+
+如果要让EditText控件在屏幕旋转后也像设备竖立时一样显示控件，可以在相应的XML文件中，在定义该EditText的标签中加入android:imeOptions="flagNoExtractUi"。

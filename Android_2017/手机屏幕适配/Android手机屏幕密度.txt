@@ -1,0 +1,100 @@
+ mdpi：hdpi：xhdpi：xxhdpi：xxxhdpi=2：3：4：6：8 的尺寸比例进行缩放。例如，一个图标的大小为48×48dp，表示在mdpi上，实际大小为48×48px，在hdpi像素密度上，实际尺寸为mdpi上的1.5倍，即72×72px，以此类推。
+
+
+
+
+在Oncreate中：
+
+DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int dpi = metrics.densityDpi;//屏幕密度dpi
+        int width = metrics.widthPixels;//宽度（PX)
+        int height = metrics.heightPixels;//高度（PX）
+        float density = metrics.density;//密度（1dp = ? px）
+        Log.i("LOG","手机屏幕密度dpi--"+dpi);
+        Log.i("LOG","手机屏幕宽度--"+width);
+        Log.i("LOG","手机屏幕高度--"+height);
+        Log.i("LOG","手机屏幕密度--"+density);
+        
+
+
+
+
+或者
+
+Log.i("getDisplayMetrics----",getDisplayMetrics(this));
+
+public static String getDisplayMetrics(Context cx) {
+        String str = "";
+        DisplayMetrics dm = new DisplayMetrics();
+        dm =cx.getApplicationContext().getResources().getDisplayMetrics();
+        int screenWidth =dm.widthPixels;
+        int screenHeight =dm.heightPixels;
+        float density =dm.density;
+        float xdpi =dm.xdpi;
+        float ydpi =dm.ydpi;
+        str += "The absolute width:"+ String.valueOf(screenWidth) + "pixels\n";
+        str += "The absoluteheightin:" + String.valueOf(screenHeight)
+                + "pixels\n";
+        str += "The logical densityof the display.:" + String.valueOf(density)
+                + "\n";
+        str += "X dimension :" +String.valueOf(xdpi) + "pixels per inch\n";
+        str += "Y dimension :" +String.valueOf(ydpi) + "pixels per inch\n";
+        main(new int[]{screenWidth,screenHeight});
+
+        return str;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+需要注意的是，在一个低密度的小屏手机上，仅靠上面的代码是不能获取正确的尺寸的。
+
+比如说，一部240x320像素的低密度手机，如果运行上述代码，获取到的屏幕尺寸是320x427。
+
+因此，研究之后发现，若没有设定多分辨率支持的话，
+
+Android系统会将240x320的低密度（120）尺寸转换为中等密度（160）对应的尺寸，
+
+这样的话就大大影响了程序的编码。
+
+所以，需要在工程的AndroidManifest.xml文件中，加入supports-screens节点,如下：
+
+android:smallScreens="true"
+android:normalScreens="true"
+android:largeScreens="true"
+android:resizeable="true"
+android:anyDensity="true"/>
+
+这样当前的Android程序就支持了多种分辨率，那么就可以得到正确的物理尺寸了。
+
+public static String getDisplayMetrics(Context cx) {
+String str = "";
+DisplayMetrics dm = newDisplayMetrics();
+dm =cx.getApplicationContext().getResources().getDisplayMetrics();
+int screenWidth =dm.widthPixels;
+int screenHeight =dm.heightPixels;
+float density =dm.density;
+float xdpi =dm.xdpi;
+float ydpi =dm.ydpi;
+str += "The absolute width:"+ String.valueOf(screenWidth) + "pixels\n";
+str += "The absoluteheightin:" + String.valueOf(screenHeight)
++ "pixels\n";
+str += "The logical densityof the display.:" + String.valueOf(density)
++ "\n";
+str += "X dimension :" +String.valueOf(xdpi) + "pixels per inch\n";
+str += "Y dimension :" +String.valueOf(ydpi) + "pixels per inch\n";
+return str;
+}

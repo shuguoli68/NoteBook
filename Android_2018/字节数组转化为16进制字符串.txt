@@ -1,0 +1,72 @@
+/**
+     * M进制转换为N进制
+     * @param str
+     * @return
+     */
+    public static String hexTo(String str,int hexM,int hexN)
+    {
+        //int hexM=10, hexN=16;
+        String result = Integer.toString(Integer.parseInt(str, hexM), hexN);
+        if (result.length()==1){
+            result = "0" +result;
+        }
+        Log.i("hecTo", result);
+        return result;
+    }
+
+    /**
+     * 10进制转换为16进制
+     * @param t
+     * @return
+     */
+    public static String toHexT(int t) {
+        String i = Integer.toHexString(t);
+        if (i.length() == 1) {
+            i = "000" + i;
+        }else if (i.length() == 2){
+            i = "00"+i;
+        }else if (i.length() == 3){
+            i = "0"+i;
+        }
+        Log.i("hecTo", ","+i);
+        return i;
+    }
+
+    /**
+     * 将byte[]转换为16进制字符串
+     * @param bytes
+     * @return
+     */
+    public static String bytesToHexString(byte[] bytes) {
+        String result = "";
+        for (int i = 0; i < bytes.length; i++) {
+            String hexString = Integer.toHexString(bytes[i] & 0xFF);
+            if (hexString.length() == 1) {
+                hexString = '0' + hexString;
+            }
+            result += hexString.toUpperCase();
+        }
+        return result;
+    }
+
+
+
+    /**
+     * 将16进制字符串转换为byte[]
+     *
+     * @param str
+     * @return
+     */
+    public static byte[] hexStringToBytes(String str) {
+        if(str == null || str.trim().equals("")) {
+            return new byte[0];
+        }
+
+        byte[] bytes = new byte[str.length() / 2];
+        for(int i = 0; i < str.length() / 2; i++) {
+            String subStr = str.substring(i * 2, i * 2 + 2);
+            bytes[i] = (byte) Integer.parseInt(subStr, 16);
+        }
+
+        return bytes;
+    }

@@ -1,0 +1,245 @@
+下面主要介绍BitMap的用法:
+
+1.从资源文件中获取
+
+1 Bitmap rawBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.img1);  
+
+2.从SD卡中得到图片
+
+复制代码
+1 (方法1) 
+2 String SDCarePath=Environment.getExternalStorageDirectory().toString(); 
+3 String filePath=SDCarePath+"/"+"haha.jpg"; 
+4 Bitmap rawBitmap1 = BitmapFactory.decodeFile(filePath, null); 
+5 (方法2)
+6 InputStream inputStream=getBitmapInputStreamFromSDCard("haha.jpg"); 
+7 Bitmap rawBitmap2 = BitmapFactory.decodeStream(inputStream); 
+复制代码
+3.设置图片的圆角，返回设置后的BitMap
+
+复制代码
+ 1     public Bitmap toRoundCorner(Bitmap bitmap, int pixels) {
+ 2         Bitmap roundCornerBitmap = Bitmap.createBitmap(bitmap.getWidth(),
+ 3                 bitmap.getHeight(), Config.ARGB_8888);
+ 4         Canvas canvas = new Canvas(roundCornerBitmap);
+ 5         int color = 0xff424242;// int color = 0xff424242;
+ 6         Paint paint = new Paint();
+ 7         paint.setColor(color);
+ 8         // 防止锯齿
+ 9         paint.setAntiAlias(true);
+10         Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+11         RectF rectF = new RectF(rect);
+12         float roundPx = pixels;
+13         // 相当于清屏
+14         canvas.drawARGB(0, 0, 0, 0);
+15         // 先画了一个带圆角的矩形
+16         canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+17         paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+18         // 再把原来的bitmap画到现在的bitmap！！！注意这个理解
+19         canvas.drawBitmap(bitmap, rect, rect, paint);
+20         return roundCornerBitmap;
+21     }
+复制代码
+4.将图片高宽和的大小kB压缩
+
+复制代码
+ 1         //得到图片原始的高宽
+ 2         int rawHeight = rawBitmap.getHeight();
+ 3         int rawWidth = rawBitmap.getWidth();
+ 4         // 设定图片新的高宽
+ 5         int newHeight = 500;
+ 6         int newWidth = 500;
+ 7         // 计算缩放因子
+ 8         float heightScale = ((float) newHeight) / rawHeight;
+ 9         float widthScale = ((float) newWidth) / rawWidth;
+10         // 新建立矩阵
+11         Matrix matrix = new Matrix();
+12         matrix.postScale(heightScale, widthScale);
+13         // 设置图片的旋转角度
+14         // matrix.postRotate(-30);
+15         // 设置图片的倾斜
+16         // matrix.postSkew(0.1f, 0.1f);
+17         // 将图片大小压缩
+18         // 压缩后图片的宽和高以及kB大小均会变化
+19         Bitmap newBitmap = Bitmap.createBitmap(rawBitmap, 0, 0, rawWidth,
+20                 rawWidth, matrix, true);
+复制代码
+5.将Bitmap转换为Drawable   Drawable转Bitmap
+
+1         Drawable newBitmapDrawable = new BitmapDrawable(Bitmap);
+2         //如果要获取BitMapDrawable中所包装的BitMap对象，可以用getBitMap()方法；
+3         Bitmap  bitmap = newBitmapDrawable.getBitmap();
+6.由于前面创建的Bitmap所占用的内存还没有回收，而导致引发OutOfMemory错误，所以用下面方法判断是否回收。
+
+1      if(!bitmap.isRecycled())
+2     {
+3        bitmap.recycle()
+4     }      
+
+
+
+
+
+
+
+图片保存文件：
+
+复制代码
+    public static void writeBitmapToFile(String filePath, Bitmap b, int quality) {
+        try {
+            File desFile = new File(filePath);
+            FileOutputStream fos = new FileOutputStream(desFile);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            b.compress(Bitmap.CompressFormat.JPEG, quality, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+复制代码
+图片压缩：
+
+复制代码
+    private static Bitmap compressImage(Bitmap image) {
+        if (image == null) {
+            return null;
+        }
+        ByteArrayOutputStream baos = null;
+        try {
+            baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] bytes = baos.toByteArray();
+            ByteArrayInputStream isBm = new ByteArrayInputStream(bytes);
+            Bitmap bitmap = BitmapFactory.decodeStream(isBm);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+        } finally {
+            try {
+                if (baos != null) {
+                    baos.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        return null;
+    }
+复制代码
+图片缩放：
+
+复制代码
+    /**
+     * 根据scale生成一张图片
+     *
+     * @param bitmap
+     * @param scale  等比缩放值
+     * @return
+     */
+    public static Bitmap bitmapScale(Bitmap bitmap, float scale) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale); // 长和宽放大缩小的比例
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizeBmp;
+    }
+复制代码
+获取图片旋转角度：
+
+复制代码
+ /**
+     * 读取照片exif信息中的旋转角度
+     *
+     * @param path 照片路径
+     * @return角度
+     */
+    private static int readPictureDegree(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return 0;
+        }
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception e) {
+        }
+        return degree;
+    }
+复制代码
+图片旋转角度：
+
+复制代码
+    private static Bitmap rotateBitmap(Bitmap b, float rotateDegree) {
+        if (b == null) {
+            return null;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotateDegree);
+        Bitmap rotaBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, true);
+        return rotaBitmap;
+    }
+复制代码
+图片转二进制：
+
+    public byte[] bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+Bitmap转Drawable
+
+  public static Drawable bitmapToDrawable(Resources resources, Bitmap bm) {
+        Drawable drawable = new BitmapDrawable(resources, bm);
+        return drawable;
+    }
+Drawable转Bitmap
+
+复制代码
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+复制代码
+Drawable、Bitmap占用内存探讨
+
+之前一直使用过Afinal 和Xutils 熟悉这两框架的都知道，两者出自同一人，Xutils是Afina的升级版，AFinal中的图片内存缓存使用的是Bitmap 而后来为何Xutils将内存缓存的对象改成了Drawable了呢?我们一探究竟
+
+写个测试程序：
+
+复制代码
+        List<Bitmap> bitmaps = new ArrayList<>();
+        start = System.currentTimeMillis();
+        for (int i = 0; i < testMaxCount; i++) {
+            Bitmap bitmap = BitmapUtils.readBitMap(this, R.mipmap.ic_app_center_banner);
+            bitmaps.add(bitmap);
+            Log.e(TAG, "BitmapFactory Bitmap--num-->" + i);
+        }
+        end = System.currentTimeMillis();
+        Log.e(TAG, "BitmapFactory Bitmap--time-->" + (end - start));
+
+        List<Drawable> drawables = new ArrayList<>();
+        
+        start = System.currentTimeMillis();
+        for (int i = 0; i < testMaxCount; i++) {
+            Drawable drawable = getResources().getDrawable(R.mipmap.ic_app_center_banner);
+            drawables.add(drawable);
+            Log.e(TAG, "BitmapFactory Drawable--num-->" + i);
+        }
+        end = System.currentTimeMillis();
+        Log.e(TAG, "BitmapFactory Drawable--time-->" + (end - start));
+复制代码
+测试数据1000 同一张图片
+
+ Bitmap 直接70条数据的时候挂掉

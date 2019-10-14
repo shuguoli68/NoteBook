@@ -1,0 +1,114 @@
+
+--------------------- 
+作者：弱水三千Y 
+来源：CSDN 
+原文：https://blog.csdn.net/lixiang_Y/article/details/54946199?utm_source=copy 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+
+
+
+1.关于文件夹的创建
+
+//新建一个File，传入文件夹目录
+File file = new File("/mnt/sdcard/work/mywork");
+//判断文件夹是否存在，如果不存在就创建，否则不创建
+if (!file.exists()) {
+    //通过file的mkdirs()方法创建目录中包含却不存在的文件夹
+    file.mkdirs();
+}
+
+
+
+
+2.mkdir()与mkdirs()的区别：
+
+mkdir（）是只能创建一级目录（文件夹），如果这一级目录的上面还有没有创建的目录（文件夹），那么程序会报错。
+
+
+mkdirs（）是可以创建多级目录（文件夹），它是把所有没有的目录（文件夹）都给创建出来。
+所以开发中常用mkdirs（）来创建目录（文件夹）。
+
+
+
+
+
+3.关于手机内置SD卡下创建file文件（不创建文件夹，使用已有文件夹目录）
+
+//新建一个File类型的成员变量，传入文件名路径。
+mFile = new File("/mnt/sdcard/zhiyuan.txt");
+        //判断文件是否存在，存在就删除
+        if (mFile.exists()){
+            mFile.delete();
+        }
+        try {
+              //创建文件
+              mFile.createNewFile();
+              //给一个吐司提示，显示创建成功
+              Toast.makeText(getApplicationContext(), "文件创建成功", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+        }
+ 
+
+
+
+4.关于外置SD卡下创建file文件（不创建文件夹，使用已有文件夹目录）
+
+//先通过Environment（环境）的getExternalStorageState()方法来获取手机环境下的外置存储卡的状态，判断是否为挂载状态。
+if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+    //如果为挂载状态，那么就通过Environment的getExternalStorageDirectory()方法来获取
+      外置存储卡的目录，然后加上我们自己要创建的文件名（记住文件名前要加一个"/"），这样
+      就生成了我们要创建的文件路径。
+    String path = Environment.getExternalStorageDirectory() + "/zhiyuan.txt";
+    //新建一个File对象，把我们要建的文件路径传进去。
+    File file = new File(path);
+    //方便查看，在控制台打印一下我们的存储卡目录。
+    Log.d("=====TAG=====", "onClick: "+Environment.getExternalStorageDirectory());
+    //判断文件是否存在，如果存在就删除。
+    if (file.exists()) {
+        file.delete();
+    }
+    try {
+        //通过文件的对象file的createNewFile()方法来创建文件
+        file.createNewFile();
+        //新建一个FileOutputStream()，把文件的路径传进去
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        //给定一个字符串，将其转换成字节数组
+        byte[] bytes = "你好啊，今天天气不错！".getBytes();
+        //通过输出流对象写入字节数组
+        fileOutputStream.write(bytes);
+        //关流
+        fileOutputStream.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+ 
+}
+
+
+
+5.隐私文件的创建（手机没有ROOT是看不到的）
+
+try {
+   //通过类名.this的openFileOutput()方法得到输出流对象，传入两个参数，一个是String类型的文件名，
+   另一个是模式，用MODE_PRIVATE，意为私有模式（会覆盖原文件）。
+    FileOutputStream fileOutputStream = Main2Activity.this.openFileOutput("android.txt", MODE_PRIVATE);
+   //给定一个字符串，将其转换成字节数组
+    byte[] bytes = "今天天气不错，我们去爬山吧！".getBytes();
+   //通过输出流对象写入字节数组
+    fileOutputStream.write(bytes);
+   //给一个吐司提示，显示创建成功
+    Toast.makeText(getApplicationContext(), "创建成功！", Toast.LENGTH_SHORT).show();
+   //关流
+    fileOutputStream.close();
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+
+
+
+注：以上内容都需要在清单文件中加上下面的权限：
+
+<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

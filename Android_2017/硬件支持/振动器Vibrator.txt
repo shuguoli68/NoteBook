@@ -1,0 +1,207 @@
+package com.example.testvibrator;
+
+import android.app.Activity;
+import android.app.Service;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends Activity implements OnClickListener,SensorEventListener{
+
+	private Button btn_hasVibrator;
+    private Button btn_short;
+    private Button btn_long;
+    private Button btn_rhythm;
+    private Button btn_cancle;
+    private Vibrator myVibrator;
+    private Context mContext;
+    
+    
+    private SensorManager sManager;
+    private Sensor mSensorAccelerometer;
+    private TextView tv_step;
+    private Button btn_start;
+    private int step = 0;   //步数
+    private double oriValue = 0;  //原始值
+    private double lstValue = 0;  //上次的值
+    private double curValue = 0;  //当前值
+    private boolean motiveState = true;   //是否处于运动状态
+    private boolean processState = false;   //标记当前是否已经在计步
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //获得系统的Vibrator实例:
+        myVibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+        mContext = MainActivity.this;
+        
+        sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorAccelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_UI);
+        tv_step = (TextView) findViewById(R.id.tv_step);
+        btn_start = (Button) findViewById(R.id.btn_start);
+        btn_start.setOnClickListener(this);
+        
+        bindViews();
+    }
+
+    private void bindViews() {
+        btn_hasVibrator = (Button) findViewById(R.id.btn_hasVibrator);
+        btn_short = (Button) findViewById(R.id.btn_short);
+        btn_long = (Button) findViewById(R.id.btn_long);
+        btn_rhythm = (Button) findViewById(R.id.btn_rhythm);
+        btn_cancle = (Button) findViewById(R.id.btn_cancle);
+
+        btn_hasVibrator.setOnClickListener(this);
+        btn_short.setOnClickListener(this);
+        btn_long.setOnClickListener(this);
+        btn_rhythm.setOnClickListener(this);
+        btn_cancle.setOnClickListener(this);
+    }
+
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_hasVibrator:
+                Toast.makeText(mContext, myVibrator.hasVibrator() ? "当前设备有振动器" : "当前设备无振动器",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_short:
+                myVibrator.cancel();
+                myVibrator.vibrate(new long[]{100, 200, 100, 200}, 0);
+                Toast.makeText(mContext, "短振动", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_long:
+                myVibrator.cancel();
+                myVibrator.vibrate(new long[]{100, 100, 100, 1000}, 0);
+                Toast.makeText(mContext, "长振动", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_rhythm:
+                myVibrator.cancel();
+                myVibrator.vibrate(new long[]{500, 100, 500, 100, 500, 100}, 0);
+                Toast.makeText(mContext, "节奏振动", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_cancle:
+                myVibrator.cancel();
+                Toast.makeText(mContext, "取消振动", Toast.LENGTH_SHORT).show();
+            case R.id.btn_start:
+            	step = 0;
+                tv_step.setText("0");
+                if (processState == true) {
+                    btn_start.setText("开始");
+                    processState = false;
+                } else {
+                    btn_start.setText("停止");
+                    processState = true;
+                }
+                break;
+                default:
+                	break;
+        }
+    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, 1, 0, "判断是否有振动器");
+		menu.add(Menu.NONE, 2, 0, "短振动");
+		menu.add(Menu.NONE, 3, 0, "长振动");
+		menu.add(Menu.NONE, 4, 0, "节奏振动");
+		menu.add(Menu.NONE, 5, 0, "取消振动");
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+		case 1:
+			Toast.makeText(mContext, myVibrator.hasVibrator() ? "当前设备有振动器" : "当前设备无振动器",
+                    Toast.LENGTH_SHORT).show();
+			break;
+		case 2:
+			myVibrator.cancel();
+            myVibrator.vibrate(new long[]{100, 200, 100, 200}, 0);
+            Toast.makeText(mContext, "短振动", Toast.LENGTH_SHORT).show();
+			break;
+		case 3:
+			myVibrator.cancel();
+            myVibrator.vibrate(new long[]{100, 100, 100, 1000}, 0);
+            Toast.makeText(mContext, "长振动", Toast.LENGTH_SHORT).show();
+			break;
+		case 4:
+			myVibrator.cancel();
+            myVibrator.vibrate(new long[]{500, 100, 500, 100, 500, 100}, 0);
+            Toast.makeText(mContext, "节奏振动", Toast.LENGTH_SHORT).show();
+			break;
+		case 5:
+			myVibrator.cancel();
+            Toast.makeText(mContext, "取消振动", Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	//计步器
+	@Override
+    public void onSensorChanged(SensorEvent event) {
+        double range = 1;   //设定一个精度范围
+        float[] value = event.values;
+        curValue = magnitude(value[0], value[1], value[2]);   //计算当前的模
+        //向上加速的状态
+        if (motiveState == true) {
+            if (curValue >= lstValue) lstValue = curValue;
+            else {
+                //检测到一次峰值
+                if (Math.abs(curValue - lstValue) > range) {
+                    oriValue = curValue;
+                    motiveState = false;
+                }
+            }
+        }
+        //向下加速的状态
+        if (motiveState == false) {
+            if (curValue <= lstValue) lstValue = curValue;
+            else {
+                if (Math.abs(curValue - lstValue) > range) {
+                    //检测到一次峰值
+                    oriValue = curValue;
+                    if (processState == true) {
+                        step++;  //步数 + 1
+                        if (processState == true) {
+                            tv_step.setText(step + "");    //读数更新
+                        }
+                    }
+                    motiveState = true;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    //向量求模
+    public double magnitude(float x, float y, float z) {
+        double magnitude = 0;
+        magnitude = Math.sqrt(x * x + y * y + z * z);
+        return magnitude;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sManager.unregisterListener(this);
+    }
+}

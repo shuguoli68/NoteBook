@@ -1,0 +1,56 @@
+ publicvoid save(View view) {
+
+              if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+
+                     //创建一个文件夹对象，赋值为外部存储器的目录
+
+                     FilesdcardDir = Environment.getExternalStorageDirectory();
+
+                     //得到一个路径，内容是sdcard的文件夹路径和名字
+
+                        Stringpath=sdcardDir.getPath()+"/QRCode";
+
+                    File path1 = new File(path);
+
+                   if (!path1.exists()) {
+
+                    //若不存在，创建目录，可以在应用启动的时候创建
+
+                    path1.mkdirs();
+
+                  }
+
+                 System.out.println(path);
+
+                     Filefile = new File(path+"/qrcode" + System.currentTimeMillis() +".png");
+
+ 
+
+                     iv.setDrawingCacheEnabled(true);
+
+                     Bitmapbm = iv.getDrawingCache();
+
+                     BufferedOutputStreambos;
+
+                     try{
+
+                            bos= new BufferedOutputStream(new FileOutputStream(file));
+
+                            bm.compress(Bitmap.CompressFormat.JPEG,80, bos);
+
+                            bos.flush();
+
+                            bos.close();
+
+                     }catch (Exception e) {
+
+                            e.printStackTrace();
+
+                     }
+
+              }
+
+ 
+
+       }
+

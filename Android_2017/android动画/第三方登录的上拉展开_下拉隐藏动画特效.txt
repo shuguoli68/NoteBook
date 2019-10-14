@@ -1,0 +1,294 @@
+
+
+activity_main.xml :
+
+<?xml version="1.0" encoding="utf-8"?>  
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    tools:context="com.example.propertyanimation.MainActivity">  
+  
+    <RelativeLayout  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"  
+        android:layout_alignParentBottom="true"  
+        android:orientation="vertical">  
+  
+        <RelativeLayout  
+            android:id="@+id/re_ControlshowhideView"  
+            android:layout_width="match_parent"  
+            android:layout_height="wrap_content"  
+            android:layout_marginBottom="10dp"  
+            android:orientation="vertical">  
+  
+            <RelativeLayout  
+                android:id="@+id/re_showarrowhead"  
+                android:layout_width="match_parent"  
+                android:layout_height="wrap_content">  
+  
+                <View  
+                    android:layout_width="match_parent"  
+                    android:layout_height="0.1dp"  
+                    android:layout_marginLeft="12dp"  
+                    android:layout_marginRight="12dp"  
+                    android:layout_marginTop="17dip"  
+                    android:background="#dadada" />  
+  
+                <ImageView  
+                    android:id="@+id/arrowhead"  
+                    android:layout_width="30dip"  
+                    android:layout_height="30dip"  
+                    android:layout_centerInParent="true"  
+                    android:src="@drawable/jiantoubelow" />  
+  
+            </RelativeLayout>  
+  
+            <TextView  
+                android:layout_width="match_parent"  
+                android:layout_height="wrap_content"  
+                android:layout_below="@id/re_showarrowhead"  
+                android:layout_marginTop="10dp"  
+                android:gravity="center"  
+                android:text="-其他登录方式-" />  
+  
+        </RelativeLayout>  
+  
+        <RelativeLayout  
+            android:id="@+id/showhideView"  
+            android:layout_width="match_parent"  
+            android:layout_height="wrap_content"  
+            android:layout_below="@id/re_ControlshowhideView"  
+            android:gravity="center"  
+            android:visibility="gone"  
+            android:orientation="vertical">  
+  
+            <Button  
+                android:id="@+id/btn_qq"  
+                android:layout_width="40dp"  
+                android:layout_height="57.5dp"  
+                android:layout_gravity="center_vertical"  
+                android:layout_marginLeft="10dp"  
+                android:background="@drawable/qqlogin"  
+                android:clickable="true"  
+                android:gravity="center"  
+                android:paddingLeft="10dp"  
+                android:textSize="16sp" />  
+  
+            <Button  
+                android:id="@+id/btn_weixin"  
+                android:layout_width="40dp"  
+                android:layout_height="57.5dp"  
+                android:layout_gravity="center_vertical"  
+                android:layout_marginLeft="10dp"  
+                android:layout_toRightOf="@+id/btn_qq"  
+                android:background="@drawable/weixinlogin"  
+                android:clickable="true"  
+                android:gravity="center"  
+                android:paddingLeft="10dp"  
+                android:textSize="16sp" />  
+        </RelativeLayout>  
+  
+    </RelativeLayout>  
+  
+  
+  
+</RelativeLayout>  
+
+
+
+
+
+
+
+
+package com.example.propertyanimation;  
+  
+  
+import android.animation.Animator;  
+import android.animation.AnimatorListenerAdapter;  
+import android.animation.ValueAnimator;  
+import android.content.Context;  
+import android.view.View;  
+import android.view.ViewGroup;  
+import android.view.animation.Animation;  
+import android.view.animation.RotateAnimation;  
+  
+public class PropertyAnimation {  
+  
+    private float mDensity;  
+  
+    private int mHiddenViewMeasuredHeight; //点击箭头的时候，需要隐藏的控件最终到达一个高度，  
+                                           // 这个就是我们要控件到达的目标值。  
+  
+    public PropertyAnimation(Context context){  
+        //点击箭头的时候，需要隐藏的控件最终到达一个高度，这个就是我们的目标值，只需要通过布局中的dp转换成像素就行了。  
+        mDensity = context.getResources().getDisplayMetrics().density;  
+        mHiddenViewMeasuredHeight = (int) (mDensity * 57.5 + 0.5);  
+    }  
+  
+    public void animateOpen(View v) {  
+        v.setVisibility(View.VISIBLE);  
+        //createDropAnimator()自定义的一个动画效果函数  
+        ValueAnimator animator = createDropAnimator(v, 0,  
+                mHiddenViewMeasuredHeight);  
+        animator.start();  
+    }  
+  
+    /** 
+     * 给控制动画的箭头设置动画. 
+     * 给箭头设置向上的动画 
+     * @param view   控件 
+     */  
+    public void animationIvOpen(View view) {  
+        //旋转动画，参数说明：new RotateAnimation(旋转的开始角度,旋转的结束角度,X轴的伸缩模式:可以取值为ABSOLUTE、  
+        // RELATIVE_TO_SELF、RELATIVE_TO_PARENT,X坐标的伸缩值,Y轴的伸缩模式:可以取值为ABSOLUTE、RELATIVE_TO_SELF、  
+        // RELATIVE_TO_PARENT,Y坐标的伸缩值);  
+        RotateAnimation animation = new RotateAnimation(0, 180,  
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,  
+                0.5f);  
+        //动画执行完后是否停留在执行完的状态  
+        animation.setFillAfter(true);  
+        //持续时间  
+        animation.setDuration(100);  
+        //为箭头图片绑定动画  
+        view.startAnimation(animation);  
+    }  
+  
+    /** 
+     * 给控制动画的箭头设置动画. 
+     * 给箭头设置向下的动画 
+     * @param view 
+     */  
+    public void animationIvClose(View view) {  
+        RotateAnimation animation = new RotateAnimation(180, 0,  
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,  
+                0.5f);  
+        animation.setFillAfter(true);  
+        animation.setDuration(100);  
+        view.startAnimation(animation);  
+    }  
+  
+    /** 
+     * 设置隐藏动画 
+     * 
+     * @param view //动画作用的控件 
+     */  
+    public void animateClose(final View view) {  
+        //获得控件的高度  
+        int origHeight = view.getHeight();  
+        //createDropAnimator()自定义的一个动画效果函数  
+        ValueAnimator animator = createDropAnimator(view, origHeight, 0);  
+        //如果你不想实现Animator.AnimatorListener中的所有接口，你可以通过继承AnimatorListenerAdapter。  
+        //AnimatorListenerAdapter类为所有的方法提供了一个空实现，所以你可以根据需要实现你需要的，覆盖AnimatorListenerAdapter原来的方法  
+        animator.addListener(new AnimatorListenerAdapter() {  
+            @Override  
+            public void onAnimationEnd(Animator animation) {    //动画结束时调用  
+                view.setVisibility(View.GONE);  
+            }  
+        });  
+        animator.start();  
+    }  
+  
+    /** 
+     * 自定义的动画效果 
+     * 
+     * @param v     //动画作用的控件 
+     * @param start //动画的开始值 
+     * @param end   //动画的结束值 
+     * @return 
+     */  
+    private ValueAnimator createDropAnimator(final View v, int start, int end) {  
+        //这里我们利用ValueAnimator.ofInt创建了一个值从start到end的动画  
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);  
+        //为ValueAnimator注册AnimatorUpdateListener监听器，在该监听器中可以  
+        // 监听ValueAnimator计算出来的值的改变，并将这些值应用到指定对象  
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {  
+  
+            @Override  
+            public void onAnimationUpdate(ValueAnimator arg0) {  
+                //获取动画当前值  
+                int value = (int) arg0.getAnimatedValue();  
+                //得到控件的属性集合  
+                ViewGroup.LayoutParams layoutParams = v.getLayoutParams();  
+                //设置控件的高属性  
+                layoutParams.height = value;  
+                //把属性绑定到需要动画的控件上  
+                v.setLayoutParams(layoutParams);  
+            }  
+        });  
+        return animator;  
+    }  
+  
+}  
+
+
+
+
+
+
+
+package com.example.propertyanimation;  
+  
+import android.app.Activity;  
+import android.os.Bundle;  
+import android.view.View;  
+import android.widget.Button;  
+import android.widget.ImageView;  
+import android.widget.RelativeLayout;  
+import android.widget.Toast;  
+  
+public class MainActivity extends Activity implements View.OnClickListener{  
+  
+    private ImageView mIv_arrowhead;  
+  
+    private RelativeLayout mHiddenLayout;  
+  
+    private PropertyAnimation propertyAnimation;  
+  
+    private Button btn_qq;    //QQ登录按钮  
+  
+    private Button btn_weixin;    //微信登录按钮  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        //自己定义的属性动画类  
+        propertyAnimation=new PropertyAnimation(this);  
+        //隐藏/显示第三方登录的箭头图标  
+        mIv_arrowhead = (ImageView) this.findViewById(R.id.arrowhead);  
+        mIv_arrowhead.setOnClickListener(this);  
+        //隐藏/显示的布局  
+        mHiddenLayout = (RelativeLayout) this.findViewById(R.id.showhideView);  
+        //QQ登录  
+        btn_qq = (Button) this.findViewById(R.id.btn_qq);  
+        btn_qq.setOnClickListener(this);  
+        //微信登录  
+        btn_weixin=(Button)this.findViewById(R.id.btn_weixin);  
+        btn_weixin.setOnClickListener(this);  
+  
+    }  
+  
+    @Override  
+    public void onClick(View v) {  
+        switch (v.getId()) {  
+            case R.id.arrowhead:  
+                if (mHiddenLayout.getVisibility() == View.GONE) {  
+                    propertyAnimation.animateOpen(mHiddenLayout);  
+                    propertyAnimation.animationIvOpen(mIv_arrowhead);  
+                } else {  
+                    propertyAnimation.animateClose(mHiddenLayout);  
+                    propertyAnimation.animationIvClose(mIv_arrowhead);  
+                }  
+                break;  
+            case R.id.btn_qq:      //QQ授权登录  
+                Toast.makeText(this,"QQ登录",Toast.LENGTH_SHORT).show();  
+                break;  
+            case R.id.btn_weixin:  //微信授权登录  
+                Toast.makeText(this,"微信登录",Toast.LENGTH_SHORT).show();  
+                break;  
+        }  
+  
+    }  
+}  

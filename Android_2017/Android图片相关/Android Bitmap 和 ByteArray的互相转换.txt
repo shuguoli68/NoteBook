@@ -1,0 +1,33 @@
+Android Bitmap 和 ByteArray的互相转换
+
+严正声明：
+作者：psklf
+出处： http://www.cnblogs.com/psklf/p/5889978.html
+欢迎转载，但未经作者同意，必须保留此段声明；必须在文章中给出原文连接；否则必究法律责任!
+Android Bitmap 和 ByteArray的互相转换
+
+移动平台图像处理，需要将图像传给native处理，如何传递？将bitmap转换成一个 byte[] 方便传递也方便cpp代码直接处理图像内容。
+
+Bitmap -> byte[]
+
+创建一个ByteBuffer用于接收数据。首先需要爲buffer开辟内存空间，内存空间的大小就是图片的大小。将bitmap的数据写入buffer，然后调用buffer的 array() 方法得到array.
+
+        int bytes = bmp.getByteCount();
+
+        ByteBuffer buf = ByteBuffer.allocate(bytes);
+        bmp.copyPixelsToBuffer(buf);
+
+        byte[] byteArray = buf.array();
+byte[] -> Bitmap
+
+这个步骤让我花费了更多时间。之前看到有人說可以使用
+
+Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length); 
+来根据ByteArray直接得到bitmap，但是我使用中出现问题。想想其实很简单，就这么一行语句，一个bitmap对象必须的参数都没有设置，怎么就可能得到正常的bitmap对象？这个方法生效的前提是，提供的bitmapdata是包含了图像参数的，而非简单的RGBA数据。而我现在得到的仅仅是RGBA数据，所以需要先得到一个bitmap实例，再往里填数据。需要将得到的array再变回buffer，使用buffer的 wrap 方法,包装数组得到buffer.
+
+            // use Bitmap.Config.ARGB_8888 instead of type is OK
+            Bitmap stitchBmp = Bitmap.createBitmap(width, height, type);
+
+            stitchBmp.copyPixelsFromBuffer(ByteBuffer.wrap(byteArray));
+
+            imageView.setImageBitmap(stitchBmp);

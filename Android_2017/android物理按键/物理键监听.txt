@@ -1,0 +1,55 @@
+Android设备可用物理按键及其点击事件
+物理按键	KEYEvent	说明
+电源键	KEYCODE_POWER	启动或唤醒设备
+后退键	KEYCODE_BACK	返回到上一个界面
+菜单键	KEYCODE_MENU	显示当前应用的菜单
+Home键	KEYCODE_HOME	返回到HOME界面
+查找键	KEYCODE_SEARCH	在当前应用中进行搜索
+相机键	KEYCODE_CAMERA	启动相机
+音量键 	KEYCODE_VOLUME_UP
+KEYCODE_VOLUME_DOWN	控制当前上下文音量
+方向键	KEYCODE_DPAD_CENTER
+KEYCODE_DPAD_UP
+KEYCODE_DPAD_DOWN
+KEYCODE_DPAD_LEFT
+KEYCODE_DPAD_RIGHT	设备的方向键
+键盘键	KEYCODE_0，.....9，KEYCODE_A,.......KEYCODE_Z	数字0~9 字母A~Z
+
+
+
+
+/**
+     * 重写onKeyDown方法可以拦截系统默认的处理
+     *
+     * return true  拦截事件，系统不再处理，如："声音+"，手机的音量并不会增加
+     *
+     * 不刷机只能劫持到音量+、音量-
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.i("key", "后退键");
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            Log.i("key", "声音+");
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            Log.i("key", "声音-");
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+            Log.i("key", "静音");
+            return true;
+        }else if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK) {
+            Log.i("key","耳机线按键");
+            return true;
+        }
+        else if (keyCode == KeyEvent.KEYCODE_HOME) {
+            Log.i("key", "Home");
+            return true;
+        }else if (keyCode == KeyEvent.KEYCODE_POWER){
+            Log.i("key", "电源键");
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }

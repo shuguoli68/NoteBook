@@ -1,0 +1,37 @@
+
+//检测是否有这个应用，packageName为目标App的包名
+
+public boolean hasApplication(Context context, String packageName){
+        PackageManager packageManager = context.getPackageManager();
+
+        //获取系统中安装的应用包的信息
+        List<PackageInfo> listPackageInfo = packageManager.getInstalledPackages(0);
+        for (int i = 0; i < listPackageInfo.size(); i++) {
+            Log.i("package",listPackageInfo.get(i).packageName);
+            if(listPackageInfo.get(i).packageName.equalsIgnoreCase(packageName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+
+
+//跳转
+
+Intent intent = new Intent(Intent.ACTION_MAIN);
+                        //（第一个参数是目标app的包名，第二个参数是目标APP的Activity的全称）
+                        ComponentName componentName = new ComponentName("com.example.loginui","com.example.loginui.MainActivity");
+                        intent.setComponent(componentName);
+
+
+
+
+
+此处需要格外说明，假设需要从a应用跳转到b应用：
+
+1.如果为显式跳转(Intent.setClass(this,Activity.class))，那么b应用显示的窗口应该设置为<activity android:exported="true">;
+2.如果为隐式跳转(Intent.setAction(" "))，则Intent的设置的Action必须在b应用窗口的<Intent-filter>中有对应的<action />;

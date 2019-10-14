@@ -1,0 +1,190 @@
+package cn.sharelink.mainframe.gamevoice;
+
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
+import android.media.SoundPool;
+import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.RawRes;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
+
+import cn.sharelink.mainframe.R;
+
+public class SoundPoolHelper {
+    /*常量*/
+    public final static int TYPE_MUSIC = AudioManager.STREAM_MUSIC;
+    public final static int TYPE_ALARM = AudioManager.STREAM_ALARM;
+    public final static int TYPE_RING = AudioManager.STREAM_RING;
+    @IntDef({TYPE_MUSIC, TYPE_ALARM, TYPE_RING})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TYPE {}
+
+    public final static int RING_TYPE_MUSIC = RingtoneManager.TYPE_ALARM;
+    public final static int RING_TYPE_ALARM = RingtoneManager.TYPE_NOTIFICATION;
+    public final static int RING_TYPE_RING = RingtoneManager.TYPE_RINGTONE;
+    @IntDef({RING_TYPE_MUSIC, RING_TYPE_ALARM, RING_TYPE_RING})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface RING_TYPE {}
+
+    /*变量*/
+    private SoundPool soundPool;
+    private int NOW_RINGTONE_TYPE = RingtoneManager.TYPE_NOTIFICATION;
+    private int maxStream;
+    private Map playIds,pauseIds;
+
+    private Context mContext;
+
+    /*方法*/
+
+    public SoundPoolHelper(Context mContext) {
+        this(mContext,1,TYPE_MUSIC);
+    }
+
+    public SoundPoolHelper(Context mContext,int maxStream) {
+        this(mContext,maxStream,TYPE_ALARM);
+    }
+
+    public SoundPoolHelper(Context mContext,int maxStream,@TYPE int streamType) {
+        this.mContext = mContext;
+        soundPool = new SoundPool(maxStream,streamType,1);
+        this.maxStream = maxStream;
+        playIds = new HashMap();
+        pauseIds = new HashMap();
+    }
+
+    /**
+     * 设置RingtoneType，这只是关系到加载哪一个默认音频
+     *  需要在load之前调用
+     * @param ringtoneType  ringtoneType
+     * @return  this
+     */
+    public SoundPoolHelper setRingtoneType(@RING_TYPE int ringtoneType) {
+        NOW_RINGTONE_TYPE = ringtoneType;
+        return this;
+    }
+
+    /**
+     * 加载音频资源
+     * @param resId     资源ID
+     * @return  this
+     */
+    public SoundPoolHelper load(@NonNull String ringtoneName, @RawRes int resId) {
+        if (maxStream==0)
+            return this;
+        maxStream--;
+        playIds.put(ringtoneName,soundPool.load(mContext,resId,1));
+        return this;
+    }
+
+    /**
+     * 加载默认的铃声
+     * @return  this
+     */
+    public SoundPoolHelper loadDefault() {
+        load("default", R.raw.connect_success);
+        return this;
+    }
+
+    /**
+     *  int play(int soundID, float leftVolume, float rightVolume, int priority, int loop, float rate) ：
+     *  1)该方法的第一个参数指定播放哪个声音；
+     *  2) leftVolume 、
+     *  3) rightVolume 指定左、右的音量：
+     *  4) priority 指定播放声音的优先级，数值越大，优先级越高；
+     *  5) loop 指定是否循环， 0 为不循环， -1 为循环；
+     *  6) rate 指定播放的比率，数值可从 0.5 到 2 ， 1 为正常比率。
+     */
+    public void play(@NonNull String ringtoneName, boolean isLoop) {
+        if (playIds.containsKey(ringtoneName)) {
+            pauseIds.put(ringtoneName,soundPool.play((Integer) playIds.get(ringtoneName),1,1,1,isLoop?-1:0,1));
+        }
+    }
+
+    public void playDefault() {
+        play("default",false);
+    }
+
+    public void pause(@NonNull String ringtoneName){
+        if (pauseIds.containsKey(ringtoneName)) {
+            soundPool.pause((Integer) pauseIds.get(ringtoneName));
+            //stop(int streamId) , 这个参数与上面的pause()方法中的streamId参数是一个效果.
+        }
+    }
+
+    /**
+     * 释放资源
+     */
+    public void release() {
+        if (soundPool!=null)
+            soundPool.release();
+    }
+}
+
+
+
+
+
+
+使用：
+
+SoundPoolHelper soundPoolHelper;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_voice);
+        ButterKnife.bind(this);
+        soundPoolHelper = new SoundPoolHelper(this, 4, SoundPoolHelper.TYPE_MUSIC)
+                .setRingtoneType(SoundPoolHelper.RING_TYPE_MUSIC)
+                //加载默认音频，因为上面指定了，所以其默认是：RING_TYPE_MUSIC
+                //happy1,happy2
+                .loadDefault()
+                .load("happy1", R.raw.car_1_attacked)
+                .load("happy2", R.raw.car_1_speak)
+                .load("reminder", R.raw.defy_0);
+
+    }
+
+    @OnClick({R.id.voiceBtn1, R.id.voiceBtn2, R.id.voiceBtn3, R.id.voiceBtn4, R.id.voiceBtn5, R
+            .id.voiceBtn6, R.id.voiceBtn7, R.id.voiceBtn8})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.voiceBtn1:
+                soundPoolHelper.playDefault();
+                break;
+            case R.id.voiceBtn2:
+                soundPoolHelper.play("happy1",false);
+                break;
+            case R.id.voiceBtn3:
+                soundPoolHelper.play("happy2",false);
+                break;
+            case R.id.voiceBtn4:
+                soundPoolHelper.play("reminder",false);
+                break;
+            case R.id.voiceBtn5:
+                soundPoolHelper.play("happy1",true);
+                break;
+            case R.id.voiceBtn6:
+                soundPoolHelper.play("happy2",true);
+                break;
+            case R.id.voiceBtn7:
+                soundPoolHelper.play("reminder",true);
+                break;
+            case R.id.voiceBtn8:
+                soundPoolHelper.pause("reminder");
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        soundPoolHelper.release();
+    }
+
+
+

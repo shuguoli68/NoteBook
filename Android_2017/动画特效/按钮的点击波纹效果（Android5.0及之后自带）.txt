@@ -1,0 +1,41 @@
+Android5.0及之后版本可以使用（缺点：波纹的颜色为灰色，不能改变）
+
+
+
+在Drawable中 ：rounded_corners.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+    <solid android:color="@color/green" />
+    <corners android:radius="4dp" />
+</shape>
+
+
+
+
+在Drawable中： ripple_btn.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/red">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/background" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/rounded_corners" />
+</ripple>
+
+
+
+
+
+<Button
+        android:id="@+id/main_btn1"
+        android:text="按钮波纹效果"
+        android:enabled="true"
+        android:background="@drawable/ripple_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>

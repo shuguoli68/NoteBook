@@ -1,0 +1,15 @@
+<style name="my_dialog" parent="Theme.AppCompat.Light.Dialog">
+        <!-- 这里设置背景为透明，为了隐藏边框-->
+        <item name="android:windowBackground">@drawable/shape_rect</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 这里是修改顶部标题背景颜色，具体颜色自己定，可以是图片
+        <item name="android:topDark">@color/dialog_title_bg</item>-->
+        <!-- 这里是修改内容区域背景颜色
+        <item name="android:centerDark">@color/dialog_content_bg</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColor">@color/login</item>
+        <!--设置透明度-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>

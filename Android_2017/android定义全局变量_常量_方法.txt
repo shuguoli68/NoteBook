@@ -1,0 +1,59 @@
+如果是传递简单的数据，有这样的需求，Activity1 -> Activity2 -> Activity3 -> Activity4， 你想在Activity中传递某个数据到Activity4中，怎么破，一个个页面传么？
+显然不科学是吧，如果你想某个数据可以在任何地方都能获取到，你就可以考虑使用 Application全局对象了！
+Android系统在每个程序运行的时候创建一个Application对象，而且只会创建一个，所以Application 是单例(singleton)模式的一个类，而且Application对象的生命周期是整个程序中最长的，他的生命 周期等于这个程序的生命周期。如果想存储一些比静态的值(固定不改变的，也可以变)，如果你想使用 Application就需要自定义类实现Application类，并且告诉系统实例化的是我们自定义的Application 而非系统默认的，而这一步，就是在AndroidManifest.xml中卫我们的application标签添加:name属性！
+关键部分代码：
+1）自定义Application类：
+class MyApp extends Application {
+    private String myState;
+    public String getState(){
+        return myState;
+    }
+    public void setState(String s){
+        myState = s;
+    }
+}
+2）AndroidManifest.xml中声明：
+<application android:name=".MyApp" android:icon="@drawable/icon" 
+  android:label="@string/app_name">
+3）在需要的地方调用：
+class Blah extends Activity {
+    @Override
+    public void onCreate(Bundle b){
+        ...
+    MyApp appState = ((MyApp)getApplicationContext());
+    String state = appState.getState();
+        ...
+    }
+}
+高逼格写法
+：在任何位置都能获取到Application全局对象。
+Applicaiton是系统的一个组件，他也有自己的一个生命周期，我们可以在onCraete里获得这个 Application对象。贴下修改后的代码吧！
+class MyApp extends Application {
+    private String myState;
+    private static MyApp instance;
+    
+    public static MyApp getInstance(){
+        return instance;
+    }
+    
+    
+    public String getState(){
+        return myState;
+    }
+    public void setState(String s){
+        myState = s;
+    }
+    
+    @Override
+    public void onCreate(){
+        onCreate();
+        instance = this;
+    }
+ 
+}
+然后在任意地方我们就可以直接调用：MyApp.getInstance（）来获得Application的全局对象！
+注意事项：
+Application对象是存在于内存中的，也就有它可能会被系统杀死，比如这样的场景：
+我们在Activity1中往application中存储了用户账号，然后在Activity2中获取到用户账号，并且显示！
+如果我们点击home键，然后过了N久候，系统为了回收内存kill掉了我们的app。这个时候，我们重新 打开这个app，这个时候很神奇的，回到了Activity2的页面，但是如果这个时候你再去获取Application 里的用户账号，程序就会报NullPointerException，然后crash掉~
+之所以会发生上述crash，是因为这个Application对象是全新创建的，可能你以为App是重新启动的， 其实并不是，仅仅是创建一个新的Application，然后启动上次用户离开时的Activity，从而创造App 并没有被杀死的假象！所以如果是比较重要的数据的话，建议你还是进行本地化，另外在使用数据的时候 要对变量的值进行非空检查！还有一点就是：不止是Application变量会这样，单例对象以及公共静态变量 也会这样~

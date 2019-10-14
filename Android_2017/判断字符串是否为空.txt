@@ -1,0 +1,8 @@
+TextUtils.isEmpty(user_edit.getText().toString().trim())
+
+trim() :除去首尾空格，中间的不管。
+如果全是空格，则也为空：“      ”为“”
+
+
+
+TextUtils.isEmpty(user_edit.getText().toString().trim())返回结果true则为空，false为不空

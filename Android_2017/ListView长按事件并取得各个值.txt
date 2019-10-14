@@ -1,0 +1,66 @@
+【长按事件】
+
+在activity中 implements OnItemLongClickListener
+
+
+设置监听：mListView.setOnItemLongClickListener(this);
+
+
+@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		mListView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() { 
+                public void onCreateContextMenu(ContextMenu menu, View v, 
+                                ContextMenuInfo menuInfo) { 
+                	menu.setHeaderTitle("请选择操作：");
+                    menu.add(0, 0, 0, "删除"); 
+                    menu.add(0, 1, 0, "修改");
+
+                } 
+        });
+		return false; 
+		} 
+
+			// 长按菜单响应函数 
+		public boolean onContextItemSelected(MenuItem item) { 
+			
+			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo(); 
+			Bmob_ObjectId = ((TextView)info.targetView.findViewById(R.id.tv_bmob_ObjectId)).getText().toString();
+			switch (item.getItemId()) {
+				case 0:
+					//删除
+					Toast.makeText(BmobActivity.this, Bmob_ObjectId, Toast.LENGTH_LONG).show();
+					del(Bmob_ObjectId);
+				break;
+				case 1:
+					//修改
+					update(Bmob_ObjectId);
+				break;
+				default: 
+				break; 
+			} 
+
+		return super.onContextItemSelected(item);
+	}
+
+
+
+注：【
+R.id.tv_id为list_item布局文件（ListView每一行显示）中的一个TextView的id
+
+所以可以取到list_item布局中任意一个设置id的控件的值
+
+String Bmob_ObjectId = ((TextView)info.targetView.findViewById(R.id.tv_id)).getText().toString();
+】
+
+
+
+
+
+【单击事件】
+
+onListItemClick(ListView l, View v, int position, long id)这个方法中的参数：
+
+参数1就是当前的listView，参数二是当前你点击的那一项对应的view，3是你点击的listView的第几项，四是id值，可以这样获取值假如你的listView的每一项都有一个id为R.id.text的TextView组件，那么可以这样做
+
+TextView text=（TextView）v.findViewById(R.id.text);
+text.getText().toString();调用这个方法就可以获得这个textView的内容了

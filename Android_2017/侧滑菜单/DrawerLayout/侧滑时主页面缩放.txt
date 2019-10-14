@@ -1,0 +1,37 @@
+@Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+        if (drawerView.getTag().equals("left")){
+//            Log.i("menu","左菜单");
+            //菜单展开，主页面收缩；关闭，舒张
+            // 得到contentView
+            View content = mainDrawerlayout.getChildAt(0);
+            int offset = (int) (drawerView.getWidth() * slideOffset);
+            content.setTranslationX(offset);
+            content.setScaleX(1 - slideOffset * 0.2f);
+            content.setScaleY(1 - slideOffset * 0.2f);
+        }else if (drawerView.getTag().equals("right")){
+//            Log.i("menu","右菜单");
+            //菜单展开，主页面收缩；关闭，舒张
+            // 得到contentView
+            View content = mainDrawerlayout.getChildAt(0);
+            int offset = (int) (drawerView.getWidth() * slideOffset);
+            content.setTranslationX(-offset);
+            content.setScaleX(1 - slideOffset * 0.2f);
+            content.setScaleY(1 - slideOffset * 0.2f);
+        }
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+
+    }

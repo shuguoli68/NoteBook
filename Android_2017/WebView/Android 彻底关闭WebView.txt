@@ -1,0 +1,67 @@
+ Android 彻底关闭WebView，防止WebView造成OOM
+
+
+关闭Activity之后，WebView还在内存中占用，非常有可能造成OOM。但是即使在包含该webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。一旦在xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application之后对内存的gc。那么怎么彻底关闭WebView，我也是在网上找了好久 = =
+
+第一种：
+
+WebView 动态加载。就是不在xml中写WebView，写一个layout，然后把WebView add进去。
+
+[java] view plain copy
+WebView      mWebView = new WebView(getApplicationgContext());  
+LinearLayout mll      = findViewById(R.id.xxx);  
+mll.addView(mWebView);  
+
+然后：
+[java] view plain copy
+protected void onDestroy() {  
+      super.onDestroy();  
+      mWebView.removeAllViews();  
+      mWebView.destroy()  
+}  
+
+这里用的getApplicationContext()也是防止内存溢出，这种方法有一个问题。如果你需要在WebView中打开链接或者你打开的页面带有flash，获得你的WebView想弹出一个dialog，都会导致从ApplicationContext到ActivityContext的强制类型转换错误，从而导致你应用崩溃。这是因为在加载flash的时候，系统会首先把你的WebView作为父控件，然后在该控件上绘制flash，他想找一个Activity的Context来绘制他，但是你传入的是ApplicationContext。然后就崩溃了。。。
+第二种：
+
+用个反射，自己关掉
+
+[java] view plain copy
+public void setConfigCallback(WindowManager windowManager) {  
+    try {  
+        Field field = WebView.class.getDeclaredField("mWebViewCore");  
+        field = field.getType().getDeclaredField("mBrowserFrame");  
+        field = field.getType().getDeclaredField("sConfigCallback");  
+        field.setAccessible(true);  
+        Object configCallback = field.get(null);  
+   
+        if (null == configCallback) {  
+            return;  
+        }  
+   
+        field = field.getType().getDeclaredField("mWindowManager");  
+        field.setAccessible(true);  
+        field.set(configCallback, windowManager);  
+    } catch(Exception e) {  
+    }  
+}  
+
+调用
+[java] view plain copy
+public void onCreate(Bundle savedInstanceState) {  
+    super.onCreate(savedInstanceState);  
+    setConfigCallback((WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE));  
+}  
+   
+public void onDestroy() {  
+    setConfigCallback(null);  
+    super.onDestroy();  
+}  
+
+缺点是，这个方法是依赖android.webkit implementation，android4.4之后就用chromium内核了，也就是4.4之后这个方法就不适用了。
+
+第三种：为加载WebView的界面开启新进程，在该页面退出之后关闭这个进程。但是在这个其中，杀死自己进程的时候又遇到了问题，网上介绍的各种方法都不好使，killBackgroundProcesses(getPackageName());各种不好用，最后使用System.exit(0);直接退出虚拟机（Android为每一个进程创建一个虚拟机的）。一旦退出，内存里面释放。QQ也是这么做。
+
+-------------------------------------我是分割线-------------------------------------
+在Chromium WebView的实现中，因为WebView不是基于SurfaceView类的（因为历史遗留问题），所以，绘制内容到画布上必须在主线程来操作。当从有WebView的Activity退出到没有WebView的Activity，但是这个时候这个Activity需要绘制bitmap，就会造成崩溃：ELG绘制错误。
+
+建议：尽量少使用getContext()，而使用getApplicationContext()来代替。

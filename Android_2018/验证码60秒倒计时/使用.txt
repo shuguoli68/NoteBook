@@ -1,0 +1,26 @@
+final CountDownTimer timer = new CountDownTimer(60000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            btnVerifyCode.setText(millisUntilFinished/1000 + "秒");
+        }
+
+        @Override
+        public void onFinish() {
+            btnVerifyCode.setEnabled(true);
+            btnVerifyCode.setText("获取验证码");
+        }
+    };
+
+
+
+
+点击获取验证码按钮：
+case R.id.btn_verify_code:
+                btnVerifyCode.setEnabled(false);
+                timer.start();
+                break;
+
+主动结束：
+
+timer.cancel();

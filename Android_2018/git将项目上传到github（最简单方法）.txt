@@ -1,0 +1,18 @@
+【1】git clone https://github.com/CKTim/BlueTooth.git（替换成GitHub复制的地址）
+
+【2】接着继续输入命令 cd Test，进入Test文件夹（Test为项目文件名）
+
+【3】git add .  （注：别忘记后面的.，此操作是把Test文件夹下面的文件都添加进来）
+
+【4】git commit  -m  "提交信息"  （注：“提交信息”里面换成你需要）
+
+【5】git push -u origin master   （注：此操作目的是把本地仓库push到github上面，此步骤需要你输入帐号和密码）
+
+
+
+Androidstudio使用SVN需要忽略的文件 Android Studio创建的Android项目一般需要忽略
+1、.idea文件夹
+2、.gradle文件夹
+3、所有的build文件夹
+4、所有的.iml文件
+5、local.properties文件。

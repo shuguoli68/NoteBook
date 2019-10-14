@@ -1,0 +1,57 @@
+【白底黑字，宽度为全屏80%】
+
+public void inputDialog(String msg, final InputCallback inputCallback){
+        final EditText et = new EditText(mContext);
+        AlertDialog dialog = new AlertDialog.Builder(mContext,R.style.my_dialog)
+                .setTitle(msg)
+                .setView(et)
+                .setNegativeButton(mContext.getString(R.string.cancel), null)
+                .setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String name = et.getText().toString().trim();
+                        if (TextUtils.isEmpty(name)){
+                            ToastUtil.showShort(mContext,mContext.getString(R.string.input_empty));
+                        }else {
+                            inputCallback.okClick(name);
+                        }
+                    }
+                })
+                .create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        if (!dialog.isShowing()){
+            dialog.show();
+            // 将对话框的大小按屏幕大小的百分比设置
+            //备注：设置大小的代码一定放在show方法后面 不然设置不成功
+            WindowManager windowManager = mContext.getWindowManager();
+            Display display = windowManager.getDefaultDisplay();
+            WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+            lp.width = (int)(display.getWidth() * 0.8); //设置宽度
+            dialog.getWindow().setAttributes(lp);
+        }
+    }
+
+    public interface InputCallback{
+        void okClick(String inputMsg);
+    }
+
+
+
+
+
+<style name="my_dialog" parent="Theme.AppCompat.Light.Dialog">
+        <!-- 这里设置背景为透明，为了隐藏边框-->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 这里是修改顶部标题背景颜色，具体颜色自己定，可以是图片
+        <item name="android:topDark">@color/dialog_title_bg</item>-->
+        <!-- 这里是修改内容区域背景颜色
+        <item name="android:centerDark">@color/dialog_content_bg</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColor">@color/login</item>
+        <!--设置透明度-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>

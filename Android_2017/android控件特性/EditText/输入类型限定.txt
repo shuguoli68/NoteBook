@@ -1,0 +1,19 @@
+只输入数字：
+etContent.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+
+输入长度：
+            etContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(18)});
+
+输入数字和特定字符：
+            etContent.setKeyListener(new NumberKeyListener() {
+                @Override
+                protected char[] getAcceptedChars() {
+                    char[] numberChars = new char[]{'0','1', '2', '3', '4', '5', '6', '7', '8', '9', 'x','X'};
+                    return numberChars;
+                }
+
+                @Override
+                public int getInputType() {
+                    return InputType.TYPE_CLASS_TEXT;
+                }
+            });

@@ -1,0 +1,40 @@
+在在\app\build.gradle这个文件里添加如下内容
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "26.0.1"
+
+    defaultConfig {
+        applicationId "com.example.testtouch"
+        minSdkVersion 21
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding{
+        enabled true
+    }
+
+    // 打包后应用名称
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            def fileName
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                fileName = "admin_v2.apk"
+                /*if (variant.buildType.name.equals('release')) {
+                    fileName = "LoverHeart_Release${defaultConfig.versionName}.${getTime()}.apk"
+                } else if (variant.buildType.name.equals('debug')) {
+                    fileName = "LoverHeart_Debug${defaultConfig.versionName}.${getTime()}.apk"
+                }*/
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+}

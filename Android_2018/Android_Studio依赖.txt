@@ -1,0 +1,40 @@
+*********************************  Android Studio 3.0.1   “¿¿µ  *************************************
+
+
+1°¢°æbutterknife°ø
+/**
+implementation 'com.jakewharton:butterknife:8.8.1'
+annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+**/
+
+
+defaultConfig {
+        applicationId "cn.sharelink.bluechat"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        /*ÃÌº”≈‰÷√*/
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+    }
+
+
+
+∏˘ƒø¬º£∫allprojects {
+    repositories {
+        google()
+        jcenter()
+/**
+        maven { url "https://jitpack.io" }
+**/
+    }
+}
+
+
+
+

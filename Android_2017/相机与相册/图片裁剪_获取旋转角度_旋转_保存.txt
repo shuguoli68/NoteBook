@@ -1,0 +1,95 @@
+/*
+     * 图片裁剪
+     */
+    private void startPhotoZoom(Uri uri, int i) {
+        Log.d("uri","startPhotoZoom uri:"+uri);
+        if (uri == null) {
+            Toast.makeText(getApplicationContext(), "选择图片出错！", Toast.LENGTH_SHORT).show();
+        }
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 设置裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        //        intent.putExtra("aspectX", 1);
+        //        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 600);
+        intent.putExtra("outputY", 600);
+        //如果为true,则通过 Bitmap bmap = data.getParcelableExtra("data")取出数据
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, i);
+    }
+
+    /**
+     * 保存文件
+     * @param bm 需要存储的Bitmap
+     * @throws IOException
+     */
+    public File saveFile(Bitmap bm) throws IOException {
+        File dirFile = new File(dirsPath);
+        if(!dirFile.exists()){
+            dirFile.mkdirs();
+        }
+        File myIconFile= new File(dirsPath + "/head_img.png");
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myIconFile));
+        Bitmap returnBm = rotaingImageView(getBitmapDegree(dirsPath+"/aa.png"),bm);
+        returnBm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
+
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        return myIconFile;
+    }
+
+    /**
+     * 获取原始图片的角度（解决三星手机拍照后图片是横着的问题）
+     * @param path 图片的绝对路径
+     * @return 原始图片的角度
+     */
+    public static int getBitmapDegree(String path) {
+        int degree = 0;
+        try {
+            // 从指定路径下读取图片，并获取其EXIF信息
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 获取图片的旋转信息
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            Log.i("jxf", "orientation" + orientation);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+    /*
+    * 旋转图片
+    * @param angle
+    * @param bitmap
+    * @return Bitmap
+    */
+    public static Bitmap rotaingImageView(int angle , Bitmap bitmap) {
+        //旋转图片 动作
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Log.i("angle","angle2=" + angle);
+        // 创建新的图片
+        Bitmap resizedBitmap = null;
+        if (bitmap.getWidth()!=0) {
+            resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
+        return resizedBitmap;
+    }

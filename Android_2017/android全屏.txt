@@ -1,0 +1,5 @@
+// 全屏  在此处隐藏掉 所有的按钮 
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+

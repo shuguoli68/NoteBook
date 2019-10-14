@@ -1,0 +1,96 @@
+//加载一张图片
+String url= "http://i.imgur.com/Z3QjilA.jpg";
+imageview = (ImageView)findViewById(R.id.imageview);
+
+Picassso.with(this).load(url).into(imageview);
+
+
+
+
+
+
+
+
+【Picasso的特性】
+
+1、处理Adapter中的 ImageView 回收和取消已经回收ImageView的下载进程
+
+示例代码：
+
+public void getView(int position, View convertView, ViewGroup parent) {
+SquaredImageView view = (SquaredImageView) convertView;
+if (view == null) {
+view = new SquaredImageView(context);
+}
+String url = getItem(position);Picasso.with(context).load(url).into(view);
+}
+2、使用最少的内存完成复杂的图片转换，比如把下载的图片转换为圆角。
+示例代码：
+Picasso.with(context)
+.load(url)
+.resize(50, 50)
+.centerCrop()
+.into(imageView)
+3、支持本地资源加载
+
+从 Resources, assets, files, content providers 加载图片都支持
+
+Picasso.with(context).load(R.drawable.landing_screen).into(imageView1);
+Picasso.with(context).load(new File("/images/oprah_bees.gif")).into(imageView2);
+
+4、支持调试
+
+调用函数 Picasso.with(context).setIndicatorsEnabled(true); 可以在加载的图片左上角显示一个三角形 ，不同的颜色代表不同的加载来源，比如：
+
+红色：代表从网络下载的图片
+
+黄色：代表从磁盘缓存加载的图片
+
+绿色：代表从内存中加载的图片
+
+5、支持下载和加载错误占位符图片
+
+Picasso.with(context)
+
+.load(url)
+
+.placeholder(R.drawable.user_placeholder)
+
+.error(R.drawable.user_placeholder_error)
+
+.into(imageView);
+
+
+6、可以设置自定义转换来实现高级效果，例如下面的矩形特效（把图片居中裁剪为矩形）
+
+
+public class CropSquareTransformation implements Transformation {
+@Override public Bitmap transform(Bitmap source) {
+int size = Math.min(source.getWidth(), source.getHeight());
+int x = (source.getWidth() - size) / 2;
+int y = (source.getHeight() - size) / 2;
+Bitmap result = Bitmap.createBitmap(source, x, y, size, size);
+if (result != source) {
+source.recycle();
+}
+return result;
+}@Override public String key() { return "square()"; }
+}
+
+Picasso的使用
+
+直接说，有点空，且不易明白，举个例子说明吧：
+
+
+Picasso.with(context).load("http://www.maiziedu.com/uploads/course/2015/07/android_studio.jpg");
+
+主要功能
+        // with():初始化;
+// load():下载图片;
+// centerCrop():将图片放大到:大于等于ImageView的宽高.
+// error():设置图片下载时候的默认显示图片;
+// placeholder():设置图片下载过程中显示的图片.
+// priority():设置图片下载任务的优先级;
+// resize():设置图片的尺寸;
+// rotate():设置图片的旋转角度;
+// into():展示图片.

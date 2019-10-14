@@ -1,0 +1,26 @@
+<TextView android:id="@+id/tv_versionstatus"  
+                    android:layout_width="wrap_content"  
+                    android:layout_height="wrap_content"  
+                    android:drawablePadding="5dp"  
+                    android:drawableRight="@drawable/icon_new"  
+                    android:text="版本"  
+                    android:textColor="#363636"  
+                    android:textSize="20sp" />  
+
+
+
+在代码中如果要修改drawableRight设置的图片可以使用API
+
+void android.widget.TextView.setCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom)
+
+Drawable可以通过 Drawable rightDrawable = getResources().getDrawable(R.drawable.icon_new); 得到。
+
+但是API提示，setCompoundDrawables() 调用的时候，Drawable对象必须调用setBounds(int left, int top, int right, int bottom)方法，于是我们加一行代码就可以了。
+
+rightDrawable.setBounds(0, 0, rightDrawable.getMinimumWidth(), rightDrawable.getMinimumHeight());  
+
+整体代码如下：
+
+Drawable rightDrawable = getResources().getDrawable(R.drawable.icon_new);  
+            rightDrawable.setBounds(0, 0, rightDrawable.getMinimumWidth(), rightDrawable.getMinimumHeight());  
+            tvVersionStatus.setCompoundDrawables(null, null, rightDrawable, null); 

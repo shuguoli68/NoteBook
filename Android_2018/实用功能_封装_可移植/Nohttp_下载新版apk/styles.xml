@@ -1,0 +1,165 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="login_theme" parent="AppTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- ToolBar属性设置 -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:homeAsUpIndicator">@drawable/caidan</item>
+        <item name="android:actionBarSize">40dp</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingRight">0dp</item>
+
+        <!-- 弹出层背景颜色 -->
+        <item name="android:popupBackground">@android:color/darker_gray</item>
+
+        <!-- 弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar -->
+        <item name="android:dropDownVerticalOffset">5dp</item>
+
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">5dp</item>
+
+        <!-- 设置弹出菜单文字颜色 -->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- 第一个页面，区域选择，TextView属性 -->
+    <style name="txt_region">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">@dimen/dp_10</item>
+        <item name="android:paddingBottom">@dimen/dp_10</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/txt_region</item>
+        <item name="android:background">@drawable/bg_region</item>
+    </style>
+
+    <!-- TextView属性 -->
+    <style name="txt">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="menu_txt">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/txt_press</item>
+        <item name="android:background">@drawable/bg_select_white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- EditText属性 -->
+    <style name="edit_login">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/edit_hint</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="edit_black">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/txt_press</item>
+        <item name="android:textColorHint">@color/edit_black</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- PopupWindow窗口动画 -->
+    <style name="MenuAnimationFade">
+        <item name="android:windowEnterAnimation">@animator/menu_fadein</item>
+        <item name="android:windowExitAnimation">@animator/menu_fadeout</item>
+    </style>
+
+    <!-- 周几的TextView的样式 -->
+    <style name="week">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_marginLeft">14dp</item>
+        <item name="android:layout_marginBottom">9dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_white_stroke</item>
+    </style>
+
+    <style name="MyTimePicker" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:timePickerMode">spinner</item>
+    </style>
+
+    <style name="switch_btn" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/white</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+
+    <style name="my_dialog" parent="Theme.AppCompat.Light.Dialog">
+        <!-- 这里设置背景为透明，为了隐藏边框-->
+        <item name="android:windowBackground">@drawable/shape_rect</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 这里是修改顶部标题背景颜色，具体颜色自己定，可以是图片
+        <item name="android:topDark">@color/dialog_title_bg</item>-->
+        <!-- 这里是修改内容区域背景颜色
+        <item name="android:centerDark">@color/dialog_content_bg</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:textColor">@color/login</item>
+        <!--设置透明度-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="my_dialog_bg" parent="my_dialog">
+        <item name="android:windowBackground">@drawable/shape_rect_20</item>
+    </style>
+    <!-- 自定义dialog的样式 -->
+    <style name="CustomDialog">
+        <item name="android:windowFrame">@null</item><!--边框-->
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+        <item name="android:windowIsTranslucent">false</item><!--半透明-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowBackground">@drawable/dialog_custom_bg</item><!--背景透明-->
+        <item name="android:backgroundDimEnabled">false</item><!--模糊-->
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+</resources>

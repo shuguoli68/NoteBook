@@ -1,0 +1,63 @@
+/**
+        - 异步线程
+         */
+        Thread(object: Runnable{
+            override fun run() {
+                var newsBean:NewsBean = model.execute("https://www.apiopen.top/journalismApi")
+                LogUtils.i("成功"+newsBean.data.auto.get(0).source)
+                mMessage.what = 2;
+                mMessage.obj = newsBean
+                mHandler.sendMessage(mMessage)
+            }
+        }).start()
+
+
+
+
+
+
+
+
+2 AsyncTask
+
+
+val resolver = baseContext.contentResolver
+
+    class AudioTask: AsyncTask<ContentResolver,Void,Cursor>() {
+
+        /**
+         * 回到主线程中调用
+         */
+        override fun onPostExecute(result: Cursor?) {
+            super.onPostExecute(result)
+            // 打印查询结果
+            print(cursor.toString())
+        }
+
+
+        /**
+         * 后台new的Thread 开始 后台查询
+         */
+        override fun doInBackground(vararg p0: ContentResolver?): Cursor {
+
+            val  cursor = p0[0].query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Audio.Media.DATA,
+                    MediaStore.Audio.Media.DISPLAY_NAME,
+                    MediaStore.Audio.Media.SIZE
+                ),
+                null,
+                null,
+                null
+            )
+
+            return cursor
+        }
+    }
+
+    AudioTask().execute(resolver)
+--------------------- 
+作者：Sico2Sico 
+来源：CSDN 
+原文：https://blog.csdn.net/sico2sico/article/details/79019802 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+

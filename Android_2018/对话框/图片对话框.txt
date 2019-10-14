@@ -1,0 +1,17 @@
+public static void showImg(Context mContext, Bitmap bitmap){
+        ImageView imageView = new ImageView(mContext);
+        imageView.setImageBitmap(bitmap);
+        AlertDialog alertDialog
+                = new AlertDialog.Builder(mContext, R.style.my_dialog)
+                .setView(imageView)
+                .setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }

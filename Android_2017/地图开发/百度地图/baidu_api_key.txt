@@ -1,0 +1,3 @@
+<!--admin key:irzcUZGdKug8GhongxqxMYcKHGABlmER-->
+
+package="com.upower.siw"    applicationid

@@ -1,0 +1,96 @@
+
+1. 图片放在sdcard中，
+
+　　Bitmap imageBitmap = BitmapFactory.decodeFile(path) (path 是图片的路径，跟目录是/sdcard)
+ 
+　　2. 图片在项目的res文件夹下面
+　　//得到application对象
+　　ApplicationInfo appInfo = getApplicationInfo();
+　　//得到该图片的id(name 是该图片的名字，"drawable" 是该图片存放的目录，appInfo.packageName是应用程序的包)
+　　int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
+ 
+//代码如下
+ 
+public Bitmap getRes(String name) {
+ApplicationInfo appInfo = getApplicationInfo();
+int resID = getResources().getIdentifier(name, "drawable", appInfo.packageName);
+return BitmapFactory.decodeResource(getResources(), resID);
+}
+ 
+ 
+　　3. 图片放在src目录下
+　　String path = "com/xiangmu/test.png"; //图片存放的路径
+　　InputStream is = getClassLoader().getResourceAsStream(path); //得到图片流
+ 
+4.Android中有个Assets目录,这里可以存放只读文件
+ 
+资源获取的方式为
+ 
+InputStream is = getResources().getAssets().open(name)；
+
+
+
+
+
+
+
+
+
+
+
+
+drawable中的图片转换成URI的方法：
+
+ Resources  r =mContext.getResources();  
+uri =  Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"  
++ r.getResourcePackageName(R.drawable.vod_image_default) + "/"  
++ r.getResourceTypeName(R.drawable.vod_image_default) + "/"  
++ r.getResourceEntryName(R.drawable.vod_image_default));  
+
+
+
+
+
+
+1、通过R.drawable.**来获取文件的路径
+
+
+protected static String getAbsoluteImagePath(Context context, Uri uri) 
+{
+// can post image
+String [] proj={MediaStore.Images.Media.DATA};
+Cursor cursor = context.getContentResolver().query( uri,
+proj, // Which columns to return
+null, // WHERE clause; which rows to return (all rows)
+null, // WHERE clause selection arguments (none)
+null); // Order-by clause (ascending by name)
+
+int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+cursor.moveToFirst();
+
+return cursor.getString(column_index);
+}
+
+Resources r =  app.getApp().getApplicationContext().getResources();
+Uri uri =  Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
+   + r.getResourcePackageName(R.drawable.favorite_detail_line) + "/"
+   + r.getResourceTypeName(R.drawable.favorite_detail_line) + "/"
+   + r.getResourceEntryName(R.drawable.favorite_detail_line));
+String headLineString = getAbsoluteImagePath(app.getApp().getApplicationContext(), uri);
+
+
+
+2、获取到表情路径的方法
+
+Drawable d = EmoWindow.getDrawable(app.getApp(), app.getApp().getResources().getDisplayMetrics().density, i);
+if(d != null){
+          String filepath = "";
+           try {
+URLDrawable ud = (URLDrawable)d;
+if (ud.hasDiskCache()) {
+filepath = ud.getDiskCache().getAbsolutePath();
+}
+} catch (Exception e) {
+ e.printStackTrace();
+    }
+}

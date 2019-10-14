@@ -1,0 +1,60 @@
+【Android在代码中设置屏幕属性(全屏、无标题)】
+
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+
+WindowManager.LayoutParams.FLAG_FULLSCREEN);//设置全屏
+this.requestWindowFeature(Window.FEATURE_NO_TITLE); //设置没有标题
+
+
+
+
+
+
+Eclipse
+
+1.在程序代码中实现
+
+需要注意的是: 
+this.requestWindowFeature(Window.FEATURE_NO_TITLE); 
+这段代码一定要放在setContentView();方法前面，否则不会生效，会报错!
+
+这个方法只会在引用过的布局才会生效，比如这个activity_main引用了，就不会再出现标题，其他的则不会生效..所以 虽然灵活,但是局限…
+
+
+2.在清单文（Androidmanifest.xml）里面配置
+
+Android:theme=”@android:style/Theme.Light.NoTitleBar”
+
+使用此种方法这样可以将整个应用设置成无标题栏了。比较常用。
+
+
+3.在style.xml文件里自定义
+
+<style name="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+</style> 
+
+
+
+
+
+Studio
+
+之前在eclipse上进行开发的时候，要去除Activity的的默认标题栏,我习惯使用的方法是上面的第一种方式，比较快，但是问题来了，在Studio中新构建的项目依旧采用此方法不适用！
+
+如果有注意的话，这里的Activity类继承的是AppCompatActivity，这个是属于support v7附加包的类。而eclipse使用的则是v4包，继承的是Activity类。两者之间有什么不一样的地方，可以百度一下，这里不多说。只提供解决办法解决办法：
+
+1.修改父类Acticity，将AppComPatActiviry替换为Activiry，然后继续采用Eclipse中去标题的方法
+
+2.修改AndroidManiFest.xml文件，将< activity>中的Theme属性替换如下：
+
+android:theme="@style/Theme.AppCompat.NoActionBar">
+
+
+3.更换requestWindowFeature(Window.FEATURE_NO_TITLE);代码为：
+
+getSupportActionBar().hide();   
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+总结： 注意的是尽管第一种与我们的习惯很接近（作为eclipse使用者而言），但这种方法却是一种将v7舍弃的方法，作为技术越来越新的学科，这种办法是不提倡的。因此，建议使用第二种或者第三种办法

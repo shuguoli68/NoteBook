@@ -1,0 +1,51 @@
+//权限
+    public static final String[] pers = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_PHONE_STATE/*,Manifest.permission.WRITE_EXTERNAL_STORAGE*/};
+private int REQUEST_PERMISSION_READ_PHONE = 1;
+
+
+//在onResume中申请最好，onResume之前做for循环，只能循环到第2个权限
+@Override
+    protected void onResume() {
+        super.onResume();
+        initPer();
+    }
+
+
+
+private void initPer() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//如果 API level 是大于等于 23(Android 6.0) 时
+            //判断是否具有权限
+            for (int i = 0; i < pers.length; i++) {
+                if (ContextCompat.checkSelfPermission(this, pers[i]) != PackageManager.PERMISSION_GRANTED) {
+
+                    //判断是否需要向用户解释为什么需要申请该权限
+//                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+//                        ToastUtil.showShort(this, getString(R.string.permission_read_phone));
+//                    }
+                    //请求权限
+                    ActivityCompat.requestPermissions(this, new String[]{pers[i]}, REQUEST_PERMISSION_READ_PHONE);
+                }
+            }
+        }
+    }
+
+
+
+@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_READ_PHONE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //用户允许改权限，0表示允许，-1表示拒绝 PERMISSION_GRANTED = 0， PERMISSION_DENIED = -1
+                //permission was granted, yay! Do the contacts-related task you need to do.
+                Log.i("Permission","用户允权限");
+            } else {
+                //permission denied, boo! Disable the functionality that depends on this permission.
+                Log.i("Permission","权限被拒绝");
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+

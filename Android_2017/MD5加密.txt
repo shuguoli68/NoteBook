@@ -1,0 +1,53 @@
+MD5简单介绍：
+1）MD5是什么鬼？：
+答：Message Digest Algorithm MD5（中文名为消息摘要算法第五版）为计算机安全领域广泛 使用的一种散列函数，用以提供消息的完整性保护——摘自《百度百科》 简单点说就是一种加密算法，可以将一个字符串，或者文件，压缩包，执行MD5加密后， 就可以生产一个固定长度为128bit的串！这个串基本唯一！另外我们都知道:一个十六进制 需要用4个bit来表示，那么对应的MD5的字符串长度就为：128 / 4 = 32位了！另外可能 你看到一些md5是16位的，只是将32位MD5码去掉了前八位以及后八位！不信么，我们来试试 百度一下：md5在线解密，第一个：http://www.cmd5.com/
+
+2）MD5能破解吗？
+答：MD5不可逆，就是说没有对应的算法，无法从生成的md5值逆向得到原始数据！ 当然暴力破解除外，简单的MD5加密后可以查MD5库~
+3）MD5值唯一吗？
+答：不唯一，一个原始数据只对应一个MD5值，但是一个MD5值可能对应多个原始数据！
+3.MD5加密实现例子：
+其实网上有很多写好的MD5的例子，百度或者谷歌一搜一大堆，这里提供下小猪用的MD5加密工具类！
+Md5Util.java：
+/**
+ * Created by Jay on 2015/9/2 0002.
+ */
+public class MD5 {
+    public static String getMD5(String content) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(content.getBytes());
+            return getHashString(digest);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String getHashString(MessageDigest digest) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : digest.digest()) {
+            builder.append(Integer.toHexString((b >> 4) & 0xf));
+            builder.append(Integer.toHexString(b & 0xf));
+        }
+        return builder.toString();
+    }
+}
+MainActivity.java直接调用getMD5这个静态方法：
+Log.e("HeHe", MD5.getMD5("呵呵")); 我们可以看到Logcat上打印出：
+
+这就是加密过后的呵呵了，我们可以把这串密文拷贝到上面这个md5的在线解密网站：
+
+嘿嘿，果然，只是这样加密一次，就直接破解了，有点不安全的样子，那就加密100次咯， 就是将加密后的字符串再加密，重复100次，我们在原先的基础上加个加密一百次的方法：
+public static String getMD5x100(String content){
+    String s1 = content;
+    for(int i = 0;i < 100;i++){
+        s1 = getMD5(s1);
+    }
+    return s1;
+}
+然后调用下，发现打印这个的Log：
+
+复制界面网站上：
+
+好的，装B成功~

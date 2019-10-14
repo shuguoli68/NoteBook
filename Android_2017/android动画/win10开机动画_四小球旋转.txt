@@ -1,0 +1,174 @@
+在Drawable中shape_point.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@android:color/holo_red_dark"/>
+</shape>
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/start_ani_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="开始" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true">
+
+        <LinearLayout
+            android:id="@+id/ll_point_circle_1"
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/shape_point"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_point_circle_2"
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/shape_point"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_point_circle_3"
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/shape_point"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_point_circle_4"
+            android:layout_width="wrap_content"
+            android:layout_height="240dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/shape_point"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+
+
+
+package com.example.win10;
+
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+import com.example.animamenu.R;
+
+/**
+ * Created by Admin on 2017/8/30.
+ */
+public class Win10StartActivity extends Activity{
+    private LinearLayout mPoint_1;
+    private LinearLayout mPoint_2;
+    private LinearLayout mPoint_3;
+    private LinearLayout mPoint_4;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_win10start);
+
+        mPoint_1 = (LinearLayout) findViewById(R.id.ll_point_circle_1);
+        mPoint_2 = (LinearLayout) findViewById(R.id.ll_point_circle_2);
+        mPoint_3 = (LinearLayout) findViewById(R.id.ll_point_circle_3);
+        mPoint_4 = (LinearLayout) findViewById(R.id.ll_point_circle_4);
+
+        Button startAni = (Button) findViewById(R.id.start_ani_2);
+        startAni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                beginPropertyAni();
+            }
+        });
+    }
+
+    /**
+     * 开启动画
+     */
+    private void beginPropertyAni() {
+        ObjectAnimator animator_1 = ObjectAnimator.ofFloat(
+                mPoint_1,
+                "rotation",
+                0,
+                360);
+        animator_1.setDuration(2000);
+        animator_1.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        ObjectAnimator animator_2 = ObjectAnimator.ofFloat(
+                mPoint_2,
+                "rotation",
+                0,
+                360);
+        animator_2.setStartDelay(150);
+        animator_2.setDuration(2000 + 150);
+        animator_2.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        ObjectAnimator animator_3 = ObjectAnimator.ofFloat(
+                mPoint_3,
+                "rotation",
+                0,
+                360);
+        animator_3.setStartDelay(2 * 150);
+        animator_3.setDuration(2000 + 2 * 150);
+        animator_3.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        ObjectAnimator animator_4 = ObjectAnimator.ofFloat(
+                mPoint_4,
+                "rotation",
+                0,
+                360);
+        animator_4.setStartDelay(3 * 150);
+        animator_4.setDuration(2000 + 3 * 150);
+        animator_4.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(animator_1).with(animator_2).with(animator_3).with(animator_4);
+        animatorSet.start();
+    }
+}

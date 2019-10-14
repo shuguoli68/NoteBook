@@ -1,0 +1,30 @@
+/**
+     * ´ò¿ªÀ¶ÑÀ
+     */
+    BluetoothAdapter mBluetoothAdapter = null;
+
+if (!mBluetoothAdapter.isEnabled()){
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+        }
+
+
+
+
+
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+
+            case REQUEST_ENABLE_BT:
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    // Bluetooth is now enabled, so set up a chat session
+                    //À¶ÑÀ¿ªÆôºóµÄ²Ù×÷
+                } else {
+                    // User did not enable Bluetooth or an error occurred
+                    Toast.makeText(this, "À¶ÑÀ¿ªÆôÊ§°Ü£¡",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
+    }

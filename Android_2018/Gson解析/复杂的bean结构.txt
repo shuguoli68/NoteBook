@@ -1,0 +1,6 @@
+String gsonString = response.body().string();
+                LogUtil.i("onResponse: "+gsonString);
+                Gson gson = new Gson();
+                Type type = new TypeToken<List<AdverBean>>(){}.getType();
+                List<AdverBean> list = gson.fromJson(gsonString,type);
+                LogUtil.i("onResponse: "+list.get(0).getAdverIcon());

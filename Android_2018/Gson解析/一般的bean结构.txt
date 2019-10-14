@@ -1,0 +1,5 @@
+String gsonString = response.body().string();
+                LogUtil.i("onResponse: "+gsonString);
+                Gson gson = new Gson();
+                MsgBean bean = gson.fromJson(gsonString,MsgBean.class);
+                LogUtil.i("ionResponse: "+bean.getMsg());

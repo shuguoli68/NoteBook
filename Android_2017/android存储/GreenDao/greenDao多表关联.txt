@@ -1,0 +1,157 @@
+【一对一，一对多：】https://segmentfault.com/a/1190000009138617
+
+【多对多：】http://blog.csdn.net/RobotHost/article/details/70098744#4-多对多
+
+
+
+ToOne
+一对一的关系映射。看个例子：
+
+@Entity
+public class Score {
+    @Id
+    private String id;
+    private int score;
+}
+
+@Entity
+public class Student {
+    @Id
+    private String id;
+    private String name;
+    private int age;
+    private String scoreId;
+    @ToOne(joinProperty = "scoreId")
+    private Score score;
+}
+
+        //先向数据库中插入两条数据
+        Score score = new Score("1101", 80);
+        Student magicer = new Student("110","Magicer",12,"1101");
+        scoreDao.insertOrReplace(score);
+        studentDao.insertOrReplace(magicer);
+        
+        //之后查找我们插入的数据，就可以查询出来我们想要的带有成绩的学生实体。
+        QueryBuilder<Student> queryBuilder = studentDao.queryBuilder().where(StudentDao.Properties.Name.eq("Magicer"));
+        for (Student student : queryBuilder.list()) {
+            Log.i(TAG, "onCreate: "+student.toString());
+        }
+在上面的例子中，我们设定每个学生有一门成绩，这个时候就是个ToOne一对一的关系。我们通过joinProperty来设置外键。我们就可以很方便的查询出某个学生的成绩了。
+
+ToMany
+但是一般一个学生会有多个成绩，这个时候我们就需要使用ToMany一对多的关系了。先看下例子：
+
+
+@Entity
+public class Student {
+    @Id
+    private String id;
+    private String name;
+    private int age;
+    @ToMany(referencedJoinProperty = "studentId")
+    private List<Score> scores;
+}
+
+@Entity
+public class Score {
+    @Id
+    private String id;
+    private int score;
+    private String type;
+    private String studentId;
+}
+
+
+        Score math = new Score("1101", 87, "Math", "110");
+        Score english = new Score("1102", 99, "English", "110");
+        Score chinese = new Score("1103", 120, "Chinese", "110");
+        scoreDao.insertOrReplaceInTx(math,english,chinese);//使用事务插入或替换数据
+        Student magicer = new Student("110", "Magicer", 23);
+        studentDao.insertOrReplace(magicer);
+
+        Query<Student> query = studentDao.queryBuilder().where(StudentDao.Properties.Name.eq("Magicer")).build();
+        for (Student student : query.list()) {
+            Log.i(TAG, "onCreate: "+student);
+        }
+
+//I/MainActivity: onCreate: Student{id='110', name='Magicer', age=23, score=[Score{id='1101', score=87, type='Math', studentId='110'}, Score{id='1102', score=99, type='English', studentId='110'}, Score{id='1103', score=120, type='Chinese', studentId='110'}]}
+这个时候，一个学生就有Math Enghlish Chinese三个的成绩。这个时候，我们使用referencedJoinProperty 将成绩跟学生建立了关联关系。
+
+
+JoinEntity
+有时我们还要创建多对多的关联关系N:M。在greenDao中就使用JoinEntity注解；先来看下他的定义：
+
+
+配置多对多关系的时候我们需要使用到ToMany和JoinEntity通过JoinEntity注解来配置关联的建。如下：
+
+@Entity
+public class Student {
+    @Id
+    private String id;
+    private String name;
+    private int age;
+
+    @ToMany
+    @JoinEntity(
+            entity = Join.class,
+            sourceProperty = "studentId",
+            targetProperty = "scoreId"
+    )
+    private List<Score> scores;
+}
+@Entity
+public class Join {
+    @Id
+    private String id;
+    private String studentId;
+    private String scoreId;
+}
+@Entity
+public class Score {
+    @Id
+    private String id;
+    private int score;
+    private String type;
+    private String studentId;
+}
+遇到的问题
+当插入到数据库中的数据是网络请求得到的时候会有些注意事项。由于greenDao会帮助我们生成一些get和set方法。这个是时候就要注意了。来看下生成的代码：
+
+@Entity
+public class Point {
+    @Id
+    private Long id;
+    private Long strokeId;
+    private int x;
+    private int y;
+}
+
+@Entity
+public class Stroke {
+    @Id
+    private Long id;
+    private String name;
+    @ToMany(referencedJoinProperty = "strokeId")
+    private List<Point> points;
+}
+如上面，我们现在有每个笔画Stroke会有很多的Point。编译下之后会生成很多get和set方法。
+我们看下Stroke的一个get方法我们会看到下面这些代码。就由于这个代码。可能就会导致。我们解析到了Stroke后调用getPoints()方法想要获取点的集合是出现问题，这时候就可能会报错。这个时候我们可以在单独写另外的一个get方法，来支持直接获取points对象。
+
+ @Generated(hash = 404164872)
+    public List<Point> getPoints() {
+        if (points == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            PointDao targetDao = daoSession.getPointDao();
+            List<Point> pointsNew = targetDao._queryStroke_Points(id);
+            synchronized (this) {
+                if(points == null) {
+                    points = pointsNew;
+                }
+            }
+        }
+        return points;
+    }
+2017年04月20日发布

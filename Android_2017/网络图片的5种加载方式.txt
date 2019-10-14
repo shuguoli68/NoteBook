@@ -1,0 +1,139 @@
+ Android之网络图片加载的5种基本方式
+
+此博客包含Android 5种基本的加载网络图片方式，包括普通加载HttpURLConnection、HttpClients、Volley、XUtils、OkHttp等网络加载图片。
+其他网络图片加载方式，后续补上。
+效果如下图：
+          
+HttpURLConnection方式：
+[java] view plain copy
+public Bitmap getImageBitmap(String url) {  
+        URL imgUrl = null;  
+        Bitmap bitmap = null;  
+        try {  
+            imgUrl = new URL(url);  
+            HttpURLConnection conn = (HttpURLConnection) imgUrl  
+                    .openConnection();  
+            conn.setDoInput(true);  
+            conn.connect();  
+            InputStream is = conn.getInputStream();  
+            bitmap = BitmapFactory.decodeStream(is);  
+            is.close();  
+        } catch (MalformedURLException e) {  
+            // TODO Auto-generated catch block  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+        return bitmap;  
+}  
+
+HttpClient方式
+[java] view plain copy
+public Bitmap getImageBitmap(String url) {  
+        DefaultHttpClient httpclient = new DefaultHttpClient();  
+        HttpGet httpget = new HttpGet(url);  
+        try {  
+            HttpResponse resp = httpclient.execute(httpget);  
+            // 判断是否正确执行  
+            if (HttpStatus.SC_OK == resp.getStatusLine().getStatusCode()) {  
+                // 将返回内容转换为bitmap  
+                HttpEntity entity = resp.getEntity();  
+                InputStream in = entity.getContent();  
+                Bitmap mBitmap = BitmapFactory.decodeStream(in);  
+                // 向handler发送消息，执行显示图片操作  
+                return mBitmap;  
+            }  
+  
+        } catch (Exception e) {  
+        } finally {  
+            httpclient.getConnectionManager().shutdown();  
+        }  
+  
+        return null;  
+}  
+
+ XUtils方式
+[java] view plain copy
+private void initView() {  
+    // TODO Auto-generated method stub  
+    BitmapUtils bitmapUtils = new BitmapUtils(this);  
+    // 加载网络图片  
+    bitmapUtils.display(imageView,  
+            "http://img.my.csdn.net/uploads/201407/26/1406383290_9329.jpg");  
+  
+    // 加载本地图片(路径以/开头， 绝对路径)  
+    // bitmapUtils.display(imageView, "/sdcard/test.jpg");  
+  
+    // 加载assets中的图片(路径以assets开头)  
+    // bitmapUtils.display(imageView, "assets/img/wallpaper.jpg");  
+  
+  }  
+
+OkHttp方式
+[java] view plain copy
+private void setIamge()  
+  {  
+    String url = "http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg";  
+    OkHttpUtils.get().url(url).tag(this)  
+            .build()  
+            .connTimeOut(20000).readTimeOut(20000).writeTimeOut(20000)  
+            .execute(new BitmapCallback() {  
+            @Override  
+            public void onError(Call call, Exception e, int id) {  
+                }  
+  
+            @Override  
+            public void onResponse(Bitmap bitmap, int id) {  
+                    imageView.setImageBitmap(bitmap);  
+                }  
+            });  
+  }  
+
+Volley方式
+[java] view plain copy
+/*** 
+ * ImageRequest加载图片 
+ */  
+public void setImg1()  
+{  
+      
+      
+ImageRequest request = new ImageRequest(VolleySingleton.imageThumbUrls[0],  
+     new Response.Listener<Bitmap>() {  
+     @Override  
+     public void onResponse(Bitmap bitmap) {  
+            imageview1.setImageBitmap(bitmap);  
+           }  
+     }, 0, 0, Config.RGB_565,  
+     new Response.ErrorListener() {  
+         public void onErrorResponse(VolleyError error) {  
+            imageview1.setImageResource(R.mipmap.ic_launcher);  
+          }  
+});  
+     VolleySingleton.getVolleySingleton(this.getApplicationContext()).addToRequestQueue(request);  
+}  
+/*** 
+ * 使用 ImageLoader 加载图片 
+ */  
+  
+public void setImg2()  
+{  
+    com.android.volley.toolbox.ImageLoader mImageLoader;  
+    mImageLoader =   VolleySingleton.getVolleySingleton(this.getApplicationContext()).getImageLoader();  
+    mImageLoader.get(VolleySingleton.imageThumbUrls[1],   
+            //mImageView是ImageView实例  
+            //第2个参数：默认图片  
+            //第2个参数：加载图片错误时的图片  
+    com.android.volley.toolbox.ImageLoader.getImageListener(imageview2,R.mipmap.ic_launcher, R.mipmap.ic_launcher));  
+}  
+/** 
+ * 使用NetworkImageView加载图片 
+ */  
+public void setImg3()  
+{  
+    com.android.volley.toolbox.ImageLoader mImageLoader;  
+    mImageLoader = VolleySingleton.getVolleySingleton(this.getApplicationContext()).getImageLoader();  
+    networkImageView.setImageUrl(VolleySingleton.imageThumbUrls[2], mImageLoader);  
+}  
+
+ 相关Jar下载： Volley.Jar XUtils.Jar  httpclient-4.3.5.jar  okhttp.jar

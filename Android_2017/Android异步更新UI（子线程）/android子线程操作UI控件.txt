@@ -1,0 +1,219 @@
+package com.example.testretrofit;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    Handler handler;
+    private TextView txt;
+    private Button btn1;
+    private EditText edit1;
+    String content ;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        txt = (TextView) findViewById(R.id.txt);
+        btn1 = (Button) findViewById(R.id.btn1);
+        edit1 = (EditText) findViewById(R.id.edit1);
+        btn1.setOnClickListener(this);
+        request();
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if (msg.what == 1){
+//                    txt.setText(msg.obj.toString());
+                }
+                if (msg.what == 3){
+                    txt.setText("结果："+msg.obj.toString());
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onClick(View view) {
+        content = edit1.getText().toString();
+        request1();
+    }
+
+    public void request() {
+
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://fy.iciba.com/") // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        GetRequest_Interface request = retrofit.create(GetRequest_Interface.class);
+
+        //对 发送请求 进行封装
+        Call<Translation> call = request.getCall();
+
+        //步骤6:发送网络请求(异步)
+        call.enqueue(new Callback<Translation>() {
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<Translation> call, Response<Translation> response) {
+                // 步骤7：处理返回的数据结果
+                response.body().showStatus();
+//                txt.setText(response.body().tatus());
+                Message message = new Message();
+                message.what = 1;
+                message.obj = response.body().tatus();
+                handler.sendMessage(message);
+            }
+
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<Translation> call, Throwable throwable) {
+                System.out.println("连接失败");
+            }
+        });
+    }
+
+    public void request1() {
+
+        //步骤4:创建Retrofit对象
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://fanyi.youdao.com/") // 设置 网络请求 Url
+                .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
+                .build();
+
+        // 步骤5:创建 网络请求接口 的实例
+        PostRequest request = retrofit.create(PostRequest.class);
+
+        //对 发送请求 进行封装(设置需要翻译的内容)
+        Call<Translation1> call = request.getCall(content);
+
+        //步骤6:发送网络请求(异步)
+        call.enqueue(new Callback<Translation1>() {
+
+            //请求成功时回调
+            @Override
+            public void onResponse(Call<Translation1> call, Response<Translation1> response) {
+                // 步骤7：处理返回的数据结果：输出翻译的内容
+                System.out.println(response.body().getTranslateResult().get(0).get(0).getTgt());
+                Message message = new Message();
+                message.what = 3;
+                message.obj = response.body().getTranslateResult().get(0).get(0).getTgt();
+                handler.sendMessage(message);
+            }
+
+            //请求失败时回调
+            @Override
+            public void onFailure(Call<Translation1> call, Throwable throwable) {
+                System.out.println("请求失败");
+                System.out.println(throwable.getMessage());
+            }
+        });
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+private Button jiemian_login;
+    private ProgressBar login_progressbar;
+    private int progress = 0;
+
+
+
+
+@Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.jiemian_login:
+                if (jiemian_accound.getText().toString().equals("123"))
+                {
+                    jiemian_login.setVisibility(View.INVISIBLE);
+                    login_progressbar.setVisibility(View.VISIBLE);
+                    handler.post(updateThread);
+                }
+                break;
+        }
+    }
+    Handler handler=new Handler(){
+        public void handleMessage(Message msg) {;
+            login_progressbar.setProgress(msg.arg1);
+            //将线程对象压进队列，立刻执行Rannable中的run方法。
+            handler.post(updateThread);
+            if(msg.arg1>=100) {//在这里操作UI
+                startActivity(new Intent(MainActivity.this, UpdatePassWord.class));
+                handler.removeCallbacks(updateThread);
+            }
+        }
+    };
+    Runnable updateThread=new Runnable() {
+        public void run() {
+            progress=progress+2;
+            //得到一个消息对象
+            Message msg=handler.obtainMessage();
+            msg.arg1=progress;
+            try{
+                Thread.sleep(10);
+            }
+            catch(InterruptedException e){e.printStackTrace();}
+            //将消息压进消息队列里面，然后异步执行Handle中的handleMessage方法
+            handler.sendMessage(msg);
+        }
+
+    };
+
+
+
+p.s：
+之前一次面试的时候，对方有问到能否在子线程里更新界面？
+
+我回到不能，因为会抛出异常。对方接着问，为什么？
+
+我就答不上来了，现在的理解是，因为Android下的界面更新不是线程安全的，所以要保证在单一线程中同步执行。其他线程要更新UI的话，需要通过
+
+handler，Looper消息机制把更新事情pass到UI thread的消息队列中，由UI thread来完成界面的更新绘制。
+
+面试官又继续问道，能否在子线程里去更新progressbar的进度呢？
+
+我当时回答的是不能，必须通过handler去发消息。但现在看来progressbar的代码后，这个问题的答案其实应该是可以的，因为progressbar自己内部就处
+
+理了子线程的更新问题。

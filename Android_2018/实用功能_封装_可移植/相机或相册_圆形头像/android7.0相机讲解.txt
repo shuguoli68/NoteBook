@@ -1,0 +1,104 @@
+Android7.0调用相机
+2017年09月15日 11:34:56
+阅读数：1308
+从Android7.0开始，Android对访问文件的权限收回，所以如果我们要在应用件共享文件，应该发送一项content://URI,并对这个URI授予临时访问的权限。而对这个URI授权最简单的方式就是使用FileProvider类。
+
+具体的操作步骤是：
+
+1.创建一个path文件：
+
+在res下边创建一个xml的文件夹，在xml下边创建一个资源文件，比如命名为filepaths（名字是自己随便起的，只要和在manifest文件中注册Provider时所引用的resource保持一致就行）
+
+
+external-path代表的根目录是：Environment.getExternalStorageDirectory()
+
+files-path代表的根目录是:Context.getFilesDir()
+
+cache-path代表的根目录是：getCacheDir()
+
+name:是自己定义的起的一个名字。
+
+path:.代表根目录，代表可以向其他应用共享根目录及其子目录下的任何一个文件，如果将path设为path="image",代表只可以共享根目录下的image文件夹，其他的文件夹是不能共享的。
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="external_path"
+        path="." />
+
+</paths>
+
+2.在manifest文件中注册provider
+
+name：是固定的
+
+authorities：你应用的包名+.fileprovider，这里的fileprovider可以随便写，只要与FileProvider.getUriForFile()方法中的第二个参数authority对应起来就行。
+
+grantUriPermissions:固定值true，表示Uri访问授权
+
+exported:固定值false
+
+meta-data-name:固定值 android.support.FILE_PROVIDER_PATHS
+
+resource:表示我们app要共享文件的路径的资源文件
+
+
+<provider
+    android:name="android.support.v4.content.FileProvider"
+    android:authorities="com.example.android.imagecut.fileprovider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+</provider>
+
+
+3.代码中调用：
+
+
+if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+    //图片名称
+    String cameraPath = SAVED_IMAGE_DIR_PATH + System.currentTimeMillis() + ".png";
+    String out_file_path = SAVED_IMAGE_DIR_PATH;
+    //创建存放图片的文件夹
+    File dir = new File(out_file_path);
+    if (!dir.exists()) {
+        dir.mkdirs();
+    }
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    if (Build.VERSION.SDK_INT >= 24) {
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                FileProvider.getUriForFile(MainActivity.this,
+                        "com.example.android.imagecut.fileprovider", new File(cameraPath)));
+    } else {//这里是以前的访问方式
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(cameraPath)));
+    }
+    startActivityForResult(intent, REQUEST_CAREMA);
+} 
+
+
+以上就是实现访问文件的一种方式。
+
+
+
+
+
+
+
+
+
+还有一种方式就是在Application的onCreate()方法里面加一些代码：
+
+
+StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+StrictMode.setVmPolicy(builder.build());
+builder.detectFileUriExposure();
+
+加了这些代码以后就能继续按照以前的方式访问了。
+
+
+
+第一种方式完整代码：https://github.com/ruxing1102/AndroidNGetFile/tree/master

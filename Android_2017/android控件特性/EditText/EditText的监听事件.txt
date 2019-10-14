@@ -1,0 +1,38 @@
+private EditText update_account;
+    private TextView update_txt;
+    private String mycommment;
+
+
+
+
+
+
+ update_txt = (TextView)findViewById(R.id.update_txt);
+        update_account = (EditText)findViewById(R.id.update_account);
+        update_account.addTextChangedListener(mTextWatcher);
+
+
+
+
+
+
+    TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString() != "") {
+                update_txt.setTextColor(getResources().getColor(R.color.blue));
+
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+            mycommment = update_account.getText().toString();
+            if (TextUtils.isEmpty(mycommment)) {
+                update_txt.setTextColor(getResources().getColor(R.color.green));
+            }
+        }
+    };

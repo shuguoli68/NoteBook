@@ -1,0 +1,141 @@
+gridview如何去掉外边框：
+
+android:listSelector="@null" 加这个OK 我也遇到了
+
+
+
+
+
+
+大家都知道Android ListView设置分割线很简单，设置如下两个属性即可：
+
+    android:divider
+    android:dividerHeight
+
+GirdView默认是没有网格线的，那么该如何设置呢？
+
+现介绍两种方法：
+
+第一、设置垂直、横向间距，通过GridView和item的背景色来实现 
+效果图： 
+           
+
+实现方法：
+             1、设置GridView背景色。
+
+             2、设置水平和竖直方向间隔：android:horizontalSpacing和android:verticalSpacing。
+
+             3、设置GridView的item的背景色及其选中后的颜色。
+
+代码：
+ GridView布局：
+
+ 
+
+[html] view plain copy
+<GridView  
+        android:id="@+id/gridView2"  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content"  
+        android:layout_below="@+id/textView1"  
+        android:layout_marginTop="30dp"  
+        android:background="#999999"  
+        android:horizontalSpacing="2dp"  
+        android:verticalSpacing="2dp"  
+        android:padding="2dp"  
+        android:numColumns="3" >  
+
+item布局：
+
+
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    android:orientation="vertical"  
+    android:gravity="center"  
+    android:background="@drawable/gv_one_selector"  
+    >  
+  
+    <TextView  
+        android:id="@+id/textView1"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:textSize="20sp"  
+        android:padding="10dp"  
+        android:text="TextView" />  
+  
+</LinearLayout>  
+
+
+item的选择器：
+
+
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>  
+<selector xmlns:android="http://schemas.android.com/apk/res/android">  
+    <item   
+        android:state_selected="true" >  
+        <shape android:shape="rectangle">    
+             <solid   
+              android:color="#CCCCCC"   
+             />  
+        </shape>  
+    </item>  
+    <item   
+        android:state_pressed="true" >  
+        <shape android:shape="rectangle">    
+             <solid   
+              android:color="#CCCCCC"   
+             />  
+        </shape>  
+    </item>  
+    <item>  
+        <shape android:shape="rectangle">    
+            <solid   
+              android:color="#FFFFFF"   
+             />   
+        </shape>  
+    </item>    
+</selector>  
+
+
+至此第一种方法结束。
+
+第二、设置选择器
+效果图：
+                    
+
+方法：设置item的选择器
+代码：gv_selector.xml
+
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>  
+<selector xmlns:android="http://schemas.android.com/apk/res/android">  
+    <item   
+        android:state_selected="true" >  
+        <shape android:shape="rectangle">    
+             <solid   
+              android:color="#CCCCCC"   
+             />  
+             <stroke android:width="1.0px" android:color="#999999" />  
+        </shape>  
+    </item>  
+    <item   
+        android:state_pressed="true" >  
+        <shape android:shape="rectangle">    
+             <solid   
+              android:color="#CCCCCC"   
+             />  
+             <stroke android:width="1.0px" android:color="#999999" />  
+        </shape>  
+    </item>  
+    <item>  
+        <shape android:shape="rectangle">    
+            <stroke android:width="1.0px" android:color="#999999" />    
+        </shape>  
+    </item>    
+</selector>  
+
+至此两种方法已经写完了，有细心的朋友可能会发现第二种方法的中间的网格线比边线要粗两倍，这也是第二种方法的一个不足的地方。

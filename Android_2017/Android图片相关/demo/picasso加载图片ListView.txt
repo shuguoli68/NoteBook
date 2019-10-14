@@ -1,0 +1,126 @@
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/picasso_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ListView>
+</LinearLayout>
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/item_picasso_img"
+        android:adjustViewBounds="true"
+        android:maxHeight="80dp"
+        android:maxWidth="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ic_launcher"
+        />
+</LinearLayout>
+
+
+
+
+
+
+package com.example.picasso;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+
+import com.example.loadpictureutil.R;
+import com.squareup.picasso.Picasso;
+
+/**
+ * Created by Admin on 2017/8/28.
+ */
+public class ImageListAdapter extends ArrayAdapter{
+    private Context context;
+
+    private String[] imageUrls = null;
+
+    public ImageListAdapter(Context context,String[] imageUrls){
+        super(context, R.layout.item_picasso,imageUrls);
+
+        this.context = context;
+        this.imageUrls = imageUrls;
+
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView==null){
+            convertView = View.inflate(context,R.layout.item_picasso,null);
+        }
+        ImageView img = (ImageView) convertView.findViewById(R.id.item_picasso_img);
+        //º”‘ÿÕº∆¨
+        Picasso
+                .with(context)
+                .load(imageUrls[position])
+                .into(img);//(ImageView) convertView);
+
+        return convertView;
+    }
+}
+
+
+
+
+
+
+
+package com.example.picasso;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.ListView;
+
+import com.example.loadpictureutil.R;
+
+/**
+ * Created by Admin on 2017/8/28.
+ */
+public class PicassoActivity extends Activity{
+    public static String[] imageUrls = {
+            "http://i.imgur.com/rFLNqWI.jpg",
+            "http://i.imgur.com/C9pBVt7.jpg",
+            "http://i.imgur.com/rT5vXE1.jpg",
+            "http://i.imgur.com/aIy5R2k.jpg",
+            "http://i.imgur.com/MoJs9pT.jpg",
+            "http://i.imgur.com/S963yEM.jpg",
+            "http://i.imgur.com/rLR2cyc.jpg",
+            "http://i.imgur.com/SEPdUIx.jpg",
+            "http://i.imgur.com/aC9OjaM.jpg",
+            "http://i.imgur.com/76Jfv9b.jpg",
+            "http://i.imgur.com/fUX7EIB.jpg",
+            "http://i.imgur.com/syELajx.jpg",
+            "http://i.imgur.com/COzBnru.jpg",
+            "http://i.imgur.com/Z3QjilA.jpg",
+    };
+    private ListView picasso_listview;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_picasso);
+        initView();
+    }
+    private void initView(){
+        picasso_listview = (ListView) findViewById(R.id.picasso_listview);
+        picasso_listview.setAdapter(new ImageListAdapter(this,imageUrls));
+    }
+}

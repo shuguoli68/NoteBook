@@ -1,0 +1,53 @@
+特殊权限
+这里讲特殊权限提前讲一下，因为这个相对来说简单一些。
+
+特殊权限，顾名思义，就是一些特别敏感的权限，在Android系统中，主要由两个
+
+SYSTEM_ALERT_WINDOW，设置悬浮窗，进行一些黑科技
+WRITE_SETTINGS 修改系统设置
+关于上面两个特殊权限的授权，做法是使用startActivityForResult启动授权界面来完成。
+
+请求SYSTEM_ALERT_WINDOW
+private static final int REQUEST_CODE = 1;
+private  void requestAlertWindowPermission() {
+    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+    intent.setData(Uri.parse("package:" + getPackageName()));
+    startActivityForResult(intent, REQUEST_CODE);
+}
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_CODE) {
+        if (Settings.canDrawOverlays(this)) {
+            Log.i(LOGTAG, "onActivityResult granted");
+        }
+    }
+}
+上述代码需要注意的是
+
+使用Action Settings.ACTION_MANAGE_OVERLAY_PERMISSION启动隐式Intent
+使用"package:" + getPackageName()携带App的包名信息
+使用Settings.canDrawOverlays方法判断授权结果
+请求WRITE_SETTINGS
+private static final int REQUEST_CODE_WRITE_SETTINGS = 2;
+private void requestWriteSettings() {
+    Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+    intent.setData(Uri.parse("package:" + getPackageName()));
+    startActivityForResult(intent, REQUEST_CODE_WRITE_SETTINGS );
+}
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_CODE_WRITE_SETTINGS) {
+        if (Settings.System.canWrite(this)) {
+            Log.i(LOGTAG, "onActivityResult write settings granted" );
+        }
+    }
+}
+上述代码需要注意的是
+
+使用Action Settings.ACTION_MANAGE_WRITE_SETTINGS 启动隐式Intent
+使用"package:" + getPackageName()携带App的包名信息
+使用Settings.System.canWrite方法检测授权结果
+注意：关于这两个特殊权限，一般不建议应用申请。

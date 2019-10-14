@@ -1,0 +1,30 @@
+Glide的图片变换开源库，其中做的最出色的应该要数glide-transformations这个库了。它实现了很多通用的图片变换效果，如裁剪变换、颜色变换、模糊变换等等，使得我们可以非常轻松地进行各种各样的图片变换。
+
+glide-transformations的项目主页地址是 https://github.com/wasabeef/glide-transformations 。
+
+现在如果我想对图片进行模糊化处理，那么就可以使用glide-transformations库中的BlurTransformation这个类，代码如下所示：
+
+Glide.with(this)
+     .load(url)
+     .bitmapTransform(new BlurTransformation(this))
+     .into(imageView);
+
+
+
+接下来我们再试一下图片黑白化的效果，使用的是GrayscaleTransformation这个类，代码如下所示：
+
+Glide.with(this)
+     .load(url)
+     .bitmapTransform(new GrayscaleTransformation(this))
+     .into(imageView);
+
+
+
+我们还可以将多个图片变换效果组合在一起使用，比如同时执行模糊化和黑白化的变换：
+
+Glide.with(this)
+     .load(url)
+     .bitmapTransform(new BlurTransformation(this), new GrayscaleTransformation(this))
+     .into(imageView);
+
+

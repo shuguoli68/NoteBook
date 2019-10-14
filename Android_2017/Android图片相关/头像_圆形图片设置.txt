@@ -1,0 +1,417 @@
+
+【1、在代码中】推荐，不需要考虑背景颜色
+
+public Bitmap toRoundBitmap(Bitmap bitmap) {
+        //圆形图片宽高
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        //正方形的边长
+        int r = 0;
+        //取最短边做边长
+        if(width > height) {
+            r = height;
+        } else {
+            r = width;
+        }
+        //构建一个bitmap
+        Bitmap backgroundBmp = Bitmap.createBitmap(width,
+                height, Bitmap.Config.ARGB_8888);
+        //new一个Canvas，在backgroundBmp上画图
+        Canvas canvas = new Canvas(backgroundBmp);
+        Paint paint = new Paint();
+        //设置边缘光滑，去掉锯齿
+        paint.setAntiAlias(true);
+        //宽高相等，即正方形
+        RectF rect = new RectF(0, 0, r, r);
+        //通过制定的rect画一个圆角矩形，当圆角X轴方向的半径等于Y轴方向的半径时，
+        //且都等于r/2时，画出来的圆角矩形就是圆形
+        canvas.drawRoundRect(rect, r/2, r/2, paint);
+        //设置当两个图形相交时的模式，SRC_IN为取SRC图形相交的部分，多余的将被去掉
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        //canvas将bitmap画在backgroundBmp上
+        canvas.drawBitmap(bitmap, null, rect, paint);
+        //返回已经绘画好的backgroundBmp
+        return backgroundBmp;
+    }
+
+
+
+//调用
+bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.glass_108_108);
+img3.setImageBitmap(toRoundBitmap(bitmap));
+
+
+
+
+
+
+
+
+【2、在Draw able中】推荐，不需要考虑背景颜色
+
+
+
+package com.example.shape;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
+
+/**
+ * Created by Admin on 2017/8/29.
+ */
+public class MyDrawable extends Drawable{
+    private Paint paint;//画笔
+    private Bitmap bitmap;//我们要操作的Bitmap
+    private RectF rectF;//矩形f
+
+    public MyDrawable(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        paint = new Paint();//初始化画笔
+        paint.setAntiAlias(true);//抗锯齿
+        //位图渲染器(参数1:我们要操作的Bitmap,参数2.3:X轴,Y轴的填充类型,
+        // 类型一共有三种,REPEAT:重复类型,CLAMP:拉伸类型(注意这里的拉伸是指拉伸图片的而最后一个像素),MIRROM:镜像类型)
+        BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        paint.setShader(shader);
+    }
+
+    /**
+     * 这个方法是指drawbale将被绘制在画布上的区域
+     *
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     */
+    //左上右下
+    @Override
+    public void setBounds(int left, int top, int right, int bottom) {
+        super.setBounds(left, top, right, bottom);
+        //绘制区域
+        rectF = new RectF(left, top, right, bottom);
+
+    }
+
+    //获取bipmap的高度
+    @Override
+    public int getIntrinsicHeight() {
+        return bitmap.getHeight();
+    }
+
+    //获取bitmap的宽
+    @Override
+    public int getIntrinsicWidth() {
+        return bitmap.getWidth();
+    }
+
+
+    /**
+     * 这是我们的核心方法,绘制我们想要的图片
+     *
+     * @param canvas
+     */
+    @Override
+    public void draw(Canvas canvas) {
+        //参数1:绘制的区域,参数2:X轴圆角半径,参数3:Y轴圆角半径,参数4:画笔
+        //canvas.drawRoundRect(rectF, 50, 50, paint);
+        //画圆(参数1.2:确定圆心坐标,参数3:半径,参数4:画笔)
+        canvas.drawCircle(getIntrinsicWidth() / 2, getIntrinsicHeight() / 2, getIntrinsicWidth() / 2, paint);
+    }
+
+
+    //设置透明度
+    @Override
+    public void setAlpha(int alpha) {
+
+    }
+
+    //设置滤镜渲染颜色
+    @Override
+    public void setColorFilter(ColorFilter colorFilter) {
+
+    }
+
+    //获取透明图
+    @Override
+    public int getOpacity() {
+        return 0;
+    }
+}
+
+
+
+//设置圆形图片
+bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.glass_108_108);
+        img1.setImageDrawable(new MyDrawable(bitmap));
+
+
+
+
+
+【3、自定义Image View】不推荐，需要考虑背景颜色，不然有矩形边框且有颜色
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+加上这一句：xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+
+//调用，黄色背景，红色圆边框
+<com.example.shape.CircularImageView
+        android:id="@+id/mycircle"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/glass_108_108"
+        app:backgroundHeadColor="#ffff00"
+        app:circleBorderHeadWidth="5dp"
+        app:ringHeadColor="@color/colorAccent"
+        />
+
+
+
+在values的styles.xml中加上：
+
+<declare-styleable name="CircleHead">
+        <attr name="circleBorderHeadWidth" format="dimension" />
+        <attr name="ringHeadColor" format="color" />
+        <attr name="backgroundHeadColor" format="color" />
+    </declare-styleable>
+
+
+
+
+package com.example.shape;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.ImageView;
+
+import com.example.loadpictureutil.R;
+
+/**
+ * Created by Admin on 2017/8/29.
+ */
+public class CircularImageView extends ImageView{
+    private Paint mPaintCircle;      //画圆形图像的笔
+    private Paint mPaintBorder;          //画圆形边界的笔
+    private Paint mPaintBackgroud;      //画背景颜色的笔
+    private BitmapShader mBitmapShader;      //图像着色器，可以用来画圆
+    private Matrix mMatrix;          //图片变换处理器-用来缩放图片以适应view控件的大小
+    private int mWidth;        //获得控件宽度
+    private int mHeight;             //获得控件高度
+    private int mRadius;             //中心园的半径
+    private int mCircleBorderWidth;        //边界宽度
+    private int mCirlcleBorderColor;             //边界边框颜色
+    private int mCircleBackgroudColor;      //圆形头像背景色
+
+    public CircularImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleHead);//将获取的属性转化为我们最先设好的属性
+        int n = typedArray.getIndexCount();
+        for (int i = 0; i < n; i++) {
+            int attr = typedArray.getIndex(i);
+            switch (attr) {
+                case R.styleable.CircleHead_circleBorderHeadWidth:
+                    mCircleBorderWidth = (int) typedArray.getDimension(attr, 0);
+                    break;
+                case R.styleable.CircleHead_ringHeadColor:
+                    mCirlcleBorderColor = typedArray.getColor(attr, Color.GREEN);
+                    break;
+                case R.styleable.CircleHead_backgroundHeadColor:
+                    mCircleBackgroudColor = typedArray.getColor(attr, Color.YELLOW);
+                    break;
+            }
+        }
+        init();
+    }
+
+    private void init() {
+        //初始化图片变换处理器
+        mMatrix = new Matrix();
+
+        mPaintCircle = new Paint();
+        mPaintCircle.setAntiAlias(true);//抗锯齿,没有消除锯齿的话，图片变换会很难看的，因为有些像素点会失真
+        mPaintCircle.setStrokeWidth(12);                     //设置圆边界宽度
+        //附加效果设置阴影
+        this.setLayerType(LAYER_TYPE_SOFTWARE, mPaintCircle);
+        mPaintCircle.setShadowLayer(13.0f, 5.0f, 5.0f, Color.GRAY);
+
+
+        //给图形加边框
+        mPaintBorder = new Paint();
+        mPaintBorder.setAntiAlias(true);
+        mPaintBorder.setStyle(Paint.Style.STROKE);
+        mPaintBorder.setStrokeWidth(mCircleBorderWidth);
+        mPaintBorder.setColor(mCirlcleBorderColor);
+
+        //画背景颜色的笔
+        mPaintBackgroud = new Paint();
+        mPaintBackgroud.setColor(mCircleBackgroudColor);
+        mPaintBackgroud.setAntiAlias(true);
+        mPaintBackgroud.setStyle(Paint.Style.FILL);
+    }
+
+    //使用BitmapShader画圆图形
+    private void setBitmapShader() {
+        //将图片转换成Bitmap
+        Drawable drawable = getDrawable();
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        //将bitmap放进图像着色器，后面两个模式是x，y轴的缩放模式，CLAMP表示拉伸
+        mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        //初始化图片与view之间伸缩比例，因为比例一般非整数，所以用float，免得精度丢失
+        float scale = 1.0f;
+        //        float scaleX = 1.0f;
+        //将图片的宽度高度的最小者作为图片的边长，用来和view来计算伸缩比例
+        //        int bitmapSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        int bitmapSize = Math.min(bitmap.getHeight(), bitmap.getWidth());
+
+
+        //        int bitmapSizeX = bitmap.getWidth();
+        //      scaleX = mWidth * 1.0f / bitmapSizeX;
+        /**注意这里，我使用的是图片最长的（就是宽度）来伸缩，那么用这个的话，
+         * 我们就会发现，较短的那边（就是高度）在经过Matrix的拉伸后会发现失真，强行地被拉长，
+         * 一、因为图片为了适应最长的那边可以完全在view上展示，把长的给压缩了，而短的比长的那边短，所以要强行拉伸，那么就会导致短的这边被拉伸时候失真
+         *二、因为图像的变换是针对每一个像素点的，所以有些变换可能发生像素点的丢失，
+         * 这里需要使用Paint.setAnitiAlias(boolean)设置来消除锯齿，这样图片变换后的效果会好很多。
+
+         */
+
+        //计算缩放比例，view的大小和图片的大小比例
+        scale = mWidth * 1.0f / bitmapSize;
+        //利用这个图像变换处理器，设置伸缩比例，长宽以相同比例伸缩
+        mMatrix.setScale(scale, scale);
+        //给那个图像着色器设置变换矩阵，绘制时就根据view的size，设置图片的size
+        //使图片的较小的一边缩放到view的大小一致，这样就可以避免图片过小导致CLAMP拉伸模式或过大导致显示不全
+        mBitmapShader.setLocalMatrix(mMatrix);
+        //为画笔套上一个Shader的笔套
+        mPaintCircle.setShader(mBitmapShader);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        /**
+         * 在这里设置高度宽度，以设置的较小值为准，防止不成圆
+         */
+        mWidth = getWidth();
+        mHeight = getHeight();
+        int mCircleSize = Math.min(mHeight, mWidth);
+        //圆的半径短的二分之一作为半径
+        mRadius = mCircleSize / 2 - mCircleBorderWidth;
+    }
+
+    /**
+     * 我们可以知道，如果我们直接用imageview然后引用shape弄成圆形的话，意味着我们在这个imageview的逻辑只能写在fragment等等里面了，而很难去进行逻辑的分层.。而且！！只能用矢量图并且美工要配合你
+     * 因此我们重写imageview就是为了更好地封装好点击imageview的逻辑
+     * 一、因为我们在xml设置的imageview的画布就是占据了一个矩形我们需要重新定义一个画布
+     * 而怎么重新定义画布呢，就是重写onDraw然后在他继承父类方法属性前重新定义画布，也就是在super方法前面啦！！可是，这个方法涉及到渲染多层，很容易oom
+     * 二、然而我们将用另一种方法，使用BitmapShader画圆形的，只要把bitmap传进去，然后把Matrix也传进去作为图片缩放的工具
+     */
+
+    /*
+       * Canvas理解成系统提供给我们的一块内存区域(但实际上它只是一套画图的API，真正的内存是下面的Bitmap)，
+        *而且它还提供了一整套对这个内存区域进行操作的方法，所有的这些操作都是画图API。
+        *也就是说在这种方式下我们已经能一笔一划或者使用Graphic来画我们所需要的东西了，要画什么要显示什么都由我们自己控制。
+     */
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //这里注释掉onDraw是为了不绘制原来的画布,如果使用的话就意味着又是渲染一层，就会像第二个方案那样容易OOM
+        //        super.onDraw(canvas);
+        if (getDrawable() != null) {
+            setBitmapShader();
+            canvas.drawRect(0, 0, mWidth, mHeight, mPaintBackgroud);//直接构造，画背景的，为什么画背景？因为画布是方的，市面上所有圆形头像都是没有直接处理边角的，而是用Framelayout来进去覆盖，所以这里定义个背景色告诉大家，当然也封装好给大家使用
+            canvas.drawCircle(mWidth / 2, mHeight / 2, mRadius, mPaintCircle);
+            //画边框
+            canvas.drawCircle(mWidth / 2, mHeight / 2, mRadius + mCircleBorderWidth / 2, mPaintBorder);
+        } else {
+            //如果在xml中这个继承ImageView的类没有被set图片就用默认的ImageView方案咯
+            super.onDraw(canvas);
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+【4、在Draw able中的.xml文件中定义】不推荐，需要考虑背景颜色，不然有矩形边框且有颜色
+
+img_shape.xml
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<!-- 图层1(oval) -->
+<!-- left,top,right,bottom定义为-10，是为了扩大oval，达到覆盖四角的效果 -->
+<item android:left="-10dp" android:top="-10dp" android:right="-10dp" android:bottom="-10dp">
+    <shape
+        android:shape="oval">
+        <!-- oval_inner[内部] -->
+        <solid android:color="#F00" />
+        <!-- oval_outer[边线] ，使用时改成父控件颜色即可-->
+        <stroke
+            android:width="10dp"
+            android:color="#00F" />
+        <!-- oval_inner_size[大小(除去边线)] ，也是最终裸露出来的圆形图像区域-->
+        <size
+            android:height="50dp"
+            android:width="50dp" />
+        <!-- 使oval_inner透明，裸露出将来设置的背景图片 -->
+        <gradient android:centerColor="#0000" />
+    </shape>
+</item>
+</layer-list>
+
+
+
+
+
+
+
+//src 和 background必须这样设置，glass_108_108.jpg， img_shape.xml
+<ImageView
+        android:id="@+id/circular_img2"
+        android:background="@mipmap/glass_108_108"
+        android:src="@drawable/img_shape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+http://blog.csdn.net/u010072711/article/details/50096181
+
+主要讲一下使用双线程来实现五分钟无操作跳出屏保，可以在application里面启动监听线程，也可以在activity的oncreated方法里面启动监听，下面是双线程实现的屏保：

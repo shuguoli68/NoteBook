@@ -1,0 +1,68 @@
+android获取本地图片并显示图片
+
+import java.io.FileNotFoundException;
+
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
+
+import com.maikefengchao.daixu.R;
+
+public class WriteArticle_CompeterelayActivity extends BaseActivity {
+    private ImageView im_upload_img;
+
+    @Override
+    public void initView(Bundle savedInstanceState){
+        setContentView(R.layout.view_write_competerelay);
+
+        im_upload_img = (ImageView)findViewById(R.id.write_competerelay_cover_iv);
+    }
+
+    @Override
+    protected void setListener() {
+        im_upload_img.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                /* 开启Pictures画面Type设定为image */
+                intent.setType("image/*");
+                /* 使用Intent.ACTION_GET_CONTENT这个Action */
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                /* 取得相片后返回本画面 */
+                startActivityForResult(intent, 5);
+            }
+        });
+    }
+
+    @Override
+    protected void processLogic(Bundle saveInstanceState) {
+
+    }
+
+
+    //获取本地图片
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 5) {
+            Uri uri = data.getData();
+            String img_url = uri.getPath();//这是本机的图片路径
+            ContentResolver cr = this.getContentResolver();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                ImageView imageView = (ImageView) findViewById(R.id.write_competerelay_cover_iv);
+                /* 将Bitmap设定到ImageView */
+                imageView.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                Log.e("Exception", e.getMessage(),e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+}

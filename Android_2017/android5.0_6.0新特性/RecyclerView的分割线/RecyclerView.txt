@@ -1,0 +1,161 @@
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler"
+        android:scrollbars="vertical"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>
+
+
+
+
+
+package com.example.recyclerview;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.newtest.R;
+
+import java.util.List;
+
+/**
+ * Created by Admin on 2017/10/31.
+ */
+public class RecyclerAdapter extends RecyclerView.Adapter{
+
+    private List<RecyclerBean> list;
+
+    public RecyclerAdapter(List<RecyclerBean> list){
+        this.list = list;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item,parent, false);
+        MyViewHolder holder = new MyViewHolder(view);
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        MyViewHolder myViewHolder = (MyViewHolder) holder;
+        myViewHolder.position = position;
+        RecyclerBean bean = list.get(position);
+        myViewHolder.textView.setText(bean.getName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
+
+        private View itemLayout;
+        private ImageView imageView;
+        private TextView textView;
+        private int position;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            itemLayout = itemView.findViewById(R.id.layout_item);
+            imageView = (ImageView) itemView.findViewById(R.id.item_img);
+            textView = (TextView) itemView.findViewById(R.id.item_name);
+
+            itemLayout.setOnClickListener(this);
+            itemLayout.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (listener != null){
+                listener.onItemClick(position);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if (listener != null){
+                return listener.onItemLongClick(position);
+            }
+            return false;
+        }
+    }
+
+    public void addData(int position,RecyclerBean bean) {
+        list.add(position, bean);
+        notifyItemInserted(position);
+    }
+
+    public void removeData(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public interface OnRecyclerViewListener {
+        void onItemClick(int position);
+        boolean onItemLongClick(int position);
+    }
+
+    private OnRecyclerViewListener listener;
+
+    public void setOnRecyclerViewListener(OnRecyclerViewListener listener) {
+        this.listener = listener;
+    }
+}
+
+
+
+package com.example.recyclerview;
+
+/**
+ * Created by Admin on 2017/10/31.
+ */
+public class RecyclerBean {
+
+    /**
+     * url : math
+     * name : liming
+     */
+
+    private String url;
+    private String name;
+
+    public RecyclerBean() {
+    }
+
+    public RecyclerBean(String url, String name) {
+        this.url = url;
+        this.name = name;
+    }
+
+    public String getMajor() {
+        return url;
+    }
+
+    public void setMajor(String url) {
+        this.url = url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+

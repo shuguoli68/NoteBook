@@ -1,0 +1,147 @@
+https://blog.csdn.net/sj617913246/article/details/73692998
+
+
+
+
+
+Android原生AlertDialog修改标题，内容，按钮颜色，字体大小等
+2017年06月24日 17:38:18
+阅读数：11878
+这里写图片描述
+
+  private void showAlerDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("AlerDialog")
+                .setMessage("这是一个AlertDialog")
+                .setPositiveButton("确定",null)
+                .setNegativeButton("取消",null)
+                .create();
+        dialog.show();
+    }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+需求
+
+我们在android中可以很容易的通过上面的代码弹出一个AlertDialog，其中的标题，内容还有按钮的颜色大小等，系统代码中并没有暴露出方法来允许我们自定义他们，可假如有需求，为了突出确定，需要将确定的按钮修改为红色，我们该怎么做呢，或者是需要修改标题颜色等，当然我们可以选择自定义View，在此处我们不讨论这个方法，我们尝试修改原生的AlertDialog的标题，按钮颜色等；
+
+分析
+
+修改内容颜色
+
+这里写图片描述
+
+假如我们需要修改内容的颜色为蓝色，我们该如何修改呢？既然原生的AlertDialog没有提供修改的方法，那我们可以通过反射来提取到这个控件，然后修改其颜色即可；
+
+public class AlertDialog extends AppCompatDialog implements DialogInterface {
+
+    final AlertController mAlert;
+    ...
+}
+1
+2
+3
+4
+5
+点开AlertDialog源码我们发现有一个全局的AlertController，AlertDialog主要就是通过这个类来实现的，我们继续看这个类的源码；
+
+class AlertController {
+    ...
+    private ImageView mIconView;
+    private TextView mTitleView;
+    private TextView mMessageView;
+    private View mCustomTitleView;
+   ...
+1
+2
+3
+4
+5
+6
+7
+8
+在这个类的源码中我们看到了有mTitleView，mMessageView等字段，这些字段就是我们所需要的，我们就可以通过反射来动态修改他们；
+
+private void showAlerDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("AlerDialog")
+                .setMessage("这是一个AlertDialog")
+                .setPositiveButton("确定",null)
+                .setNegativeButton("取消",null)
+                .create();
+        dialog.show();
+        try {
+            Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+            mAlert.setAccessible(true);
+            Object mAlertController = mAlert.get(dialog);
+            Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+            mMessage.setAccessible(true);
+            TextView mMessageView = (TextView) mMessage.get(mAlertController);
+            mMessageView.setTextColor(Color.BLUE);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+通过上面的代码，我们就可以通过反射来修改原生AlertDialog中内容的颜色或者大小;
+
+修改按钮颜色
+
+这里写图片描述
+
+修改按钮的颜色同样可以通过反射的方法来完成，不过原生的AlertDialog提供了相应的方法来实现针对按钮的操作，所以我们可以通过以下方法直接调用，例如将按钮的颜色一个修改为黑色，一个修改为蓝色：
+
+  private void showAlerDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("AlerDialog")
+                .setMessage("这是一个AlertDialog")
+                .setPositiveButton("确定",null)
+                .setNegativeButton("取消",null)
+                .create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+    }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+通过以上代码，就可以将AlertDialog中按钮的颜色来自己定义；
+
+这样我们就完成了自定义标题，内容，按钮颜色或者大小等，需要注意的是，不管是通过反射，还是原生的方法来修改，都需要在调用AlertDialog的show()方法后进行，否则会报错；

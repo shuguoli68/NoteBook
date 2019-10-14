@@ -1,0 +1,100 @@
+首先说明Android的CPU分配的最小单元是线程，Handler一般是在某个线程里创建的，因而Handler和Thread就是相互绑定的，一一对应。 
+　　而Runnable是一个接口，Thread是Runnable的子类。所以说，他俩都算一个进程。 
+　　HandlerThread顾名思义就是可以处理消息循环的线程，他是一个拥有Looper的线程，可以处理消息循环。
+
+　　与其说Handler和一个线程绑定，不如说Handler是和Looper一一对应的。
+
+Handler是沟通Activity 与Thread/runnable的桥梁。而Handler是运行在主UI线程中的，它与子线程可以通过Message对象来传递数据
+
+1,首先第一种启用方法是通过继承Thread类，并改写run方法来实现一个线程
+
+public class MyThread extends Thread {  
+
+    //继承Thread类，并改写其run方法        
+    private final static String TAG = "My Thread ===> ";      
+    public void run(){  
+        Log.d(TAG, "run");  
+        for(int i = 0; i<100; i++)  
+        {  
+            Log.e(TAG, Thread.currentThread().getName() + "i =  " + i);  
+        }  
+    }  
+} 
+ 
+
+启动
+
+new MyThread().start();  
+1
+1
+2,第二种启用方式创建一个Runnable对象
+
+public class MyRunnable implements Runnable{  
+    private final static String TAG = "My Runnable ===> ";  
+
+    @Override  
+    public void run() {  
+        // TODO Auto-generated method stub  
+        Log.d(TAG, "run");  
+        for(int i = 0; i<1000; i++)  
+        {  
+            Log.e(TAG, Thread.currentThread().getName() + "i =  " + i);  
+        }  
+    }  
+} 
+ 
+
+启动
+
+  new Thread(new MyRunnable()).start(); 
+ 
+
+另外一种启用方式
+
+ btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                           ...
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+3, 第三种启用方式通过Handler启动线程
+
+public class MainActivity extends Activity {      
+    private final static String TAG = "UOfly Android Thread ==>";  
+    private int count = 0;  
+    private Handler mHandler = new Handler();  
+    private Runnable mRunnable = new Runnable() {  
+        public void run() {  
+            Log.e(TAG, Thread.currentThread().getName() + " " + count);  
+            count++;  
+            setTitle("" + count);  
+            // 每3秒执行一次  
+            mHandler.postDelayed(mRunnable, 3000);  //给自己发送消息，自运行
+        }  
+    };  
+    /** Called when the activity is first created. */  
+    @Override  
+    public void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.main);  
+        // 通过Handler启动线程  
+        mHandler.post(mRunnable);  //发送消息，启动线程运行
+    }  
+
+      @Override      
+         protected void onDestroy() {       
+             //将线程销毁掉       
+             mHandler.removeCallbacks(mRunnable);       
+             super.onDestroy();       
+         }       
+
+} 

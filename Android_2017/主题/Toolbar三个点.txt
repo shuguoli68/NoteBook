@@ -1,0 +1,12 @@
+
+1、修改ToolBar右边的三个点：
+
+<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    ...
+    ...
+    <item name="actionOverflowButtonStyle">@style/ToolbarOverflow</item>
+</style>
+
+ <style name="ToolbarOverflow" parent="@android:style/Widget.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more_vert_white_24dp</item>
+ </style>

@@ -1,0 +1,321 @@
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.operateimage.MainActivity">
+
+    <Button
+        android:id="@+id/main_look"
+        android:text="查看"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_rotate"
+        android:text="旋转"
+        android:layout_below="@id/main_look"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_scale"
+        android:text="缩放"
+        android:layout_toRightOf="@id/main_rotate"
+        android:layout_below="@id/main_look"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_translate"
+        android:text="平移"
+        android:layout_toRightOf="@id/main_scale"
+        android:layout_below="@id/main_look"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_skew"
+        android:text="倾斜"
+        android:layout_below="@id/main_rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_mirror"
+        android:text="镜像"
+        android:layout_below="@id/main_scale"
+        android:layout_toRightOf="@id/main_skew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/main_shadow"
+        android:text="倒影"
+        android:layout_below="@id/main_translate"
+        android:layout_toRightOf="@id/main_mirror"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.example.operateimage.OperateUtil
+        android:id="@+id/main_img"
+        android:src="@mipmap/ic_launcher"
+        android:layout_below="@id/main_skew"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+package com.example.operateimage;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.util.AttributeSet;
+import android.view.View;
+
+/**
+ * Created by Admin on 2017/8/25.
+ */
+public class OperateUtil extends View{
+    private Bitmap mBitmap;
+    private Matrix matrix;
+
+    public OperateUtil(Context context) {
+        super(context);
+        // TODO Auto-generated constructor stub
+        matrix = new Matrix();
+    }
+
+    public OperateUtil(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        // TODO Auto-generated constructor stub
+        matrix = new Matrix();
+    }
+
+    public OperateUtil(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        // TODO Auto-generated constructor stub
+        matrix = new Matrix();
+    }
+
+    public Bitmap getmBitmap() {
+        return mBitmap;
+    }
+
+    public void setmBitmap(Bitmap mBitmap) {
+        this.mBitmap = mBitmap;
+        invalidate();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // TODO Auto-generated method stub
+        super.onDraw(canvas);
+        if (mBitmap != null) {
+            canvas.drawBitmap(mBitmap, matrix, null);
+        }
+    }
+
+    public void rotate(float degree) {
+        if (mBitmap != null) {
+            matrix.preRotate(degree, mBitmap.getWidth() / 2,
+                    mBitmap.getHeight() / 2);
+            invalidate();
+        }
+
+    }
+
+    public void translate(float dx, float dy) {
+        if (mBitmap != null) {
+            matrix.postTranslate(dx, dy);
+            invalidate();
+        }
+    }
+
+    public void scale(float sx, float sy) {
+        if (mBitmap != null) {
+            matrix.postScale(sx, sy);
+            invalidate();
+        }
+    }
+
+    public void mirror() {
+        if (mBitmap != null) {
+            matrix.postScale(-1, 1);
+            matrix.postTranslate(mBitmap.getWidth(), 0);
+            invalidate();
+        }
+    }
+
+    public void shadow() {
+        if (mBitmap != null) {
+            matrix.postScale(1, -1);
+            matrix.postTranslate(0, mBitmap.getHeight());
+            invalidate();
+        }
+    }
+
+    public void skew(float kx, float ky){
+        if (mBitmap != null) {
+            matrix.postSkew(kx, ky);
+            invalidate();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+package com.example.operateimage;
+
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private Button main_look,main_rotate,main_scale,main_translate,main_skew,main_mirror,main_shadow;
+    private OperateUtil operate;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        permissionTest();
+    }
+    private void initView(){
+        operate = (OperateUtil) findViewById(R.id.main_img);
+        main_look = (Button) findViewById(R.id.main_look);
+        main_look.setOnClickListener(this);
+        main_rotate = (Button) findViewById(R.id.main_rotate);
+        main_rotate.setOnClickListener(this);
+        main_scale = (Button) findViewById(R.id.main_scale);
+        main_scale.setOnClickListener(this);
+        main_translate = (Button) findViewById(R.id.main_translate);
+        main_translate.setOnClickListener(this);
+        main_skew = (Button) findViewById(R.id.main_skew);
+        main_skew.setOnClickListener(this);
+        main_mirror = (Button) findViewById(R.id.main_mirror);
+        main_mirror.setOnClickListener(this);
+        main_shadow = (Button) findViewById(R.id.main_shadow);
+        main_shadow.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Bitmap bitmap = null;
+        switch (view.getId()){
+            case R.id.main_look:
+                Intent intent = new Intent();
+                /* 开启Pictures画面Type设定为image */
+                intent.setType("image/*");
+                /* 使用Intent.ACTION_GET_CONTENT这个Action */
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                /* 取得相片后返回本画面 */
+                startActivityForResult(intent, 1);
+                /*BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/1.Skyscraper.jpg",options);
+                main_img.setImageBitmap(bitmap);
+                compressBitmapToFile(bitmap,new File(Environment.getExternalStorageDirectory()+"/aaa/78.jpg"));*/
+                break;
+            case R.id.main_rotate:
+                operate.rotate(15);
+                break;
+            case R.id.main_scale:
+                operate.scale(0.8f,0.8f);
+                break;
+            case R.id.main_translate:
+                operate.translate(2,2);
+                break;
+            case R.id.main_skew:
+                operate.skew(-0.3f,0.3f);
+                break;
+            case R.id.main_mirror:
+                operate.mirror();
+                break;
+            case R.id.main_shadow:
+                operate.shadow();
+                break;
+        }
+    }
+    //获取本地图片
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            String img_url = uri.getPath();//这是本机的图片路径
+            ContentResolver cr = this.getContentResolver();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                OperateUtil imageView = (OperateUtil) findViewById(R.id.main_img);
+                /* 将Bitmap设定到ImageView */
+                imageView.setmBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                Log.e("Exception", e.getMessage(),e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    //权限申请
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+        } else {
+            initView();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initView();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+}
+
+

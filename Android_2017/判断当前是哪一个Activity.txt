@@ -1,0 +1,12 @@
+【判断当前是哪一个Activity】
+在项目中新建一个BaseActivity继承自Activity，然后再项目中所有的Activity文件都不继承Activity，而是继承自BaseActivity。
+BaseActivity:
+
+    public class BaseActivity extends Activity{
+        protected void onCreate(Bundle saveInstanceState){
+            super.onCreate(saveInstanceState);
+            Log.d("BaseActivity",getClass().getSimpleName());
+        }   
+    }
+
+这样做，可以在onCreate()中获取当前类的类名，并通过log打印出来，那样我们就能知道，当前的Activity是哪个。

@@ -1,0 +1,4 @@
+//加上两个属性
+
+app:title="."
+android:title="."

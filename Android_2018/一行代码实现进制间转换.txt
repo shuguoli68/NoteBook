@@ -1,0 +1,4 @@
+public static void hexTo(String str, int hexM, int hexN)
+    {//M进制转换为N进制
+        System.out.println(Integer.toString(Integer.parseInt(str, hexM), hexN));
+    }

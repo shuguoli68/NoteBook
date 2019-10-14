@@ -1,0 +1,76 @@
+android中倒计时方法, 通过一个简单的例子来使用CountDownTimer实现倒计时10秒:
+
+
+
+new CountDownTimer(10000, 1000) {
+
+    
+
+       public void onTick(long millisUntilFinished) {
+   
+     
+          LogUtil.i(TAG, "seconds remaining: " + millisUntilFinished / 1000);
+    
+
+       }
+
+    
+       public void onFinish() {
+        
+
+          LogUtil.i(TAG, "done!");
+    
+
+}
+}.start();
+
+
+可以看出CountDownTimer每隔1秒调用一次onTick(long millisUntilFinished)方法, 倒计时结束时调用onFinish()方法.
+
+
+
+温馨提示:回调方法中可以直接更新UI哦~
+
+
+
+那么我们来简单的了解一下这个类:
+
+
+构造函数
+
+CountDownTimer (long millisInFuture, long countDownInterval)
+
+参数1: 你要倒计时的总时间, 单位ms.
+参数2: 你要倒计时的间隔时间, 单位ms.
+
+
+
+
+方法
+
+public final void cancel ()
+
+
+
+public abstract void onFinish ()
+
+
+
+public abstract void onTick (long millisUntilFinished)
+
+
+
+public final CountDownTimer start ()
+
+
+方法1cancel(): 取消当前的任务
+
+
+方法2onFinish(): 当前任务完成的时候回调
+
+
+方法3onTick(long millisUntilFinished): 当前任务每完成一次倒计时间隔时间时回调
+
+
+方法4start(): 开始当前的任务
+

@@ -1,0 +1,458 @@
+
+推荐的使用方法
+
+1、第一种用法
+
+初始化
+
+ Phoenix.init(this); // Context
+
+从网络加载一张图片
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView).load(url);
+
+从本地加载一张图片
+
+String filePath = "/sdcard/image/test.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView).load(filePath);
+
+从res下面加载一张图片
+
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView).load(R.drawable.meizi);
+
+在写布局文件xml时，我不知道要显示的图片尺寸，需要根据业务逻辑动态的设置要显示的图片的大小，可以像下面这样写：
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView)
+       .setWidth(100)
+       .setHeight(100)
+       .load(url);
+
+只知道要显示图片的高或者宽的值，另一个值可以从设置的比例得出
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView)
+       .setWidth(100)
+       .setAspectRatio(0.6f) // w/h = 6/10
+       .load(url);
+
+图片的高斯模糊处理
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView)
+       .setNeedBlur(true)
+       .load(url);
+
+加载并显示gif格式的图片
+
+String url = "http://img4.178.com/acg1/201506/227753817857/227754566617.gif";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView)
+       .load(url);
+
+加载并显示webp格式的图片
+
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+Phoenix.with(simpleDraweeView)
+        .load(R.drawable.meizi_webp);
+
+……
+
+2、第二种用法
+
+初始化
+
+ Fresco.initialize(context, ImageLoaderConfig.getImagePipelineConfig(context));
+
+从网络加载一张图片
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadImage(simpleDraweeView, url);
+
+从本地加载一张图片
+
+String filePath = "/sdcard/image/test.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadFile(simpleDraweeView, filePath);
+
+从res下面加载一张图片
+
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadDrawable(simpleDraweeView, R.drawable.meizi, 100, 100);
+
+在写布局文件xml时，我不知道要显示的图片尺寸，需要根据业务逻辑动态的设置要显示的图片的大小，可以像下面这样写：
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadImage(simpleDraweeView, url, 120, 120);
+
+只知道要显示图片的高或者宽的值，另一个值可以从设置的比例得出
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ViewGroup.LayoutParams lvp = simpleDraweeView.getLayoutParams();
+lvp.width = DensityUtil.getDisplayWidth(this); // 取值为手机屏幕的宽度
+simpleDraweeView.setAspectRatio(0.6f); // 设置宽高比
+ImageLoader.loadDrawable(simpleDraweeView, R.drawable.meizi);
+
+图片的高斯模糊处理
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadImageBlur(simpleDraweeView, url);
+
+加载并显示gif格式的图片
+
+String url = "http://img4.178.com/acg1/201506/227753817857/227754566617.gif";
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadImage(simpleDraweeView, url);
+
+加载并显示webp格式的图片
+
+SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+ImageLoader.loadDrawable(simpleDraweeView, R.drawable.meizi_webp);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+从网络加载一张图片
+
+String url = "http://ww3.sinaimg.cn/large/610dc034jw1f6m4aj83g9j20zk1hcww3.jpg";
+ImageLoader.loadImage((SimpleDraweeView)findViewById(R.id.sdv_1), url);
+
+1、显示一张图片
+
+    <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            app:actualImageScaleType="centerCrop"/>
+
+效果图如下： 
+
+
+2、显示一张圆形图片
+
+  <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_2"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="true"/>
+
+效果图如下： 
+
+
+3、显示一张圆形带边框的图片
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_3"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="true"
+            app:roundingBorderColor="#fff3cf44"
+            app:roundingBorderWidth="2dp"/>
+
+效果图如下： 
+
+
+4、显示一张圆角图片
+
+   <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_4"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="false"
+            app:roundedCornerRadius="10dp"/>
+
+效果图如下： 
+
+
+5、显示一张底部是圆角的图片
+
+   <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_5"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="false"
+            app:roundedCornerRadius="10dp"
+            app:roundTopLeft="false"
+            app:roundTopRight="false"
+            app:roundBottomLeft="true"
+            app:roundBottomRight="true"/>
+
+效果图如下： 
+
+
+6、显示一张左上和右下是圆角的图片
+
+     <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_6"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:roundAsCircle="false"
+            app:roundedCornerRadius="10dp"
+            app:roundTopLeft="true"
+            app:roundTopRight="false"
+            app:roundBottomLeft="false"
+            app:roundBottomRight="true"/>
+
+效果图如下： 
+
+
+7、设置占位图
+
+<com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_7"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:placeholderImage="@mipmap/ic_launcher"
+            app:placeholderImageScaleType="centerCrop" />
+
+8、带动画的显示（从半透明到不透明）
+
+ <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_8"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:fadeDuration="3000"/>
+
+9、图层叠加显示
+
+ <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_10"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:overlayImage="@mipmap/ic_launcher"/>
+
+10、其它的属性的配置，比如加载进度、加载失败、重试图
+
+   <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_11"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="15dp"
+            app:actualImageScaleType="centerCrop"
+            app:failureImage="@mipmap/ic_launcher"
+            app:failureImageScaleType="centerInside"
+            app:retryImage="@mipmap/ic_launcher"
+            app:retryImageScaleType="centerCrop"
+            app:progressBarImage="@mipmap/ic_launcher"
+            app:progressBarImageScaleType="centerCrop"
+            app:progressBarAutoRotateInterval="5000"/>
+
+11、从本地文件（比如SDCard上）加载图片
+
+  public static void loadFile(final SimpleDraweeView draweeView, String filePath, final int reqWidth, final int reqHeight) {
+        Uri uri = new Uri.Builder()
+                .scheme(UriUtil.LOCAL_FILE_SCHEME)
+                .path(filePath)
+                .build();
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .setLocalThumbnailPreviewsEnabled(true)
+                .setResizeOptions(new ResizeOptions(reqWidth, reqHeight))
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(draweeView.getController())
+                .setControllerListener(new BaseControllerListener<ImageInfo>() {
+                    @Override
+                    public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+                        if (imageInfo == null) {
+                            return;
+                        }
+
+                        ViewGroup.LayoutParams vp = draweeView.getLayoutParams();
+                        vp.width = reqWidth;
+                        vp.height = reqHeight;
+                        draweeView.requestLayout();
+                    }
+                })
+                .build();
+        draweeView.setController(controller);
+    }
+
+使用：
+ImageLoader.loadFile((SimpleDraweeView)itemView, photoInfo.thumbnailUrl, 120, 120);
+
+
+
+
+12、从本地资源（Resources）加载图片
+
+  public static void loadDrawable(SimpleDraweeView draweeView, int resId) {
+        Uri uri = new Uri.Builder()
+                .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
+                .path(String.valueOf(resId))
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setOldController(draweeView.getController())
+                .build();
+        draweeView.setController(controller);
+    }
+
+使用：
+
+ImageLoader.loadDrawable(simpleDraweeView, R.drawable.meizi);
+
+13、对图片进行性高斯模糊处理
+
+public static void loadImageBlur(final SimpleDraweeView draweeView, String url) {
+        loadImage(draweeView, url, new BasePostprocessor() {
+            @Override
+            public String getName() {
+                return "blurPostprocessor";
+            }
+
+            @Override
+            public void process(Bitmap bitmap) {
+                BitmapBlurHelper.blur(bitmap, 35);
+            }
+        });
+    }
+
+其内部调用的方法
+
+public static void loadImage(SimpleDraweeView simpleDraweeView, String url, BasePostprocessor processor) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+
+        Uri uri = Uri.parse(url);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .setPostprocessor(processor)
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setOldController(simpleDraweeView.getController())
+                .build();
+        simpleDraweeView.setController(controller);
+    }
+
+使用：
+
+  String url = "http://a.hiphotos.baidu.com/image/pic/item/55e736d12f2eb938d3de795ad0628535e4dd6fe2.jpg";
+
+  SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+
+  simpleDraweeView.setAspectRatio(0.7f);
+
+  ViewGroup.LayoutParams lvp = simpleDraweeView.getLayoutParams();
+  lvp.width = DensityUtil.getDisplayWidth(this);
+
+  ImageLoader.loadImageBlur(simpleDraweeView, url,
+                DensityUtil.getDisplayWidth(this), DensityUtil.getDisplayHeight(this));
+
+效果图如下： 
+
+
+14、我们知道使用Fresco加载并显示一张图片，需要指定SimpleDraweeView的宽高或者指定其中一个值并设置宽高比，可是我真的不知道要显示的图片有多大，该显示多大？可以帮我搞定吗？答案是肯定的。
+
+        String url = "http://feed.chujianapp.com/20161108/452ab5752287a99a1b5387e2cd849006.jpg@1080w";
+        SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+        ImageLoader.loadImage(simpleDraweeView, url, new SingleImageControllerListener(simpleDraweeView));
+
+15、从网络加载并显示gif格式的图片
+
+   String url = "http://img4.178.com/acg1/201506/227753817857/227754566617.gif";
+
+   SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+   ImageLoader.loadImage(simpleDraweeView, url);
+
+16、加载并显示webp格式的图片
+
+        SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.sdv_1);
+        ViewGroup.LayoutParams lvp = simpleDraweeView.getLayoutParams();
+        lvp.width = DensityUtil.getDisplayWidth(this);
+        simpleDraweeView.setAspectRatio(0.6f); // 设置宽高比
+
+        ImageLoader.loadDrawable(simpleDraweeView, R.drawable.meizi_webp,
+                DensityUtil.getDisplayWidth(this), DensityUtil.getDisplayHeight(this));
+
+其中R.drawable.meizi_webp为meizi_webp.webp
+
+17、从内存缓存中移除指定图片的缓存
+
+           if (!TextUtils.isEmpty(photoInfo.originalUrl)) {
+                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                Uri uri = Uri.parse(photoInfo.originalUrl);
+                if (imagePipeline.isInBitmapMemoryCache(uri)) {
+                    imagePipeline.evictFromMemoryCache(uri);
+                }
+            }
+
+18、从磁盘缓存中移除指定图片的缓存
+
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        Uri uri = Uri.parse(photoInfo.originalUrl);
+        // 下面的操作是异步的
+        if (imagePipeline.isInDiskCacheSync(uri)) {
+            imagePipeline.evictFromDiskCache(uri);
+        }
+
+19、清空磁盘缓存
+
+Fresco.getImagePipeline().clearDiskCaches();
+
+20、清空内存缓存
+
+Fresco.getImagePipeline().clearMemoryCaches();
+
+21、清空缓存（内存缓存 + 磁盘缓存）
+
+Fresco.getImagePipeline().clearCaches();
+
+22、在列表视图滚动时，不加载图片，等滚动停止后再开始加载图片，提升列表视图的滚动流畅度。
+
+    // 需要暂停网络请求时调用
+    public static void pause(){
+        Fresco.getImagePipeline().pause();
+    }
+
+    // 需要恢复网络请求时调用
+    public static void resume(){
+        Fresco.getImagePipeline().resume();
+    }
+

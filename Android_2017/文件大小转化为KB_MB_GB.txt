@@ -1,0 +1,3 @@
+//工具类 根据文件大小自动转化为KB, MB, GB  
+
+android.text.format.Formatter.formatFileSize(MainActivity.this,Long.valueOf(msg.arg1))

@@ -1,0 +1,9 @@
+DrawerLayout 侧边栏 禁止手指滑动弹出
+
+在android抽屉Drawer_layout开发中，需要关闭手势滑动，来滑出弹出框
+
+//禁止手势滑动
+mDrawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+//打开手势滑动
+mDrawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

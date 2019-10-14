@@ -1,0 +1,142 @@
+Android Toast用于在手机屏幕上向用户显示一条信息，一段时间后信息会自动消失。信息可以是简单的文本，也可以是复杂的图片及其他内容（显示一个view）。
+ 
+1.简单用法
+
+
+
+
+Toast.makeText(midlet.getApplicationContext(), "用户名不能为空", Toast.LENGTH_LONG).show();
+
+2.自定义显示位置效果
+
+代码
+toast = Toast.makeText(getApplicationContext(),
+     "自定义位置Toast", Toast.LENGTH_LONG);
+   toast.setGravity(Gravity.CENTER, 0, 0);
+   toast.show();
+ 
+3.带图片效果
+
+ 
+代码
+toast = Toast.makeText(getApplicationContext(),
+     "带图片的Toast", Toast.LENGTH_LONG);
+   toast.setGravity(Gravity.CENTER, 0, 0);
+   LinearLayout toastView = (LinearLayout) toast.getView();
+   ImageView imageCodeProject = new ImageView(getApplicationContext());
+   imageCodeProject.setImageResource(R.drawable.icon);
+   toastView.addView(imageCodeProject, 0);
+   toast.show();
+ 
+三、常量
+ 
+       int  LENGTH_LONG
+ 持续显示视图或文本提示较长时间。该时间长度可定制。
+       参见
+              setDuration(int)
+ 
+int  LENGTH_SHORT
+持续显示视图或文本提示较短时间。该时间长度可定制。该值为默认值。
+       参见
+              setDuration(int)
+ 
+　　四、构造函数
+ 
+       public Toast (Context context)
+       构造一个空的 Toast 对象。在调用 show() 之前，必须先调用 setView(View)。
+（译者注：只有使用setView(View)的时候，才使用new Toast(Content content)来得到Toast对象，否则必须用makeText()方法来创建toast对象，并且这种方式获得Toast对象不能使用setText()方法。）
+       参数
+              context    使用的上下文。通常是你的 Application 或 Activity 对象。 
+ 
+　　五、公共方法
+ 
+public int cancel()
+     如果视图已经显示则将其关闭，还没有显示则不再显示。一般不需要调用该方法。正常情况下，视图会在超过存续期间后消失。
+ 
+public int getDuration()
+返回存续期间
+       请参阅
+              setDuration(int)
+public int getGravity()
+     取得提示信息在屏幕上显示的位置。
+　　　　请参阅
+Gravity
+setGravity()
+ 
+public float getHorizontalMargin()
+返回横向栏外空白。
+ 
+public float getVerticalMargin()
+返回纵向栏外空白。
+ 
+public ViewgetView()
+返回 View 对象。
+　　　　请参阅
+setView(View)
+ 
+public int getXOffset()
+返回相对于参照位置的横向偏移像素量。
+        Toast msg = Toast.makeText(Main.this, "Message", Toast.LENGTH_LONG);        msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);        msg.show();
+ 
+public int getYOffset()
+返回相对于参照位置的纵向偏移像素量。
+ 
+public static ToastmakeText(Context context, int resId, int duration)
+生成一个从资源中取得的包含文本视图的标准 Toast 对象。
+　　　　参数
+context
+使用的上下文。通常是你的Application或Activity对象。
+resId
+要使用的字符串资源ID，可以是已格式化文本。
+duration
+该信息的存续期间。值为LENGTH_SHORT或LENGTH_LON
+　　　　　异常
+　　　　　　当资源未找到时抛异常Resources.NotFoundException
+ 
+public static ToastmakeText(Context context, CharSequence text, int duration)
+生成一个包含文本视图的标准 Toast 对象。
+　　　　参数
+context
+使用的上下文。通常是你的Application或Activity对象。
+resId
+要显示的文本，可以是已格式化文本。
+duration
+该信息的存续期间。值为LENGTH_SHORT或LENGTH_LONG
+ 	 
+public void setDuration(int duration)
+设置存续期间。//注意：设置过大不起作用，duration的实际可用最大值为3500，即最多只能显示3.5s
+　　　　请参阅
+LENGTH_SHORT
+LENGTH_LONG
+ 
+public void setGravity(int gravity, int xOffset, int yOffset)
+设置提示信息在屏幕上的显示位置。
+（译者注：自定义Toast的显示位置，例如toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)可以把Toast定位在左上角。Toast提示的位置xOffset:大于0向右移，小于0向左移）
+　　　　请参阅
+Gravity
+getGravity()
+ 
+public void setMargin(float horizontalMargin, float verticalMargin)
+设置视图的栏外空白。
+　　　　参数
+    　　　　horizontalMargin         容器的边缘与提示信息的横向空白（与容器宽度的比）。
+       　　　　verticalMargin             容器的边缘与提示信息的纵向空白（与容器高度的比）。
+ 
+public void setText(int resId)
+更新之前通过 makeText() 方法生成的 Toast 对象的文本内容。
+　　　　参数
+　　　　    resId      为 Toast 指定的新的字符串资源ID。
+ 
+public void setText(CharSequence s)
+更新之前通过 makeText() 方法生成的 Toast 对象的文本内容。
+　　　　参数
+　　　　    s   为 Toast 指定的新的文本。
+ 
+public void setView(View view)
+设置要显示的 View 。
+（译者注：注意这个方法可以显示自定义的toast视图，可以包含图像，文字等等。是比较常用的方法。）
+　　　　请参阅
+getView()
+ 
+public void show()
+按照指定的存续期间显示提示信息。

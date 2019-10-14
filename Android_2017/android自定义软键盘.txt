@@ -1,0 +1,132 @@
+软键盘的各种操作：http://blog.csdn.net/mynameishuangshuai/article/details/51567357
+自动弹出软键盘、不自动弹出软键盘、软键盘界面按钮功能设置方法、软键盘右下角按键的显示内容,默认情况下为回车键
+
+
+【1】
+
+通过Keyboard说明是一个软键盘定义文件，Row元素说明这是一行按键的定义，Key元素说明这是一个按键的定义。Key元素通过一些属性来定义每个按键，下面是一些常用的属性介绍：
+
+Codes：代表按键对应的输出值，可以为unicode值或则逗号(,)分割的多个值，也可以为一个字 符串。在字符串中通过“\\”来转义特殊字符，例如 '\\n' 或则 '\\uxxxx' 。Codes通常用来定义该键的键码，例如上图中的数字按键1对应的为49；如果提供的是逗号分割的多个值则和普通手机输入键盘一样在多个值之间切换。
+keyLabel：代表按键显示的文本内容。
+keyIcon：代表按键显示的图标内容，如果指定了该值则在显示的时候显示为图片不显示文本。
+keyWidth：代表按键的宽度，可以为精确值或则相对值，对于精确值支持多种单位，例如：像素，英寸 等；相对值为相对于基础取值的百分比，为以% 或则%p 结尾，其中%p表示相对于父容器。
+keyHeight：代表按键的高度，取值同上。
+horizontalGap：代表按键前的间隙（水平方向），取值同上。
+isSticky：指定按键是否为sticky的。例如Shift大小写切换按键，具有两种状态，按下状态和正常状态，取值为true或则false。
+isModifier：指定按键是否为功能键( modifier key ) ，例如 Alt 或则 Shift 。取值为true或则false。
+keyOutputText：指定按键输出的文本内容，取值为字符串。
+isRepeatable：指定按键是否是可重复的，如果长按该键可以触发重复按键事件则为true，否则为false。
+keyEdgeFlags：指定按键的对齐指令，取值为left或则right。
+
+
+
+
+【2】
+
+输入密码时输入框被系统键盘遮挡了,大大降低了用户操作体验,这就是开发中非常常见的软键盘遮挡的问题,该如何解决?
+
+简单解决方案
+
+ 方法一
+
+在你的activity中的oncreate中setContentView之前写上这个代码
+
+getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+方法二
+
+在 项目的AndroidManifest.xml文件中界面对应的<activity>里加入
+
+这样会让屏幕整体上移。如果加上的 是 android:windowSoftInputMode="adjustPan"这样键盘就会覆盖屏幕。
+
+    关于android:windowSoftInputMode
+
+activity主窗口与软键盘的交互模式,可以用来避免输入法面板遮挡问题,Android1.5后的一个新特性。
+
+这个属性能影响两件事情:
+
+【一】当有焦点产生时,软键盘是隐藏还是显示
+
+【二】是否减少活动主窗口大小以便腾出空间放软键盘
+
+    它的设置必须是下面列表中的一个值,或一个”state…”值加一个”adjust…”值的组合。在任一组设置多个值——多个”state…”values,例如&mdash有未定义的结果。各个值之间用|分开。
+
+    例如:
+
+<activityandroid:windowSoftInputMode="stateVisible|adjustResize". . . >
+
+在这设置的值(除"stateUnspecified"和"adjustUnspecified"以外)将覆盖在主题中设置的值
+
+  方法三
+
+把顶级的layout替换成ScrollView,或者说在顶级的Layout上面再加一层ScrollView。这样就会把软键盘和输入框一起滚动了,软键盘会一直处于底部。
+
+
+
+【3】
+隐藏系统自带的键盘
+　　　　　　根据android系统的版本的不同，有不同的方法，需要利用反射，见代码：
+
+复制代码
+ /**
+     * 隐藏系统键盘
+     *
+     * @param editText
+     */
+    public static void hideSystemSofeKeyboard(EditText editText) {
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt >= 11) {
+            try {
+                Class<EditText> cls = EditText.class;
+                Method setShowSoftInputOnFocus;
+                setShowSoftInputOnFocus = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
+                setShowSoftInputOnFocus.setAccessible(true);
+                setShowSoftInputOnFocus.invoke(editText, false);
+
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            editText.setInputType(InputType.TYPE_NULL);
+        }
+    }
+复制代码
+ 
+
+　　从底部弹出键盘
+
+　　输入法需要从页面底部向上弹出，需要一个过渡动画，android每个页面都有一个window,window包含了一个getDecorView 根视图，我们要把键盘的视图添加到这个根视图下，配合动画出现键盘。
+
+　　　　
+
+复制代码
+    public void showSoftKeyboard() {
+
+        if (viewContainer == null) {
+            viewContainer = mActivity.getLayoutInflater().inflate(R.layout.keyboardview_layout, null);
+        } else {
+            if (viewContainer.getParent() != null)
+                return;
+        }
+
+        FrameLayout frameLayout = (FrameLayout) mActivity.getWindow().getDecorView();
+        KeyboardView keyboardView = (KeyboardView) viewContainer.findViewById(R.id.keyboard_view);
+        this.keyboardView = keyboardView;
+        this.keyboardView.setKeyboard(keyboard);
+        this.keyboardView.setEnabled(true);
+        this.keyboardView.setPreviewEnabled(false);
+        this.keyboardView.setOnKeyboardActionListener(listener2);
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.BOTTOM;
+        frameLayout.addView(viewContainer, lp);
+        //viewContainer.setVisibility(View.GONE);
+        viewContainer.setAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.down_to_up));
+    }
+
+
+

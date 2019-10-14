@@ -1,0 +1,5 @@
+命令行cd进入C:\Users\Admin\.android：
+
+【获取开发版sha1】：输入   keytool -list -v -keystore debug.keystore   ，会得到三种指纹证书，选取SHA1类型的证书（密钥口令是android）
+
+【获取发布版sha1】：输入   keytool -list -v -keystore .jks    ，.jks为keystore文件路径，例如我的keystore文件路径是H:\myTest\myText.jks，那么我输入的是keytool -list -v -keystore H:\myTest\myText.jks（密钥口令是你签名时的密码）

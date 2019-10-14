@@ -1,0 +1,4 @@
+
+建议不要用Long_id而用String_id
+
+使用存储数据中要求唯一的变量作为String_id

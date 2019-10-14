@@ -1,0 +1,26 @@
+SlidingMenu常用的一些属性设置记录如下：
+menu.setMode(SlidingMenu.LEFT);//设置左滑菜单  
+menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);//设置滑动的屏幕范围，该设置为全屏区域都可以滑动  
+menu.setShadowDrawable(R.drawable.shadow);//设置阴影图片  
+menu.setShadowWidthRes(R.dimen.shadow_width);//设置阴影图片的宽度  
+menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);//SlidingMenu划出时主页面显示的剩余宽度  
+menu.setBehindWidth(400);//设置SlidingMenu菜单的宽度  
+menu.setFadeDegree(0.35f);//SlidingMenu滑动时的渐变程度  
+menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);//使SlidingMenu附加在Activity上  
+menu.setMenu(R.layout.menu_layout);//设置menu的布局文件  
+menu.toggle();//动态判断自动关闭或开启SlidingMenu  
+menu.showMenu();//显示SlidingMenu  
+menu.showContent();//显示内容  
+menu.setOnOpenListener(onOpenListener);//监听slidingmenu打开  
+ 
+menu.setOnOpenedListener(onOpenedlistener);监听slidingmenu打开后  
+ 
+menu.OnCloseListener(OnClosedListener);//监听slidingmenu关闭时事件  
+ 
+menu.OnClosedListener(OnClosedListener);//监听slidingmenu关闭后事件  
+ 
+左右都可以划出SlidingMenu菜单只需要设置  
+menu.setMode(SlidingMenu.LEFT_RIGHT);属性，然后设置右侧菜单的布局文件  
+menu.setSecondaryMenu(R.layout.menu_fram2);//设置右侧菜单  
+ 
+menu.setSecondaryShadowDrawable(R.drawable.shadowright);//右侧菜单的阴影图片 

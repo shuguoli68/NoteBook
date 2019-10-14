@@ -1,0 +1,25 @@
+工具下载：apkpatch
+（https://raw.githubusercontent.com/alibaba/AndFix/master/tools/apkpatch-1.0.3.zip）
+文件准备：一个存在Bug或者原始的Apk（old.apk）、一个修改后的Apk（new.apk）、一 个签名文件（例如：demo.jks）
+
+
+
+
+
+
+打开cmd ->进入apkpatch位置（cd /d D:\software\apkpatch-1.0.3）->运行
+apkpatch -f new.apk -t old.apk -o outApk -k common.jks -p 2522131833 -a common -e 2522131833
+
+
+
+
+
+
+
+-f Bug修改后的Apk
+-t Bug未修改Apk
+-o 输出位置
+-k 签名文件位置
+-p 签名文件密码
+-a 别名
+-e 别名密码

@@ -1,0 +1,30 @@
+//有数字进度的对话框
+    
+    public static ProgressDialog numProgress(Context mContext, String title, String msg,int max, final MyCancelCall cancelCall){
+ ProgressDialog mDialog;
+        mDialog = new ProgressDialog(mContext,R.style.my_dialog_bg);
+        mDialog.setTitle(title);
+        mDialog.setMessage(msg);
+        mDialog.setMax(max);
+        mDialog.setProgress(0);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.setCancelable(false);
+        mDialog.setButton(DialogInterface.BUTTON_NEUTRAL, mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (mDialog.isShowing()){
+                    mDialog.dismiss();
+                }
+                cancelCall.cancelClick();
+            }
+        });
+        if (!mDialog.isShowing()){
+            mDialog.show();
+        }
+        return mDialog;
+    }
+
+public interface MyCancelCall{
+        void cancelClick();
+    }

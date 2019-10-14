@@ -1,0 +1,69 @@
+保存的位置：
+
+
+    /**
+         * 保存方法
+         * 
+         * @throws IOException
+         */
+        public void saveBitmap(Bitmap bitmap) throws IOException {
+            //更改的名字
+            String imageName="w"+".jpg";
+            
+            String headPath=android.os.Environment.getExternalStorageDirectory()+
+                    "/"+"msg"+"/"+"head";
+            
+                File headDir=new File(headPath);
+                if(!headDir.exists()){
+                    headDir.mkdirs();
+                }
+                System.out.println(headPath+"\n"+headDir);    
+                FileOutputStream headFos=null;
+                File headFile=null;
+                try{
+                    //重命名并保存
+                    headFile=new File(headPath,imageName);
+                    headFile.createNewFile();
+                    
+                    headFos=new FileOutputStream(headFile);
+                    bitmap.compress(CompressFormat.JPEG, 100, headFos);
+                    headFos.flush();
+                    
+                }catch(Exception e){
+                    e.printStackTrace();
+                }finally{
+                    if(headFos!=null){
+                        try {
+                            headFos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            
+        }
+
+
+
+
+
+
+ 扩展：把手机SD卡中的图片显示到ImageView上。
+
+
+String headPath = android.os.Environment.getExternalStorageDirectory()
+            + "/" + "msg" + "/" + "head/";
+Bitmap bmpDefaultPic;
+
+ImageView imgv_img = (ImageView) findViewById(R.id.imageView1);
+bmpDefaultPic = BitmapFactory.decodeFile(
+                    headPath +"图片名" + ".jpg", null);
+imgv_img.setImageBitmap(bmpDefaultPic);
+
+
+
+
+ 利用代码删除本地图片：
+
+File file =new File(headPath+"/"+"图片名"+".JPG");
+file.delete();

@@ -1,0 +1,36 @@
+【1】
+通过xml pull解析得到数据,然后通过自定义的Adapter绑定数据源,ListView绑定适配器,并且实现Item项的点击事件以及子View控件的点击事件.
+
+http://blog.csdn.net/qtc_2012/article/details/8259505
+
+
+
+【2】
+【Android - 自定义View】之自定义可下拉刷新或上拉加载的ListView
+
+http://www.cnblogs.com/itgungnir/p/6735343.html
+
+
+
+
+【3】
+
+Fragment中ListView的Item的点击事件（包含Item内部控件的点击事件）
+
+http://blog.csdn.net/kuaizilanqiu/article/details/52164738
+
+
+
+
+【4】
+在Activity或Fragment中响应ListView内部按钮的点击事件
+
+http://blog.csdn.net/u011961280/article/details/53897162
+
+
+
+【5】
+
+Fragment与Fragment或者说与Activity（将部分Fragment包含的的布局直接部署在Activity中）的数据交互我个人总结了两种实现方式
+
+http://www.cnblogs.com/panhouye/p/6193689.html

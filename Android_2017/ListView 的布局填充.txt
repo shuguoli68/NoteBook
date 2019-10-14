@@ -1,0 +1,32 @@
+三种布局填充器的写法
+/**
+* 方法1：
+* 参数：上下文,源布局的id
+* ViewGroup：里面可以有自己的孩子，不为空返回的是ViewGroup的父亲，就是布局中的根节点
+ */
+View view = View.inflate(getApplicationContext(), R.layout.item, null);
+			
+/**
+* 方法2：通过布局填充器LayoutInflater对象的静态方法填充
+*/
+view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.item, null);
+
+/**
+* 方法3：通过服务获取填充器，然后调用填充器中的填充方法
+*/
+LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+view = inflater.inflate(R.layout.item, null);
+
+
+
+
+
+
+【单击事件】
+
+onListItemClick(ListView l, View v, int position, long id)这个方法中的参数：
+
+参数1就是当前的listView，参数二是当前你点击的那一项对应的view，3是你点击的listView的第几项，四是id值，可以这样获取值假如你的listView的每一项都有一个id为R.id.text的TextView组件，那么可以这样做
+
+TextView text=（TextView）v.findViewById(R.id.text);
+text.getText().toString();调用这个方法就可以获得这个textView的内容了

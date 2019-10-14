@@ -1,0 +1,32 @@
+
+
+package com.example.QQTremble;
+
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+
+/**
+ * Created by Admin on 2017/8/30.
+ */
+public class TrembleAnimation extends Animation{
+    @Override
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        t.getMatrix().setTranslate(
+                (float) Math.sin(interpolatedTime * 50) * 8,
+                (float) Math.sin(interpolatedTime * 50) * 8
+        );// 50越大频率越高，8越小振幅越小
+        super.applyTransformation(interpolatedTime, t);
+    }
+}
+
+
+
+
+
+
+// 创建抖一抖动画对象
+                TrembleAnimation tremble = new TrembleAnimation();
+                tremble.setDuration(800);// 持续时间800ms，持续时间越短频率越高
+                tremble.setRepeatCount(2);// 重复次数，不包含第一次
+main_all = (RelativeLayout) findViewById(R.id.main_all);
+                main_all.startAnimation(tremble);//main_all为要抖动的窗口

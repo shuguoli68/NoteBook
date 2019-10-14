@@ -1,0 +1,38 @@
+https://github.com/youth5201314/banner
+
+
+compile 'com.youth.banner:banner:1.4.10'  //最新版本
+
+
+List<String> images = new ArrayList<>();
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406383299_1976.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406383291_6518.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406383291_8239.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406383290_9329.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406382766_4924.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406382766_5762.jpg");
+        images.add("http://img.my.csdn.net/uploads/201407/26/1406382765_7341.jpg");
+        /*//资源文件
+        Integer[] images={R.mipmap.a,R.mipmap.b,R.mipmap.c};
+        //Uri
+        Uri uri = resourceIdToUri(context, R.mipmap.ic_launcher);
+        Uri[] images={uri};
+        //文件对象
+        File[] images={"文件对象","文件对象"};
+        //raw 两种方式
+        String[] images={"Android.resource://com.frank.glide/raw/raw_1"};
+        String[] images={"android.resource://com.frank.glide/raw/"+R.raw.raw_1"};
+                //ContentProvider
+                String[] images={"content://media/external/images/media/139469"};
+        //assets
+        String[] images={"file:///android_asset/f003.gif"};
+        //sd卡资源
+        String[] images={"file://"+ Environment.getExternalStorageDirectory().getPath()+"/test.jpg"};
+
+        banner.setImages(images);//这里接收集合,上面写成集合太占地方，这个大家举一反三就行了啊*/
+        binding.mainBanner.setImages(images).setImageLoader(new ImageLoader() {
+            @Override
+            public void displayImage(Context context, Object path, ImageView imageView) {
+                Glide.with(context).load(path).into(imageView);
+            }
+        }).start();

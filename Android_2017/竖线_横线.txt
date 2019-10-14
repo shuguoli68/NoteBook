@@ -1,0 +1,13 @@
+ÊúÏß
+<View  
+    android:layout_width="1dip" 
+    android:layout_height="match_parent"
+    android:background="#66CCFF"
+    android:layout_gravity="center_horizontal"
+    />
+
+ºáÏß
+<View  android:layout_height="1px" 
+           android:layout_width="match_parent"
+           android:background="#66CCFF"
+/>

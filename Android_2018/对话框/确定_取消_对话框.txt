@@ -1,0 +1,26 @@
+public static Dialog getDialog(final Context mContext, String title, String msg, final MyDialogCall dialogCall ){
+        AlertDialog alert = new AlertDialog.Builder(mContext).setTitle(title)
+                .setMessage(msg)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialogCall.cancel();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialogCall.ok();
+                    }
+                })
+                .create();             //创建AlertDialog对象
+        if (alert!=null && !alert.isShowing()) {
+            alert.show();
+        }
+        return alert;
+    }
+
+    public interface MyDialogCall{
+        void cancel();
+        void ok();
+    }

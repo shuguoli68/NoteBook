@@ -1,0 +1,31 @@
+导入依赖：compile 'com.google.zxing:core:3.2.1'
+
+
+加入权限：<uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+
+
+
+
+private static final int REQUEST_QR_CODE = 2;
+
+Intent i = new Intent(DeviceActivity.this, CaptureActivity.class);
+                startActivityForResult(i, REQUEST_QR_CODE);
+
+
+
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+      
+        if (resultCode == RESULT_OK
+                && requestCode == REQUEST_QR_CODE
+                && data != null) {
+            String result = data.getStringExtra("result");
+            Toast.makeText(DeviceActivity.this, result, Toast.LENGTH_SHORT).show();
+            
+        }
+    }

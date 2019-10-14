@@ -1,0 +1,49 @@
+
+/**
+     * 判断是否是当日第一次登陆
+     */
+    private void isTodayFirstLogin() {
+        //取
+        SharedPreferences preferences = getSharedPreferences("LastLoginTime", MODE_PRIVATE);
+        String lastTime = preferences.getString("LoginTime", "2017-04-08");
+        // Toast.makeText(MainActivity.this, "value="+date, Toast.LENGTH_SHORT).show();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");// 设置日期格式
+        todayTime = df.format(new Date());// 获取当前的日期
+
+        if (lastTime.equals(todayTime)) { //如果两个时间段相等
+            Toast.makeText(this, "不是当日首次登陆", Toast.LENGTH_SHORT).show();
+            Log.e("Time", lastTime);
+        } else {
+            Toast.makeText(this, "当日首次登陆送积分", Toast.LENGTH_SHORT).show();
+            Log.e("date", lastTime);
+            Log.e("todayDate", todayTime);
+        }
+    }
+
+这里解释一下
+
+String lastTime = preferences.getString(“LoginTime”, “2017-04-08”);
+这个为什么后面还有个”2017-04-08”。这个是考虑到安装app的时候第一次我们没有存储退出的时间，所以就当取不到数据的时候给他一个默认值。这样当app第一次安装的时候默认判断是第一次登录的。
+
+3.然后退出时间保存我是在onDestroy()的时候进行保存
+
+ @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveExitTime(todayTime);
+    }
+
+
+
+/**
+     * 保存每次退出的时间
+     * @param extiLoginTime
+     */
+    private void saveExitTime(String extiLoginTime) {
+      SharedPreferences.Editor editor = getSharedPreferences("LastLoginTime", MODE_PRIVATE).edit();
+        editor.putString("LoginTime", extiLoginTime);
+        //这里用apply()而没有用commit()是因为apply()是异步处理提交，不需要返回结果，而我也没有后续操作
+        //而commit()是同步的，效率相对较低
+        //apply()提交的数据会覆盖之前的,这个需求正是我们需要的结果
+        editor.apply();
+    }

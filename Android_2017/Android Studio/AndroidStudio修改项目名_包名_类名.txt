@@ -1,0 +1,31 @@
+http://blog.csdn.net/abc6368765/article/details/51803164
+
+
+
+一、修改程序包名
+
+我们选中对应的包，然后直接右键->Refactor->Rename。
+
+右键修改包名
+
+这个时候会出现如图所示的提示，我们选中Rename package，更改包的名字，而不是更改路径（更改路径不会改变java源文件的package name）。
+
+选择修改包名
+
+这个时候会弹出如图所示的提示，这里并没有像eclipse那样直接弹出整个包名的名字，而只有最后面的那个名字。如果我们想修改最后面myapplication的名字的话，当然没问题，但是如果我们想修改的是更上一层的包名呢？
+
+这里写图片描述
+
+原来是默认的包过滤选项惹的祸，接下来，我们按照下图所示的步骤来修改一下过滤选项。
+
+去掉默认过滤选项
+
+然后整个包结构就会变成这：
+
+随意修改
+
+变成这个结构之后，我们想要修改那个包名，直接选中然后右键->Refactor->Rename->Rename Package就可以了。
+
+二、修改项目名称
+
+如果直接在AndroidStudio中选中项目名称，然后右键->Refactor->Rename。你会发现提示错误“Can’t rename root module”。尝试了几种方法都没有修改成功，因为gradle文件和项目名称有一定关系，所以是不被允许的。好了，说说我最后是怎么实现的吧。其实我用的方法很简单，直接关闭AndroidStudio，来到项目所在的文件夹，找到项目名称文件夹MyApplication，直接修改为我们想要的名字，这里我修改为Application，然后重新打开AndroidStudio，重新Open名字修改之后的工程Application。

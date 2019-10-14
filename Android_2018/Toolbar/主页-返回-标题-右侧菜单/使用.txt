@@ -1,0 +1,98 @@
+<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- 溢出菜单图标颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+
+<!-- 溢出菜单图标自定义
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>-->
+    <!-- 加入toolbar溢出【弹出】菜单的风格 -->
+        <item name="actionOverflowMenuStyle">@style/Device_Toolbar_Theme</item>
+    </style>
+
+    <style name="Device_Toolbar_Theme" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingRight">5dp</item>
+        <!-- 弹出层背景颜色 -->
+        <item name="android:popupBackground">@android:color/darker_gray</item>
+        <!-- 弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar -->
+        <item name="android:dropDownVerticalOffset">5dp</item>
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+        <!-- 设置弹出菜单文字颜色 -->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="OverflowButtonStyle" parent="android:Widget.ActionButton.Overflow">
+        <item name="android:src">@mipmap/action_add</item>
+    </style>
+    </style>
+
+
+
+
+
+
+
+
+
+@BindView(R.id.device_toolbar)
+    Toolbar deviceToolbar;
+
+
+
+        setSupportActionBar(deviceToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        deviceToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+
+创建右侧菜单栏：
+ @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.device_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.device_wifi:
+                startWifiOrAp(true);
+                break;
+            case R.id.device_ap:
+                startWifiOrAp(false);
+                break;
+            case R.id.device_qrcode:
+                Intent i = new Intent(DeviceActivity.this, CaptureActivity.class);
+                startActivityForResult(i, REQUEST_QR_CODE);
+                break;
+        }
+        return true;
+    }
+
+
+
+
+怎么用设计师切好的图替换我们系统原生的返回键呢？方法有两个。
+1、在我们引入的Appbar的theme中添加一个Item，将设计师给我们的图放进去
+
+<item name="android:homeAsUpIndicator">@drawable/web_detail_back</item>  
+
+
+2、在我们的Toolbar中添加属性
+
+app:navigationIcon="@drawable/web_detail_back"  
+
+添加这个属性需要我们在根布局中添加（AS会有提示的）
+xmlns:app="http://schemas.android.com/apk/res-auto" 

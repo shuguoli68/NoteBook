@@ -1,0 +1,30 @@
+这个notification一般用在电话，短信，邮件，闹钟铃声，在手机的状态栏上就会出现一个小图标，提示用户处理这个通知，这时手从上方滑动状态栏就可以展开并处理这个快讯。
+
+状态栏和状态条的区别：
+
+    1、状态条就是手机屏幕最上方的一个条形状的区域；
+
+          在状态条有好多信息量：比如usb连接图标，手机信号图标，电池电量图标，时间图标等等；
+
+    2、状态栏就是手从状态条滑下来的可以伸缩的view；
+
+          在状态栏中一般有两类（使用FLAG_标记）：
+
+          （1）正在进行的程序；
+
+          （2）是通知事件；
+
+快速创建一个Notification的步骤简单可以分为以下四步：
+
+通过getSystemService（）方法得到NotificationManager对象；
+对Notification的一些属性进行设置比如：内容，图标，标题，相应notification的动作进行处理等等；
+通过NotificationManager对象的notify（）方法来执行一个notification的消息；
+通过NotificationManager对象的cancel（）方法来取消一个notificatioin的消息；
+关于Notification的Flags
+
+notification.flags = Notification.FLAG_NO_CLEAR; // 点击清除按钮时就会清除消息通知,但是点击通知栏的通知时不会消失  
+
+notification.flags = Notification.FLAG_ONGOING_EVENT; // 点击清除按钮不会清除消息通知,可以用来表示在正在运行  
+notification.flags |= Notification.FLAG_AUTO_CANCEL; // 点击清除按钮或点击通知后会自动消失  
+
+notification.flags |= Notification.FLAG_INSISTENT; // 一直进行，比如音乐一直播放，知道用户响应  

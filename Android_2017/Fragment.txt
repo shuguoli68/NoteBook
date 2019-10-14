@@ -1,0 +1,28 @@
+【Fragment中】
+
+
+getActivity()可获取上下文
+Toast.makeText(getActivity(), "查询好友列表失败！", Toast.LENGTH_SHORT).show();
+
+在Fragment的回调生命周期中，getActivity()都不会返回空。getActivity()为空表明，AsyncHttpClient的回调是在Fragment销毁后，才开始执行的。
+
+ 
+
+（二）AsyncHttpClient异步请求的回调
+
+         AsyncHttpClient异步请求是在内部的线程池中运行的，回调是在通过Looper线程的Handler传回发起调用的线程执行。此时，有可能出现页面、Fragment已经被销毁的情况，从而getActivity()返回null。
+
+        解决方案是：在页面退出时，取消正在发起的请求；在回调中，做与UI相关的操作，需要对Activity进行判断（getActivity() != null && !getActivity.isFinish()）。
+
+
+
+
+
+
+在Activity中取的方法不同
+
+android.app.Fragment使用 (ListFragment)getFragmentManager().findFragmentById(R.id.userList)  获得  ，继承Activity
+
+ 
+
+android.support.v4.app.Fragment使用 (ListFragment)getSupportFragmentManager().findFragmentById(R.id.userList) 获得 ，需要继承android.support.v4.app.FragmentActivity

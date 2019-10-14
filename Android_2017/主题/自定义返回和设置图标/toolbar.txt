@@ -1,0 +1,60 @@
+
+//注意app:title而非title
+<android.support.v7.widget.Toolbar
+        android:id="@+id/localsong_toolbar"
+        android:layout_width="match_parent"
+        app:title="本地音乐列表"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        />
+
+
+
+//初始化
+setSupportActionBar(localsongToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        localsongToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+
+//菜单
+@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.local_toolbar,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.local_add){
+            App.toast("local_add");
+        }
+        return true;
+    }
+
+
+
+//样式
+
+<!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- 溢出菜单图标颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!-- 溢出菜单图标自定义-->
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+    </style>
+    <style name="OverflowButtonStyle" parent="android:Widget.ActionButton.Overflow">
+        <item name="android:src">@mipmap/action_add</item>
+    </style>

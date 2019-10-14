@@ -1,0 +1,23 @@
+首先，可以在加载webview的activity里定义一个内部类，像下面这样：
+
+    public class WebAppInterface {
+        @JavascriptInterface
+        public void backToApp() {
+            finish();
+        }
+    }
+其中@JavascriptInterface标签表示这个方法是供JS调用的。
+
+然后给webview作如下配置，下面几行都是必要的，还有其他配置未列出，可参考：
+Android webview里加载显示网页，显示进度，点击网页链接跳转到app页面
+
+//支持JavaScript
+WebSettings setting = webview.getSettings();
+setting.setJavaScriptEnabled(true);
+//给web提供调用接口
+webview.addJavascriptInterface(new WebAppInterface(), "Android");
+webview.getSettings().setDomStorageEnabled(true);
+然后就可以在JS中调用如下：
+
+close
+这样，就实现了点击网页按钮销毁当前页面的功能。

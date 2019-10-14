@@ -1,0 +1,493 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+    >
+    <EditText
+        android:id="@+id/bookid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="bookid"
+        >
+    </EditText>
+    <EditText
+        android:id="@+id/bookname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="bookname"
+        >
+    </EditText>
+    <EditText
+        android:id="@+id/author"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="author"
+        >
+    </EditText>
+    <Button
+        android:id="@+id/book_btn"
+        android:text="选择操作"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/book_txt"
+        android:hint="查询结果"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ListView
+        android:id="@+id/bookslist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+    </ListView>
+</LinearLayout>
+
+
+
+
+
+
+
+package com.example.sqlite2;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+/**
+ * Created by Admin on 2017/8/22.
+ */
+public class BooksDB extends SQLiteOpenHelper {
+    private final static String DATABASE_NAME = "BOOKS.db";
+    private final static int DATABASE_VERSION = 1;
+    private final static String TABLE_NAME = "books_table";
+    public final static String BOOK_ID = "book_id";
+    public final static String BOOK_NAME = "book_name";
+    public final static String BOOK_AUTHOR = "book_author";
+
+    public BooksDB(Context context) {
+        // TODO Auto-generated constructor stub
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+    //创建table
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String sql = "CREATE TABLE " + TABLE_NAME + " (" + BOOK_ID
+                + " INTEGER primary key autoincrement, " + BOOK_NAME + " text, "+ BOOK_AUTHOR +" text);";
+        db.execSQL(sql);
+    }
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        String sql = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        db.execSQL(sql);
+        onCreate(db);
+    }
+
+    public Cursor select() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        return cursor;
+    }
+
+
+    private int inquire_id;
+    private String inquire_name;
+    private String inquire_author;
+    public int getInquire_id() {
+        return inquire_id;
+    }
+    public void setInquire_id(int inquire_id) {
+        this.inquire_id = inquire_id;
+    }
+    public String getInquire_name() {
+        return inquire_name;
+    }
+    public void setInquire_name(String inquire_name) {
+        this.inquire_name = inquire_name;
+    }
+    public String getInquire_author() {
+        return inquire_author;
+    }
+    public void setInquire_author(String inquire_author) {
+        this.inquire_author = inquire_author;
+    }
+    //查询操作
+    public Cursor inquire(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[]what = {BOOK_ID,BOOK_NAME,BOOK_AUTHOR};
+        String where = BOOK_ID + " = ?";
+        String[] whereValue ={ Integer.toString(id) };
+        Cursor cursor = db.query(TABLE_NAME, what, where, whereValue, null, null, null);
+        while(cursor.moveToNext()){
+            String BOOKname = cursor.getString(cursor.getColumnIndex(BOOK_NAME));
+            String BOOKauthor = cursor.getString(cursor.getColumnIndex(BOOK_AUTHOR));
+            System.out.println("query------->" + "编号："+id+" "+"姓名："+BOOKname+" "+"作者："+BOOKauthor);
+            //查询功能只有在这里才是正确的，可以设置Get、Set得到id、BOOKname、BOOKauthor
+            setInquire_id(id);setInquire_name(BOOKname);setInquire_author(BOOKauthor);
+        }
+        //关闭数据库
+        db.close();
+        return cursor;
+    }
+    //增加操作
+    public long insert(int id,String bookname,String author)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+		/* ContentValues */
+        ContentValues cv = new ContentValues();
+        cv.put(BOOK_ID, id);
+        cv.put(BOOK_NAME, bookname);
+        cv.put(BOOK_AUTHOR, author);
+        long row = db.insert(TABLE_NAME, null, cv);
+        return row;
+    }
+    //删除操作
+    public void delete(int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = BOOK_ID + " = ?";
+        String[] whereValue ={ Integer.toString(id) };
+        db.delete(TABLE_NAME, where, whereValue);
+    }
+    //修改操作
+    public void update(int id, String bookname,String author)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where = BOOK_ID + " = ?";
+        String[] whereValue = { Integer.toString(id) };
+
+        ContentValues cv = new ContentValues();
+        cv.put(BOOK_NAME, bookname);
+        cv.put(BOOK_AUTHOR, author);
+        db.update(TABLE_NAME, cv, where, whereValue);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+package com.example.sqlite2;
+
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.testsave.R;
+
+/**
+ * Created by Admin on 2017/8/22.
+ */
+public class BookActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener{
+    private BooksDB mBooksDB;
+    private Cursor mCursor;
+    private EditText BookId,BookName,BookAuthor;
+    private TextView book_txt ;
+    private ListView BooksList;
+    private Button book_btn;
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_book);
+        setUpViews();
+    }
+
+    public void setUpViews(){
+        mBooksDB = new BooksDB(BookActivity.this);
+        mCursor = mBooksDB.select();
+
+        BookId = (EditText) findViewById(R.id.bookid);
+        BookName = (EditText)findViewById(R.id.bookname);
+        BookAuthor = (EditText)findViewById(R.id.author);
+
+        book_txt = (TextView) findViewById(R.id.book_txt);
+        book_btn = (Button) findViewById(R.id.book_btn);
+        book_btn.setOnClickListener(this);
+
+        BooksList = (ListView)findViewById(R.id.bookslist);
+        BooksList.setAdapter(new BooksListAdapter(BookActivity.this, mCursor));
+        BooksList.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        PopupMenu popupMenu = new PopupMenu(BookActivity.this,book_btn);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_popop,popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.menu_add:
+                        add();
+                        break;
+                    case R.id.menu_delete:
+                        delete();
+                        break;
+                    case R.id.menu_update:
+                        update();
+                        break;
+                    case R.id.menu_inquire:
+                        inquire();
+                        break;
+                    case R.id.menu_refresh:
+                        BooksList.invalidate();
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
+    }
+
+    public void add(){
+        int bookid = Integer.parseInt(BookId.getText().toString());
+        String bookname = BookName.getText().toString();
+        String author = BookAuthor.getText().toString();
+        //编号、书名和作者都不能为空，或者退出
+        if (bookid==0||bookname.equals("") || author.equals("")){
+            Toast.makeText(this, "【Fail】id、书名和作者都不能为空", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mBooksDB.insert(bookid, bookname, author);
+            mCursor.requery();
+            BooksList.invalidateViews();
+            BookId.setText("");
+            BookName.setText("");
+            BookAuthor.setText("");
+            Toast.makeText(this, "Add Succeed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void delete(){
+        int bookid = Integer.parseInt(BookId.getText().toString());
+        if (bookid == 0) {
+            Toast.makeText(this, "【Fail】id为空，无法删除", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mBooksDB.delete(bookid);
+            mCursor.requery();
+            BooksList.invalidateViews();
+            BookId.setText(null);
+            BookName.setText(null);
+            BookAuthor.setText(null);
+            Toast.makeText(this, "Delete Succeed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //修改
+    public void update(){
+        int bookid = Integer.parseInt(BookId.getText().toString());
+        String bookname = BookName.getText().toString();
+        String author = BookAuthor.getText().toString();
+        //书名和作者都不能为空，否则退出
+        if (bookname.equals("") || author.equals("")){
+            Toast.makeText(this, "【Fail】书名和作者都不能为空", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mBooksDB.update(bookid, bookname, author);
+            mCursor.requery();
+            BooksList.invalidateViews();
+            BookId.setText("");
+            BookName.setText("");
+            BookAuthor.setText("");
+            Toast.makeText(this, "Update Succeed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //查询
+    public void inquire(){//只能查询最后一个
+        int bookid = Integer.parseInt(BookId.getText().toString());
+        if (bookid == 0) {
+            Toast.makeText(this, "【Fail】id为空，无法查询", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            mBooksDB.inquire(bookid);
+            mCursor.requery();
+            BooksList.invalidateViews();
+//            book_txt.setText("查询结果: "+mCursor.getInt(0) + "___" + mCursor.getString(1) + "___" + mCursor.getString(2));
+            //可以在BookDB中使用Get、Set方法
+            book_txt.setText("查询结果: "+mBooksDB.getInquire_id() + "___" + mBooksDB.getInquire_name() + "___" + mBooksDB.getInquire_author());
+            Toast.makeText(this, "Inquire Succeed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mCursor.moveToPosition(position);
+        BookId.setText(Integer.toString(mCursor.getInt(0)));
+        BookName.setText(mCursor.getString(1));
+        BookAuthor.setText(mCursor.getString(2));
+    }
+
+    public class BooksListAdapter extends BaseAdapter{
+        private Context mContext;
+        private Cursor mCursor;
+        public BooksListAdapter(Context context,Cursor cursor) {
+            mContext = context;
+            mCursor = cursor;
+        }
+        @Override
+        public int getCount() {
+            return mCursor.getCount();
+        }
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView mTextView = new TextView(mContext);
+            mCursor.moveToPosition(position);
+            mTextView.setText(mCursor.getInt(0) + "___" + mCursor.getString(1) + "___" + mCursor.getString(2));
+            return mTextView;
+        }
+
+    }
+}
+
+
+
+
+
+PopupMenu弹出式菜单
+
+menu中 menu_popop.xml ：
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_add" android:title="增加" />
+    <item android:id="@+id/menu_delete" android:title="删除" />
+    <item android:id="@+id/menu_update" android:title="修改" />
+    <item android:id="@+id/menu_inquire" android:title="查询"/>
+    <item android:id="@+id/menu_refresh" android:title="刷新"/>
+</menu>
+
+
+
+
+
+
+
+数据库已经弄好了，可以使用这个数据库，在另一个地方操作：
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+    <Button
+        android:id="@+id/query_btn"
+        android:text="刷新书库"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ListView
+        android:id="@+id/query_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+    </ListView>
+</LinearLayout>
+
+
+
+
+package com.example.sqlite3;
+
+import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.example.sqlite2.BooksDB;
+import com.example.testsave.R;
+
+/**
+ * Created by Admin on 2017/8/23.
+ */
+public class QueryActivity extends Activity implements View.OnClickListener{
+    private BooksDB mBooksDB;
+    private Cursor mCursor;
+    private ListView query_list;
+    private Button query_btn;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_query);
+        init();
+    }
+    private void init(){
+        mBooksDB = new BooksDB(this);
+        mCursor = mBooksDB.select();
+        query_list = (ListView) findViewById(R.id.query_list);
+        query_btn = (Button) findViewById(R.id.query_btn);
+        query_list.setAdapter(new BooksListAdapter(this, mCursor));
+        query_btn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        query_list.invalidate();
+    }
+    public class BooksListAdapter extends BaseAdapter {
+        private Context mContext;
+        private Cursor mCursor;
+        public BooksListAdapter(Context context,Cursor cursor) {
+
+            mContext = context;
+            mCursor = cursor;
+        }
+        @Override
+        public int getCount() {
+            return mCursor.getCount();
+        }
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView mTextView = new TextView(mContext);
+            mCursor.moveToPosition(position);
+            mTextView.setText(mCursor.getString(1) + "___" + mCursor.getString(2));
+            return mTextView;
+        }
+
+    }
+}
+

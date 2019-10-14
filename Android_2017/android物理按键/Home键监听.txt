@@ -1,0 +1,78 @@
+//调用
+可以在
+
+@Override
+    protected void onResume() {
+        super.onResume();
+//最后检测一下是否已被注册
+        registerHomeKeyReceiver(this);
+    }
+
+
+@Override
+    protected void onPause() {
+        super.onPause();
+//最后检测一下是否已被注册
+        unregisterHomeKeyReceiver(this);
+    }
+
+
+private static HomeWatcherReceiver mHomeKeyReceiver = null;
+
+    private static void registerHomeKeyReceiver(Context context) {
+        App.toast("registerHomeKeyReceiver");
+        mHomeKeyReceiver = new HomeWatcherReceiver();
+        final IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+
+        context.registerReceiver(mHomeKeyReceiver, homeFilter);
+    }
+
+    private static void unregisterHomeKeyReceiver(Context context) {
+        App.toast("unregisterHomeKeyReceiver");
+        if (null != mHomeKeyReceiver) {
+            context.unregisterReceiver(mHomeKeyReceiver);
+        }
+    }
+
+
+
+
+
+public class HomeWatcherReceiver extends BroadcastReceiver{
+//不要打印日志
+    private static final String LOG_TAG = "HomeReceiver";
+    private static final String SYSTEM_DIALOG_REASON_KEY = "reason";
+    private static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+    private static final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+    private static final String SYSTEM_DIALOG_REASON_LOCK = "lock";
+    private static final String SYSTEM_DIALOG_REASON_ASSIST = "assist";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+            // android.intent.action.CLOSE_SYSTEM_DIALOGS
+            String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+
+            if (SYSTEM_DIALOG_REASON_HOME_KEY.equals(reason)) {
+                // 短按Home键
+                App.toast("homekey");
+
+            }
+            else if (SYSTEM_DIALOG_REASON_RECENT_APPS.equals(reason)) {
+                // 长按Home键 或者 activity切换键
+                App.toast("long press home key or activity switch");
+
+            }
+            else if (SYSTEM_DIALOG_REASON_LOCK.equals(reason)) {
+                // 锁屏
+                App.toast("lock");
+            }
+            else if (SYSTEM_DIALOG_REASON_ASSIST.equals(reason)) {
+                // samsung 长按Home键
+                App.toast("assist");
+            }
+
+        }
+    }
+}

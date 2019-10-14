@@ -1,0 +1,49 @@
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cl_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/abl_title"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@color/gray" >
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/four_ctlTitle"
+                app:title="ÏÔÊ¾±êÌâ"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:contentScrim="@color/red"
+                app:expandedTitleMarginStart="100dp" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.1"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/sun" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/four_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:layout_scrollFlags="scroll|enterAlways" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/four_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+

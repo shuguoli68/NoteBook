@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@mipmap/pwd_bg"
+              android:gravity="center_horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <include
+        android:id="@+id/head"
+        layout="@layout/activity_changename_head"
+        />
+    <Button
+        android:id="@+id/head_gallery"
+        android:text="@string/gallery"
+        android:layout_marginTop="@dimen/y70"
+        android:layout_marginBottom="@dimen/y70"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/head_camera"
+        android:text="@string/camera"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/head_gallery"
+        />
+    <ImageView
+        android:id="@+id/head_img"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/head"
+        android:layout_above="@id/head_camera"
+        />
+</RelativeLayout>

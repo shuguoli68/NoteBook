@@ -1,0 +1,36 @@
+Android学习：为按键添加声音
+
+
+【1】
+初始化：
+
+private SoundPool sp;//声明一个SoundPool   
+    private int music;//定义一个整型用load（）；来设置suondID 
+
+sp= new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量   
+        music = sp.load(this, R.raw.start, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级   
+
+
+调用：
+
+sp.play(music, 1, 1, 0, 0, 1);
+// 声音资源id，左声道音量，右声道音量，优先级，循环次数（-1代表永远循环），回放速度0.5f～2.0f之间
+
+
+
+
+【2】
+声音也需要资源id就像图片，文字那样引入，
+声音文件如.MP3的位置在res 文件下raw内，如果没有就新建文件命名raw；
+在代码中加入如下代码：
+//播放器引用
+private MediaPlayer music = null;
+
+private void PlayMusic(int MusicId){
+music = MediaPlayer.create(this, MusicId);
+music.start();
+}
+
+在调用的地方加上
+PlayMusic（R.raw.声音文件名称）；
+希望对你有帮助

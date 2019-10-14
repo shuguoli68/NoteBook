@@ -1,0 +1,104 @@
+main.xml代码如下：
+
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>   
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"       
+android:orientation="vertical"       
+android:layout_width="fill_parent"       
+android:layout_height="fill_parent" >   
+    <ListView android:id="@+id/myListView"       
+              android:layout_width="fill_parent"       
+              android:layout_height="wrap_content" />   
+</LinearLayout>   
+
+
+
+list_item.xml代码如下：
+
+[html] view plain copy
+<?xml version="1.0" encoding="utf-8"?>   
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"   
+    android:orientation="horizontal"   
+    android:layout_width="fill_parent"   
+    android:layout_height="fill_parent"   
+    >   
+<TextView   
+    android:id="@+id/itemTitle"   
+    android:layout_width="wrap_content"   
+    android:layout_height="wrap_content"   
+    android:textSize="22dip"   
+    android:paddingRight="12dip"   
+    />   
+<TextView   
+    android:id="@+id/itemContent"   
+    android:layout_width="wrap_content"   
+    android:layout_height="wrap_content"   
+    android:textSize="22dip"   
+    />   
+</LinearLayout>  
+
+
+
+
+
+activity MyListView.Java代码如下：
+
+[java] view plain copy
+package listview.pack;   
+   
+import java.util.ArrayList;   
+import java.util.HashMap;   
+import android.app.Activity;   
+import android.os.Bundle;   
+import android.view.View;   
+import android.widget.AdapterView;   
+import android.widget.AdapterView.OnItemClickListener;   
+import android.widget.ListView;   
+import android.widget.SimpleAdapter;   
+import android.widget.Toast;   
+   
+public class MyListView extends Activity {   
+    /** Called when the activity is first created. */   
+    //声明ListView对象   
+    ListView myListView;   
+    @Override   
+    public void onCreate(Bundle savedInstanceState) {   
+        super.onCreate(savedInstanceState);   
+        setContentView(R.layout.main);   
+        //生成ListView对象   
+        myListView=(ListView)findViewById(R.id.myListView);   
+        //创建ArrayList对象 并添加数据   
+        ArrayList<HashMap<String,String>> myArrayList=new ArrayList<HashMap<String,String>>();   
+        for(int i=0;i<10;i++){   
+            HashMap<String, String> map = new HashMap<String, String>();   
+            map.put("itemTitle", "This Is Title "+i);   
+            map.put("itemContent", "This Is Content "+i);   
+            myArrayList.add(map);   
+        }   
+           
+        //生成SimpleAdapter适配器对象   
+        SimpleAdapter mySimpleAdapter=new SimpleAdapter(this,   
+                myArrayList,//数据源   
+                R.layout.list_items,//ListView内部数据展示形式的布局文件listitem.xml   
+                new String[]{"itemTitle","itemContent"},//HashMap中的两个key值 itemTitle和itemContent   
+                new int[]{R.id.itemTitle,R.id.itemContent});/*布局文件listitem.xml中组件的id    
+                                                            布局文件的各组件分别映射到HashMap的各元素上，完成适配*/   
+           
+        myListView.setAdapter(mySimpleAdapter);   
+        //添加点击事件   
+        myListView.setOnItemClickListener(new OnItemClickListener(){   
+            @Override   
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,   
+                    long arg3) {   
+                //获得选中项的HashMap对象   
+                HashMap<String,String> map=(HashMap<String,String>)myListView.getItemAtPosition(arg2);   
+                String title=map.get("itemTitle");   
+                String content=map.get("itemContent");   
+                Toast.makeText(getApplicationContext(),    
+                        "你选择了第"+arg2+"个Item，itemTitle的值是："+title+"itemContent的值是:"+content,   
+                        Toast.LENGTH_SHORT).show();   
+            }   
+               
+        });   
+    }   
+}

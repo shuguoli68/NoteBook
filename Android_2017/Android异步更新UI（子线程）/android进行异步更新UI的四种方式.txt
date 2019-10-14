@@ -1,0 +1,166 @@
+
+大家都知道由于性能要求，android要求只能在UI线程中更新UI，要想在其他线程中更新UI，我大致总结了4种方式，欢迎补充纠正：
+
+使用Handler消息传递机制；
+使用AsyncTask异步任务；
+使用runOnUiThread(action)方法；
+使用Handler的post(Runnabel r)方法；
+下面分别使用四种方式来更新一个TextView。
+
+1.使用Handler消息传递机制
+package com.example.runonuithreadtest;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+    
+    private TextView tv;
+    
+    Handler handler = new Handler()
+    {
+        public void handleMessage(android.os.Message msg) {
+            if(msg.what==0x123)
+            {
+                tv.setText("更新后的TextView");
+            }
+        };
+    };
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv = (TextView) findViewById(R.id.tv);
+        new MyThread().start();
+    }
+    class MyThread extends Thread
+    {
+        @Override
+        public void run() {
+            //延迟两秒更新
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            handler.sendEmptyMessage(0x123);
+        }
+    }
+}
+2. 使用AsyncTask异步任务
+注：更新UI的操作只能在onPostExecute(String result)方法中。
+package com.example.runonuithreadtest;
+
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+    
+    private TextView tv;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv = (TextView) findViewById(R.id.tv);
+        new Yibu().execute();
+    }
+    class Yibu extends AsyncTask<String, String, String>
+    {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO Auto-generated method stub
+            tv.setText("更新后的TextView");
+        }
+        
+    }
+}
+3. 使用runOnUiThread(action)方法
+package com.example.runonuithreadtest;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+    
+    private TextView tv;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv = (TextView) findViewById(R.id.tv);
+        new MyThread().start();
+    }
+    class MyThread extends Thread
+    {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                        try {
+                            //延迟两秒更新
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        tv.setText("更新后的TextView");
+                }
+            });
+        }
+    }
+}
+4. 使用Handler的post(Runnabel r)方法
+package com.example.runonuithreadtest;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.widget.TextView;
+
+public class MainActivity extends Activity {
+    
+    private TextView tv;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv = (TextView) findViewById(R.id.tv);
+        Handler handler = new Handler();
+        handler.post(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    //延迟两秒更新
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                tv.setText("更新后的TextView");
+            }
+        });
+    }
+}
+2015年09月03日发布

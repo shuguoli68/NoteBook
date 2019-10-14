@@ -1,0 +1,151 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.download.MainActivity">
+
+    <Button
+        android:id="@+id/download_btn1"
+        android:text="download_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/download_img1"
+        android:layout_below="@id/download_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ic_launcher"
+        />
+</RelativeLayout>
+
+
+
+
+//Android 6.0之后一定在代码中要申请权限
+
+
+package com.example.download;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    private OkHttpClient mOkHttpClient;
+    private Button download_btn1;
+    private ImageView download_img1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+            permissionTest();
+    }
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        } else {
+            initOkHttpClient();
+            initView();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initOkHttpClient();
+                initView();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    private void initView(){
+        download_img1 = (ImageView) findViewById(R.id.download_img1);
+        download_btn1 = (Button) findViewById(R.id.download_btn1);
+        download_btn1.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        downAsynFile();
+    }
+    private void initOkHttpClient() {
+        File sdcache = getExternalCacheDir();
+        int cacheSize = 10 * 1024 * 1024;
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .cache(new Cache(sdcache.getAbsoluteFile(), cacheSize));
+        mOkHttpClient = builder.build();
+    }
+    /**
+     * 异步下载文件
+     */
+    private void downAsynFile() {
+        String url = "http://img.my.csdn.net/uploads/201603/26/1458988468_5804.jpg";
+//String url = "http://down2.txt99.com/d/file/p/txt/2017/%E6%97%A0%E5%BF%83.txt";
+        Request request = new Request.Builder().url(url).build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("wangshu", "异步下载文件失败");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                InputStream inputStream = response.body().byteStream();
+                FileOutputStream fileOutputStream = null;
+                try {
+                    fileOutputStream = new FileOutputStream(new File("/sdcard/lili.jpg"));
+//fileOutputStream = new FileOutputStream(new File("/sdcard/noheart.txt"));
+                    byte[] buffer = new byte[2048];
+                    int len = 0;
+                    while ((len = inputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, len);
+                    }
+                    fileOutputStream.flush();
+                } catch (IOException e) {
+                    Log.i("wangshu", "IOException");
+                    e.printStackTrace();
+                }
+
+                Log.d("wangshu", "文件下载成功");
+            }
+        });
+    }
+}

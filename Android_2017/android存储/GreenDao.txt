@@ -1,0 +1,192 @@
+package com.example.greendaodemo;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.adapter.DividerItemDecoration;
+import com.example.adapter.ProductAdapter;
+import com.example.gen.ProductBeanDao;
+import com.example.model.ProductBean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ProductAdapter.OnRecyclerViewListener {
+
+    private Button mAdd,mDelete,mUpdate,mFind;
+    private EditText id,name;
+    private RecyclerView my_db;
+    private TextView mContext;
+    private ProductBean mUser;
+    private ProductBeanDao mUserDao;
+    private ProductAdapter adapter;
+    private List<ProductBean> list;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mUserDao = App.getInstance().getDaoSession().getProductBeanDao();
+        initData();
+        initView();
+        initEvent();
+    }
+
+    private void initEvent() {
+        mAdd.setOnClickListener(this);
+        mDelete.setOnClickListener(this);
+        mUpdate.setOnClickListener(this);
+        mFind.setOnClickListener(this);
+    }
+
+    private void initView() {
+        mContext = (TextView) findViewById(R.id.textView);
+        mAdd = (Button) findViewById(R.id.button);
+        mDelete = (Button) findViewById(R.id.button2);
+        mUpdate = (Button) findViewById(R.id.button3);
+        mFind = (Button) findViewById(R.id.button4);
+        id = (EditText) findViewById(R.id.edit_id);
+        name = (EditText) findViewById(R.id.edit_name);
+        my_db = (RecyclerView) findViewById(R.id.my_db);
+        my_db.setLayoutManager(new LinearLayoutManager(this));
+        my_db.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL_LIST));
+        my_db.setItemAnimator(new DefaultItemAnimator());
+        adapter = new ProductAdapter(findDate());
+        adapter.setOnRecyclerViewListener(this);
+        my_db.setAdapter(adapter);
+    }
+
+    private void initData(){
+        list = new ArrayList<ProductBean>();
+        ProductBean bean = null;
+        for (int i=0;i<24;i++){
+            bean = new ProductBean((long)i,"编号："+i);
+            list.add(bean);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button:
+                addDate();
+                for (int i=0;i<list.size();i++){
+                    Log.i("list",list.get(i).getName());
+                }
+                break;
+            case R.id.button2:
+                deleteDate();
+                break;
+            case R.id.button3:
+                updateDate();
+                break;
+            case R.id.button4:
+                findDate();
+                break;
+        }
+    }
+
+    private long getID(){
+        return Integer.parseInt(id.getText().toString());
+    }
+    private String getName(){
+        return name.getText().toString();
+    }
+
+    /**
+     * 增加数据
+     */
+    private void addDate() {
+        if (query(getID())){
+            myToast("该ID已存在");
+        }
+        else {
+            mUser = new ProductBean((long) getID(), getName());
+            mUserDao.insert(mUser);//添加一个
+            mContext.setText(mUser.getName());
+            adapter.notifyItemInserted((int) getID());
+        }
+    }
+
+    /**
+     * 删除数据
+     */
+    private void deleteDate() {
+        if (query(getID())) {
+            deleteUserById(getID());
+            adapter.notifyItemRemoved((int) getID());
+        }
+        else {
+            myToast("没有该ID");
+        }
+    }
+    private void myToast(String str){
+        Toast.makeText(MainActivity.this,str,Toast.LENGTH_SHORT).show();
+
+    }
+
+    /**
+     * 根据主键删除User
+     *
+     * @param id User的主键Id
+     */
+    public void deleteUserById(long id) {
+        mUserDao.deleteByKey(id);
+    }
+
+    /**
+     * 更改数据
+     */
+    private void updateDate() {
+        if (query(getID())) {
+            mUser = new ProductBean(getID(), getName());
+            mUserDao.update(mUser);
+            adapter.notifyItemChanged((int) getID());
+        }
+        else {
+            myToast("没有该ID");
+        }
+    }
+
+    /**
+     * 查找数据
+     */
+    private List<ProductBean> findDate() {
+        List<ProductBean> users = mUserDao.loadAll();
+        String userName = "";
+        for (int i = 0; i < users.size(); i++) {
+            userName += users.get(i).getName()+",";
+        }
+        mContext.setText("查询全部数据==>"+userName);
+        return users;
+    }
+
+    //查找单条数据
+    private boolean query(long id){
+        ProductBean bean = mUserDao.load(id);
+        if (bean!=null){
+            return true;
+        }
+        mContext.setText("查询数据==>"+id);
+        return false;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        mContext.setText("click"+position);
+    }
+
+    @Override
+    public boolean onItemLongClick(int position) {
+        mContext.setText("longClick"+position);
+        return false;
+    }
+}

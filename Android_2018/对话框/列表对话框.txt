@@ -1,0 +1,37 @@
+private static int position = 0;
+
+    public static void showList(Context mContext, List<ACDeviceBind> acDeviceBinds, final MyCallBack back){
+        int size = acDeviceBinds.size();
+        if (size == 0){
+            ToastUtil.showShort(mContext,mContext.getString(R.string.bind_empty));
+            return;
+        }
+        final String[] values = new String[size];
+        for (int i=0;i<size;++i){
+            values[i] = acDeviceBinds.get(i).getPhysicalDeviceId();
+        }
+        AlertDialog alertDialog
+                = new AlertDialog.Builder(mContext, R.style.my_dialog)
+                .setTitle(mContext.getString(R.string.bind_one))
+                .setSingleChoiceItems(values, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        LogUtils.i("Ñ¡Ôñ£º"+i);
+                        position = i;
+                    }
+                })
+                .setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        back.click(position);
+                    }})
+                .create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setCancelable(true);
+        alertDialog.show();
+    }
+
+
+public interface MyCallBack{
+        void click(int i);
+    }

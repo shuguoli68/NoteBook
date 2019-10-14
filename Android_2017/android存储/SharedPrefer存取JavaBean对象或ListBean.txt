@@ -1,0 +1,4 @@
+
+SharedPreferences存取JavaBean对象或List<Bean>
+
+http://blog.csdn.net/shaoduo/article/details/70547011

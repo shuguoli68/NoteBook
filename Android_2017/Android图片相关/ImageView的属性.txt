@@ -1,0 +1,64 @@
+ImageView属性说明：
+1、类概述
+　　　　显示任意图像，例如图标。ImageView类可以加载各种来源的图片（如资源或图片库），需要计算图像的尺寸，比便它可以在其他布局中使用，并提供例如缩放和着色（渲染）各种显示选项。
+2、XML属性
+属性名称                           描述
+
+android:adjustViewBounds           是否保持宽高比。需要与maxWidth、MaxHeight一起使用，否则单独使用没有效果。
+
+android:cropToPadding              是否截取指定区域用空白代替。单独设置无效果，需要与scrollY一起使用，效果如下，实现代码见代码部分：
+ 
+ 
+android:maxHeight                  设置View的最大高度，单独使用无效，需要与setAdjustViewBounds一起使用。如果想设置图片固定大小，又想保持图片宽高比，需要如下设置：
+1） 设置setAdjustViewBounds为true；
+2） 设置maxWidth、MaxHeight；
+3） 设置设置layout_width和layout_height为wrap_content。
+
+android:maxWidth                   设置View的最大宽度。同上。
+
+android:scaleType                  设置图片的填充方式。
+
+matrix      用矩阵来绘图
+
+ 
+fitXY        拉伸图片（不按比例）以填充View的宽高
+
+ 
+layout_
+height
+:30px
+
+layout_
+width
+:120px
+
+fitStart                    按比例拉伸图片，拉伸后图片的高度为View的高度，且显示在View的左边
+
+ 
+fitCenter                   按比例拉伸图片，拉伸后图片的高度为View的高度，且显示在View的中间
+
+ 
+fitEnd                      按比例拉伸图片，拉伸后图片的高度为View的高度，且显示在View的右边
+
+ 
+center                      按原图大小显示图片，但图片宽高大于View的宽高时，截图图片中间部分显示
+ 
+ 
+layout_
+height
+:60px
+
+layout_
+width
+:80px
+
+padding
+:10px
+ 
+centerCrop                  按比例放大原图直至等于某边View的宽高显示。
+ 
+centerInside                当原图宽高或等于View的宽高时，按原图大小居中显示；反之将原图缩放至View的宽高居中显示。
+ 
+android:src                 设置View的drawable(如图片，也可以是颜色，但是需要指定View的大小)
+
+android:tint                将图片渲染成指定的颜色。

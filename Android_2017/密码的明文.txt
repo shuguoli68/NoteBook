@@ -1,0 +1,14 @@
+
+private Boolean isSee = true;
+
+case R.id.password_see:
+                if (isSee){
+                    //设置成明文
+                    password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    isSee = false;
+                }
+                else {
+                    password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    isSee = true;
+                }
+                break;

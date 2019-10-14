@@ -1,0 +1,130 @@
+设置透明效果 大概有三种
+
+1、用android系统的透明效果
+Java代码 
+android:background="@android:color/transparent" 
+
+例如 设置按钮
+Java代码 
+<Button android:background="@android:color/transparent"  
+ 
+  android:text="@+id/Button01"  
+ 
+  android:id="@+id/Button01"  
+ 
+  android:layout_width="wrap_content"  
+ 
+  android:layout_height="wrap_content"  
+ 
+  android:textColor="#ffffff" />  
+
+2、用ARGB来控制
+Java代码 
+半透明<Button android:background="#e0000000" /> 
+透明<Button android:background="#00000000" /> 
+ 
+3、设置alpha
+Java代码 
+View v = findViewById(R.id.content);//找到你要设透明背景的layout 的id 
+v.getBackground().setAlpha(100);//0~255透明度值 
+ 
+ 
+ 
+ 
+ 
+ 
+
+android 窗体透明的，黑暗度等的设置技巧
+设置透明度（这是窗体本身的透明度，非背景）
+1
+WindowManager.LayoutParams lp=getWindow().getAttributes();
+2
+lp.alpha=0.3f;
+3
+getWindow().setAttributes(lp);
+alpha在0.0f到1.0f之间。1.0完全不透明，0.0f完全透明
+
+
+设置黑暗度
+1
+WindowManager.LayoutParams lp=getWindow().getAttributes();
+2
+lp.dimAmount=0.5f;
+3
+getWindow().setAttributes(lp);
+4
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+dimAmount在0.0f和1.0f之间，0.0f完全不暗，1.0f全暗
+
+
+设置背景模糊
+1
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+2
+WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+以上设置对dialog对话框同样有效
+ 
+ 
+ 
+Activity的透明、半透明效果的设置transparent
+res/values/styles.xml
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+<resources>  
+  <style name="Transparent">  
+    <item name="android:windowBackground">
+       @color/transparent_background
+    </item>  
+    <item name="android:windowNoTitle">true</item>  
+    <item name="android:windowIsTranslucent">true</item>    
+    <item name="android:windowAnimationStyle">
+         @+android:style/Animation.Translucent
+   </item>  
+  </style>  
+</resources>
+res/values/color.xml
+1
+2
+3
+4
+5
+6
+7
+<?xml version="1.0" encoding="utf-8"?>  
+<resources>  
+  <color name="transparent_background">#50000000</color>  
+</resources>  
+//注意：
+//color.xml的#5000000前两位是透明的效果参数从00--99（透明--不怎么透明），
+//后6位是颜色的设置
+manifest.xml
+1
+2
+3
+4
+<activity 
+android:name=".TransparentActivity" 
+android:theme="@style/Transparent">  
+</activity>
+java代码
+1
+2
+3
+4
+5
+public void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setTheme(R.style.Transparent);   
+        setContentView(R.layout.transparent);  
+}
+配置结束。

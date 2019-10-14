@@ -1,0 +1,14 @@
+Android studio3.0 JNI/NDK开发流程:
+
+https://www.jianshu.com/p/a37782b56770
+
+
+
+
+
+
+AndroidStudio3.0 NDK开发- 如何在已有项目中进行NDK开发:
+
+https://blog.csdn.net/wanghao200906/article/details/79153172
+
+

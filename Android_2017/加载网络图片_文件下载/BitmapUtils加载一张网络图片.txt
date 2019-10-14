@@ -1,0 +1,11 @@
+
+//导包：xUtils.jar
+
+
+BitmapUtils bitmapUtils = new BitmapUtils(this);
+                // 加载网络图片
+                bitmapUtils.display(img,
+                        "http://img.my.csdn.net/uploads/201407/26/1406383290_9329.jpg");
+
+
+ps:慎用，图片常常加载不出来，直接Bug

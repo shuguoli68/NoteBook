@@ -1,0 +1,21 @@
+AlertDialog alert = new AlertDialog.Builder(context).setTitle("系统提示：")
+				.setMessage("这是一个最普通的AlertDialog,\n带有三个按钮，分别是取消，中立和确定")
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(mContext, "你点击了取消按钮~", Toast.LENGTH_SHORT).show();
+					}
+				})
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(mContext, "你点击了确定按钮~", Toast.LENGTH_SHORT).show();
+					}
+				})
+				.setNeutralButton("中立", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(mContext, "你点击了中立按钮~", Toast.LENGTH_SHORT).show();
+					}
+				}).create();             //创建AlertDialog对象
+		alert.show();

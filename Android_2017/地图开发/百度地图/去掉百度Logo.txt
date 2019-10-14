@@ -1,0 +1,9 @@
+// 隐藏百度logo
+        View child = mainMapView.getChildAt(1);
+        if (child != null && (child instanceof ImageView || child instanceof ZoomControls)){
+            child.setVisibility(View.INVISIBLE);
+        }
+        //地图上比例尺
+        mainMapView.showScaleControl(false);
+        // 隐藏缩放控件
+        mainMapView.showZoomControls(false);

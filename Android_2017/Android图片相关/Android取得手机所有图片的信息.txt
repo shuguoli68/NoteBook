@@ -1,0 +1,400 @@
+public class MainActivity extends Activity {  
+
+//查看图片按钮  
+    private Button look;  
+    private Button add;  
+
+//显示图片名称的list  
+    ListView show_list;  
+    ArrayList names = null;  
+    ArrayList descs= null;  
+    ArrayList fileNames = null;  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        look = (Button) findViewById(R.id.look);  
+        add = (Button) findViewById(R.id.add);  
+        show_list = (ListView) findViewById(R.id.show_list);  
+        look.setOnClickListener(new View.OnClickListener() {  
+            @Override  
+            public void onClick(View view) {  
+                names = new ArrayList();  
+                descs = new ArrayList();  
+                fileNames = new ArrayList();  
+                Cursor cursor = getContentResolver().query(  
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);  
+                while (cursor.moveToNext()) {  
+                    //获取图片的路径
+                String size = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                //获取图片的名称
+                String name = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                //获取图片的路径
+                String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)); 
+                    //获取图片的生成日期  
+                    byte[] data = cursor.getBlob(cursor.getColumnIndex(MediaStore.Images.Media.DATA));  
+                    //获取图片的详细信息  
+                    String desc = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DESCRIPTION));  
+                    names.add(name);  
+                    descs.add(desc);  
+                    fileNames.add(new String(data, 0, data.length - 1));  
+                }  
+                List<Map<String, Object>> listItems = new ArrayList<>();  
+                for (int i = 0; i < names.size(); i++) {  
+                    Map<String, Object> map = new HashMap<>();  
+                    map.put("name", names.get(i));  
+                    map.put("desc", descs.get(i));  
+                    listItems.add(map);  
+                }  
+                //设置adapter  
+                SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, listItems,  
+                        R.layout.line, new String[]{"name", "desc"}, new int[]{R.id.name, R.id.desc});  
+  
+                show_list.setAdapter(adapter);  
+            }  
+        });  
+  
+        ///list的点击事件  
+    show_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {  
+        @Override  
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {  
+            View viewDiag = getLayoutInflater().inflate(R.layout.view,null);  
+            ImageView image = (ImageView)viewDiag.findViewById(R.id.image);  
+            image.setImageBitmap(BitmapFactory.decodeFile((String) fileNames.get(i)));  
+            new AlertDialog.Builder(MainActivity.this).setView(viewDiag)  
+                    .setPositiveButton("确定",null).show();  
+        }  
+    });  
+    }  
+}
+
+
+
+
+
+
+
+我的demo：
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.testimage.MainActivity">
+    <Button
+            android:id="@+id/main_look"
+            android:text="获取手机所有图片"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+        />
+    <ListView
+        android:id="@+id/main_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_look"
+        >
+    </ListView>
+</RelativeLayout>
+
+
+
+
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+    >
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:src="@mipmap/ic_launcher"
+        />
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img"
+        android:text="name"
+        />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="size"
+        />
+    <TextView
+        android:id="@+id/path"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/name"
+        android:text="path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
+
+
+
+
+
+
+
+
+package com.example.testimage;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Admin on 2017/8/24.
+ */
+public class MyAdapter extends BaseAdapter{
+    List<Map<String, Object>> listItems;
+    public MyAdapter(List<Map<String, Object>> listItems){
+        super();
+        this.listItems = listItems;
+        Log.i("adapter","adapter");
+    }
+    @Override
+    public int getCount() {
+        return listItems.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return listItems.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder Holder = null;
+        if (view == null){
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item,null);
+            Holder = new ViewHolder();
+            Holder.img = (ImageView)view.findViewById(R.id.img);
+            Holder.size = (TextView) view.findViewById(R.id.size);
+            Holder.name = (TextView) view.findViewById(R.id.name);
+            Holder.path = (TextView) view.findViewById(R.id.path);
+            view.setTag(Holder);
+        }
+        else {
+            Holder = (ViewHolder) view.getTag();
+        }
+//        DecimalFormat df   = new DecimalFormat("######0.00");
+        Double d = Double.parseDouble(String.format("%.2f",Double.parseDouble(listItems.get(i).get("size").toString())));
+        Holder.size.setText(getSize(d));
+        Holder.name.setText(listItems.get(i).get("name").toString());
+        Holder.path.setText( listItems.get(i).get("path").toString());
+
+        Bitmap bitmap = BitmapFactory.decodeFile(Holder.path.getText().toString());
+        Holder.img.setImageBitmap(ratio(bitmap,50,50));
+        return view;
+    }
+    private String getSize(Double into){
+        String str = null;
+        if (into<1024)
+        {
+            str = into+"B";
+        }
+        else if (into<1024*1024){
+            str = into/1024+"KB";
+        }
+        else if(into<1024*1024*1024){
+            str = into/1024/1024+"MB";
+        }
+        else {
+            str = "error";
+        }
+        return str;
+    }
+    public Bitmap ratio(Bitmap image, float pixelW, float pixelH) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        if( os.toByteArray().length / 1024>1024) {//判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出
+            os.reset();//重置baos即清空baos
+            image.compress(Bitmap.CompressFormat.JPEG, 50, os);//这里压缩50%，把压缩后的数据存放到baos中
+        }
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        //开始读入图片，此时把options.inJustDecodeBounds 设回true了
+        newOpts.inJustDecodeBounds = true;
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeStream(is, null, newOpts);
+        newOpts.inJustDecodeBounds = false;
+        int w = newOpts.outWidth;
+        int h = newOpts.outHeight;
+        float hh = pixelH;// 设置高度为240f时，可以明显看到图片缩小了
+        float ww = pixelW;// 设置宽度为120f，可以明显看到图片缩小了
+        //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+        int be = 1;//be=1表示不缩放
+        if (w > h && w > ww) {//如果宽度大的话根据宽度固定大小缩放
+            be = (int) (newOpts.outWidth / ww);
+        } else if (w < h && h > hh) {//如果高度高的话根据宽度固定大小缩放
+            be = (int) (newOpts.outHeight / hh);
+        }
+        if (be <= 0) be = 1;
+        newOpts.inSampleSize = be;//设置缩放比例
+        //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
+        is = new ByteArrayInputStream(os.toByteArray());
+        bitmap = BitmapFactory.decodeStream(is, null, newOpts);
+        //压缩好比例大小后再进行质量压缩
+        //      return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
+        return bitmap;
+    }
+    class ViewHolder{
+        ImageView img;
+        TextView size;
+        TextView name;
+        TextView path;
+    }
+}
+
+
+
+
+
+
+
+package com.example.testimage;
+
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,AdapterView.OnItemClickListener{
+    //查看图片按钮
+    private Button look;
+    //显示图片名称的list
+    ListView show_list;
+    ArrayList sizes = null;
+    ArrayList names = null;
+    ArrayList paths= null;
+    MyAdapter adapter = null;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        permissionTest();
+
+    }
+    private void initView(){
+        look = (Button) findViewById(R.id.main_look);
+        show_list = (ListView) findViewById(R.id.main_listview);
+        look.setOnClickListener(this);
+        show_list.setOnItemClickListener(this);
+    }
+    @Override
+    public void onClick(View view) {
+        sizes = new ArrayList();
+            names = new ArrayList();
+            paths = new ArrayList();
+
+            Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            ContentResolver mContentResolver = MainActivity.this.getContentResolver();
+            //查询图片
+            Cursor mCursor = mContentResolver.query(mImageUri, null,
+                    MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            +MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            +MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            +MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?",
+                    new String[] { "image/jpeg", "image/png", "image/jpg", "image/gif", "image/bmp" }, MediaStore.Images.Media.DATE_MODIFIED);
+
+            while (mCursor.moveToNext()) {
+                //获取图片的路径
+                String size = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                //获取图片的名称
+                String name = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                //获取图片的路径
+                String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                sizes.add(size);
+                names.add(name);
+                paths.add(path);
+
+            }
+        mCursor.close();
+            List<Map<String, Object>> listItems = new ArrayList<>();
+            for (int i = 0; i < names.size(); i++) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("size", sizes.get(i));
+                map.put("name", names.get(i));
+                map.put("path", paths.get(i));
+                listItems.add(map);
+            }
+            //设置adapter
+        adapter = new MyAdapter(listItems);
+            show_list.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Toast.makeText(MainActivity.this,"click: "+i,Toast.LENGTH_SHORT).show();
+    }
+
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        } else {
+            initView();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initView();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+}
+
+

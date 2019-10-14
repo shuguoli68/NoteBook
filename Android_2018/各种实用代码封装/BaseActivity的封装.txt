@@ -1,0 +1,212 @@
+public abstract class BaseActivity extends AppCompatActivity {
+
+
+    private Unbinder mUnbinder;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getContentViewResId());
+        mUnbinder = ButterKnife.bind(this);
+
+        init(savedInstanceState);
+    }
+
+    public abstract int getContentViewResId();
+
+    public abstract void init(Bundle savedInstanceState);
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
+    }
+
+/**  
+     * 显示短toast  
+     * @param msg  
+     */  
+    public void toastShort(String msg){  
+        if (null == toast) {  
+            toast = new Toast(this);  
+            toast.setDuration(Toast.LENGTH_SHORT);  
+            toast.setText(msg);  
+            toast.show();  
+        } else {  
+            toast.setText(msg);  
+            toast.show();  
+        }  
+    }  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+终极版兼容6.0运行时权限的BaseActivity
+
+
+public abstract class BaseActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+
+
+    private Unbinder mUnbinder;
+
+
+    /**
+     * 需要进行检测的权限数组
+     */
+    protected String[] mNeedPermissions = {
+            // 这里填你需要申请的权限
+            // 如：读取sd卡
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+    };
+
+
+    private static final int PERMISSION_REQUEST_CODE = 0;
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getContentViewResId());
+        mUnbinder = ButterKnife.bind(this);
+
+        checkPermissions(mNeedPermissions);
+        init(savedInstanceState);
+    }
+
+    /**
+     * @param permissions
+     */
+    private void checkPermissions(String... permissions) {
+        List<String> needRequestPermissionList = findDeniedPermissions(permissions);
+        if (null != needRequestPermissionList
+                && needRequestPermissionList.size() > 0) {
+            ActivityCompat.requestPermissions(this,
+                    needRequestPermissionList.toArray(
+                            new String[needRequestPermissionList.size()]),
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+
+    /**
+     * 获取权限集中需要申请权限的列表
+     *
+     * @param permissions
+     * @return
+     */
+    private List<String> findDeniedPermissions(String[] permissions) {
+        List<String> needRequestPermissionList = new ArrayList<String>();
+        for (String perm : permissions) {
+            if (ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, perm)) {
+                needRequestPermissionList.add(perm);
+            }
+        }
+        return needRequestPermissionList;
+    }
+
+
+    /**
+     * 检测是否说有的权限都已经授权
+     *
+     * @param grantResults
+     * @return
+     */
+    private boolean verifyPermissions(int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 显示提示信息
+     *
+     */
+    private void showMissingPermissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.notifyTitle);
+        builder.setMessage(R.string.notifyMsg);
+
+        // 拒绝, 退出应用
+        builder.setNegativeButton(R.string.cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+        builder.setPositiveButton(R.string.setting,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startAppSettings();
+                    }
+                });
+
+        builder.setCancelable(false);
+
+        builder.show();
+    }
+
+
+    /**
+     * 启动应用的设置
+     *
+     */
+    private void startAppSettings() {
+        Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (!verifyPermissions(grantResults)) {
+                showMissingPermissionDialog();
+            }
+        }
+    }
+
+    public abstract int getContentViewResId();
+
+    public abstract void init(Bundle savedInstanceState);
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
+    }
+
+}
+
+
+
+
+

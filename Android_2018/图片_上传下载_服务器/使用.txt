@@ -1,0 +1,51 @@
+1、简单使用：
+
+public void uploadImage(String path) {
+ 
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+ 
+            String uploadurl = SharedPreferencesUtil.getServerUrls(getActivity()) + "mobileqrcode/uploadsignimg.html";
+            try {
+                File file = new File(img_src);
+                result = UploadUtil.uploadImage(file, uploadurl);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+ 
+        }
+    }).start();
+ 
+}
+
+
+
+
+
+2、异步：
+
+public class Upload extends AsyncTask<String,Void,String> {
+        File file;
+        public Upload(File file){
+            this.file = file;
+        }
+        @Override
+        protected String doInBackground(String... strings) {
+            return UploadImg.uploadFile(file,strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if(s != null){
+                Toast.makeText(getBaseContext(),"上传成功",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getBaseContext(),"上传失败",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+
+调用  File file = new File(capturPath); new Upload(file).execute(UrlUtil.IMG_URL+"&userName="+myAplication.getUsername());

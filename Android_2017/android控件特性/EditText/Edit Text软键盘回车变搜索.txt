@@ -1,0 +1,28 @@
+1.改变显示（回车 -->搜索）
+
+代码设置：
+
+EditText editText = new EditText(this);
+editText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+editText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+
+xml配置文件：
+EditText属性设置：
+
+android:imeOptions="actionSearch"
+android:inputType="text"
+
+
+2.点击搜索后事件处理
+在activity代码中添加，imeOptions的监听。
+
+editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {   
+public boolean onEditorAction(TextView v, int actionId,KeyEvent event)  {                            
+if (actionId==EditorInfo.IME_ACTION_SEND ||(event!=null&&event.getKeyCode()== KeyEvent.KEYCODE_ENTER))   
+{                  
+//do something;                
+return true;               
+}                 
+return false;             
+}         
+});  

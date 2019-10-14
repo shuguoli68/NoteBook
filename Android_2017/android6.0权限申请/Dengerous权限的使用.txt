@@ -1,0 +1,50 @@
+
+
+@TargetApi(Build.VERSION_CODES.M)
+
+
+可以把正常却需要开启的权限申请写在onStart（）
+
+
+
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        permissionTest();
+//        findViewById(R.id.request_permission).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                permissionTest();
+//            }
+//        });
+    }
+
+    private void permissionTest() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
+        } else {
+            doBack();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                doBack();
+            } else {
+                Toast.makeText(this, "1获取权限被拒绝后的操作", Toast.LENGTH_SHORT).show();
+                Log.i("TAG","1获取权限被拒绝后的操作");
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    private void doBack() {
+        Toast.makeText(this, "1成功获取权限后的操作", Toast.LENGTH_SHORT).show();
+        Log.i("TAG","1成功获取权限后的操作");
+    }
+
+}

@@ -1,0 +1,15 @@
+# ≈¿≥Ê¡∑œ∞£∫
+import requests
+from bs4 import BeautifulSoup
+url = 'http://wise.xmu.edu.cn/people/faculty'
+html = requests.get(url).content
+soup = BeautifulSoup(html, 'xml')
+div_list = soup.find('div', attrs={'class': 'people_list'})
+result = div_list.find_all('a', attrs={'target': '_blank'})
+for i in result:
+    print(i['href'], i.get_text())
+
+top_list = soup.find('div', attrs={'id': 'menu'})
+top = top_list.find_all('a', attrs={'class': 'sf-with-ul'})
+for j in top:
+    print(j['href'], '–’√˚£∫', j.get_text())

@@ -1,0 +1,59 @@
+
+
+//使用intent调用系统提供的相册功能，
+                //使用startActivityForResult是为了获取用户选择的图片
+                Intent intent = new Intent(Intent.ACTION_PICK, null);//从列表中选择某项并返回所有数据
+                intent.setDataAndType(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,//得到系统所有的图片
+                        "image/*");//图片的类型,image/*为所有类型图片
+                startActivityForResult(intent,5);
+
+
+
+
+//可以得到选择的图片及路径，但一次只能得到一张
+
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            Log.e("TAG--->onresult", "ActivityResult resultCode error");
+            return;
+        }
+
+        //获得图片
+        Bitmap bitmap = null;
+        ContentResolver resolver = getContentResolver();
+        if (requestCode == 5) {
+            Uri uri = data.getData();
+            Log.i("path2",uri.toString());
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(resolver, uri);//获得图片
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            String[] pro = {MediaStore.Images.Media.DATA};
+            //好像是android多媒体数据库的封装接口，具体的看Android文档
+            Cursor cursor = managedQuery(uri,pro,null,null,null);
+            Cursor cursor1 = getContentResolver().query(data.getData(),pro,null,null,null);
+            //拿到引索
+            int index =  cursor1.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            //移动到光标开头
+            cursor.moveToFirst();
+            //最后根据索引值获取图片路径
+            String path = cursor.getString(index);
+            Log.d("path",path);
+
+        }
+        im_upload_img.setImageBitmap(bitmap);
+
+    }
+
+
+
+
+
+
+

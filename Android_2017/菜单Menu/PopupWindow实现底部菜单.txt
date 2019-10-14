@@ -1,0 +1,175 @@
+
+//动画：进入和退出
+
+menu_fadein.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <alpha
+        android:duration="500"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    <translate
+        android:duration="500"
+        android:fromXDelta="0"
+        android:fromYDelta="100%"
+        android:toXDelta="0"
+        android:toYDelta="0" />
+</set>
+
+
+
+
+
+menu_fadeout.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <alpha
+        android:duration="500"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0" />
+
+    <translate
+        android:duration="500"
+        android:fromXDelta="0"
+        android:fromYDelta="0"
+        android:toXDelta="0"
+        android:toYDelta="100%" />
+</set>
+
+
+
+
+//在style中：
+
+<!-- PopupWindow窗口动画 -->
+    <style name="MenuAnimationFade">
+        <item name="android:windowEnterAnimation">@animator/menu_fadein</item>
+        <item name="android:windowExitAnimation">@animator/menu_fadeout</item>
+    </style>
+
+
+
+
+
+
+
+//弹出菜单的布局：activity_bottom_popupwindow.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/bottom_txt1"
+            android:text="模式"
+            android:drawableTop="@mipmap/ic_launcher"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/bottom_txt2"
+            android:text="文字"
+            android:drawableTop="@mipmap/ic_launcher"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:id="@+id/bottom_txt3"
+            android:text="退出"
+            android:drawableTop="@mipmap/ic_launcher"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <Button
+        android:id="@+id/bottom_btn1"
+        android:text="取消"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+
+
+
+
+
+
+//在Activity中：
+
+private Button main_btn2;
+    PopupWindow popupWindow;
+
+
+case R.id.main_btn2:
+                bottomPopupMenu();
+                break;
+case R.id.bottom_btn1:
+                popupWindow.dismiss();
+                break;
+            case R.id.bottom_txt1:
+                Toast.makeText(MainActivity.this,"模式",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bottom_txt2:
+                Toast.makeText(MainActivity.this,"文字",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bottom_txt3:
+                exitDemo();
+                break;
+
+
+
+
+
+private void bottomPopupMenu(){
+        View view = LayoutInflater.from(this).inflate(R.layout.activity_bottom_popupwindow,null);
+        view.findViewById(R.id.bottom_btn1).setOnClickListener(this);
+        view.findViewById(R.id.bottom_txt1).setOnClickListener(this);
+        view.findViewById(R.id.bottom_txt2).setOnClickListener(this);
+        view.findViewById(R.id.bottom_txt3).setOnClickListener(this);
+        popupWindow = new PopupWindow(view, LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setAnimationStyle(R.style.MenuAnimationFade);
+        // 弹出窗口显示内容视图,默认以锚定视图的左下角为起点
+        popupWindow.showAtLocation(getLayoutInflater().inflate(R.layout.activity_main, null), Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+    //菜单背景色
+        ColorDrawable dw = new ColorDrawable(0xffffffff);
+        popupWindow.setBackgroundDrawable(dw);
+        //内容背景透明度
+        backgroundAlpha(0.5f);
+        //关闭事件，弹出窗口消失将背景透明度改回来
+        popupWindow.setOnDismissListener(new popupDismissListener());
+    }
+    //内容背景透明度
+    private void backgroundAlpha(float bgAlpha)
+    {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+    }
+    class popupDismissListener implements PopupWindow.OnDismissListener{
+        public void onDismiss() {
+            backgroundAlpha(1.0f);
+        }
+    }
+    /**
+     * 退出程序
+     */
+    private void exitDemo() {
+        new AlertDialog.Builder(MainActivity.this).setMessage("确定退出这个 Demo 吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).setNegativeButton("取消", null).show();
+    }

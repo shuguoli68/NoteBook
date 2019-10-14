@@ -1,0 +1,239 @@
+
+compile 'com.loopj.android:android-async-http:1.4.9'
+
+
+<uses-permission android:name="android.permission.internet"></uses-permission>
+<uses-permission android:name="android.permission.write_external_storage"></uses-permission>
+<uses-permission android:name="android.permission.read_external_storage"></uses-permission>
+
+
+
+
+
+主mainactivity：
+
+public class mainactivity extends appcompatactivity {
+ protected static final string tag = "otheractivity";
+ 
+ //下载线程的数量
+ private final static int threadsize = 3;
+ 
+ protected static final int set_max = 0;
+ public static final int update_view = 1;
+ 
+ 
+ private progressbar pb;
+ private button bt_download;
+ 
+ private button bt_pause;
+ private textview tv_info;
+ //显示进度和更新进度
+ private handler mhandler = new handler() {
+  public void handlemessage(android.os.message msg) {
+   switch (msg.what) {
+    case set_max://设置进度条的最大值
+     int filelength = msg.arg1;
+     pb.setmax(filelength);
+     break;
+    case update_view://更新进度条 和 下载的比率
+     int len = msg.arg1;//新下载的长度
+     pb.setprogress(pb.getprogress() + len);//设置进度条的刻度
+ 
+     int max = pb.getmax();//获取进度的最大值
+     int progress = pb.getprogress();//获取已经下载的数据量
+     // 下载：30 总：100
+     int result = (progress * 100) / max;
+ 
+     tv_info.settext("下载:" + result + "%");
+ 
+     break;
+ 
+    default:
+     break;
+   }
+  }
+ 
+  ;
+ };
+ 
+ string uri = "http://c.hiphotos.baidu.com/image/pic/item/b90e7bec54e736d1e51217c292504fc2d46269f3.jpg";
+ 
+ @override
+ protected void oncreate(bundle savedinstancestate) {
+  super.oncreate(savedinstancestate);
+  setcontentview(r.layout.activity_main);
+  //找到控件
+  pb = (progressbar) findviewbyid(r.id.pb);
+  tv_info = (textview) findviewbyid(r.id.tv_info);
+ 
+  bt_download = (button) findviewbyid(r.id.bt_download);
+  bt_pause = (button) findviewbyid(r.id.bt_pause);
+ 
+  //数据的回显
+  //确定下载的文件
+  string name = getfilename(uri);
+  file file = new file(environment.getexternalstoragedirectory(), name);
+  if (file.exists()) {//文件存在回显
+   //获取文件的大小
+   int filelength = (int) file.length();
+   pb.setmax(filelength);
+   try {
+    //统计原来所有的下载量
+    int count = 0;
+    //读取下载记录文件
+    for (int threadid = 0; threadid < threadsize; threadid++) {
+     //获取原来指定线程的下载记录
+     int existdownloadlength = readdownloadinfo(threadid);
+     count = count + existdownloadlength;
+    }
+    //设置进度条的刻度
+    pb.setprogress(count);
+ 
+    //计算比率
+    int result = (count * 100) / filelength;
+    tv_info.settext("下载:" + result + "%");
+   } catch (exception e) {
+    e.printstacktrace();
+   }
+  }
+ }
+ //暂停
+ private boolean flag = false;//是否在下载
+ 
+ public void pause(view v){
+  flag = false;
+  bt_download.setenabled(true);
+  bt_pause.setenabled(false);
+ }
+ //下载
+ public void download(view v){
+  flag = true; //是在下载
+  bt_download.setenabled(false);//一点击变成不可点击
+  bt_pause.setenabled(true);//一点击变成可点击
+  new thread(){//子线程
+   public void run() {
+    try {
+     //获取服务器上文件的大小
+     httpclient client = new defaulthttpclient();
+     httphead request = new httphead(uri);
+     httpresponse response = client.execute(request);
+     //response 只有响应头 没有响应体
+     if(response.getstatusline().getstatuscode() == 200){
+      header[] headers = response.getheaders("content-length");
+      string value = headers[0].getvalue();
+      //文件大小
+      int filelength = integer.parseint(value);
+      log.i(tag, "filelength:"+filelength);
+ 
+      //设置进度条的最大值
+      message msg_setmax = message.obtain(mhandler, set_max, filelength, 0);
+      msg_setmax.sendtotarget();
+ 
+ 
+      //处理下载记录文件
+      for(int threadid=0;threadid<threadsize;threadid++){
+       //对应的下载记录文件
+       file file = new file(environment.getexternalstoragedirectory(),threadid+".txt");
+       //判断文件是否存在
+       if(!file.exists()){
+        //创建文件
+        file.createnewfile();
+       }
+      }
+ 
+ 
+      //在sdcard创建和服务器大小一样的文件
+      string name = getfilename(uri);
+      file file = new file(environment.getexternalstoragedirectory(),name);
+      //随机访问文件
+      randomaccessfile raf = new randomaccessfile(file, "rwd");
+      //设置文件的大小
+      raf.setlength(filelength);
+      //关闭
+      raf.close();
+ 
+      //计算每条线程的下载量
+      int block = (filelength%threadsize == 0)[] buffer = new byte[1024];
+     int len = 0;
+     while((len = inputstream.read(buffer)) != -1){
+      //如果暂停下载 点击暂停 false 就直接return 点击下载true接着下载
+      if(!flag){
+       return;//标准线程结束
+      }
+      //写数据
+      raf.write(buffer, 0, len);
+ 
+      //读取原来下载的数据量 这里读取是为了更新下载记录
+      int existdownloadlength = readdownloadinfo(threadid);//原来下载的数据量
+ 
+      //计算最新的下载
+      int newdownloadlength = existdownloadlength + len;
+ 
+      //更新下载记录 从新记录最新下载位置
+      updatedownloadinfo(threadid, newdownloadlength);
+ 
+      //更新进度条的显示 下载的百分比
+      message update_msg = message.obtain(mhandler, update_view, len, 0);
+      update_msg.sendtotarget();
+      //模拟 看到进度条动的效果
+      systemclock.sleep(50);
+     }
+     inputstream.close();
+     raf.close();
+     log.i(tag, "第"+threadid+"条线程下载完成");
+    }
+ 
+   } catch (exception e) {
+    e.printstacktrace();
+   }
+  }
+ }
+ /**
+  * 读取指定线程的下载数据量
+  * @param threadid 线程的id
+  * @return
+  * @throws exception
+  */
+ public int readdownloadinfo(int threadid) throws exception{
+  //下载记录文件
+  file file = new file(environment.getexternalstoragedirectory(),threadid+".txt");
+  bufferedreader br = new bufferedreader(new filereader(file));
+  //读取一行数据
+  string content = br.readline();
+ 
+  int downlength = 0;
+  //如果该文件第一次创建去执行读取操作 文件里面的内容是 null
+  if(!textutils.isempty(content)){
+   downlength = integer.parseint(content);
+  }
+  //关闭流
+  br.close();
+  return downlength;
+ }
+ /**
+  * 更新下载记录
+  * @param threadid
+  * @param newdownloadlength
+  */
+ public void updatedownloadinfo(int threadid,int newdownloadlength) throws exception{
+  //下载记录文件
+  file file = new file(environment.getexternalstoragedirectory(),threadid+".txt");
+  filewriter fw = new filewriter(file);
+  fw.write(newdownloadlength+"");
+  fw.close();
+ }
+ 
+ /**
+  * 获取文件的名称
+  * @param uri
+  * @return
+  */
+ private string getfilename(string uri){
+  return uri.substring(uri.lastindexof("/")+1);
+ }
+ 
+ 
+}
+
+
+
