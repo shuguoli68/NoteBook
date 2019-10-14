@@ -1,0 +1,58 @@
+1、打包后应用名称
+
+def releaseTime() {
+    return new Date().format("yyyyMMdd_HHmmss", TimeZone.getTimeZone("GMT+08"))
+}
+
+// 打包后应用名称
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "release") {
+            variant.outputs.all { output ->
+                def outputFile = output.outputFile
+                if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                    // apk_渠道名-版本号-版本名称-编译时间.apk  "zszy-${defaultConfig.versionCode}-v${defaultConfig.versionName}-${releaseTime()}.apk"
+                    def fileName = "IOT小助手_V${defaultConfig.versionName}_${releaseTime()}.apk"
+                    outputFileName = fileName
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+ 2、Android 7.0 访问共享路径文件
+ 
+ <provider
+    android:name="android.support.v4.content.FileProvider"
+    android:authorities="${applicationId}.fileProvider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/provider_paths"/>
+</provider>
+
+在res目录新建xml文件夹，创建provider_paths.xml文件如下：
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- /storage/emulated/0/Download/${applicationId}/.beta/apk-->
+    <external-path name="beta_external_path" path="Download/"/>
+    <!--/storage/emulated/0/Android/data/${applicationId}/files/apk/-->
+    <external-path name="beta_external_files_path" path="Android/data/"/>
+</paths>
+
+
+
+3、防止点击太快
+    private static final int MIN_DELAY_TIME= 1000;  // 两次点击间隔不能少于1000ms
+    private static long lastClickTime;
+    public static boolean isFastClick() {
+        boolean flag = true;
+        long currentClickTime = System.currentTimeMillis();
+        if ((currentClickTime - lastClickTime) >= MIN_DELAY_TIME) {
+            flag = false;
+        }
+        lastClickTime = currentClickTime;
+        return flag;
+    }

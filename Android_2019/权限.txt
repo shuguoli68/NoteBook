@@ -1,0 +1,43 @@
+implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+
+rxPermissions = new RxPermissions(this);
+
+private void requestPer(){
+        rxPermissions
+                .requestEachCombined(PERMISSIONS_STORAGE)
+                .subscribe(permission -> { // will emit 1 Permission object
+                    if (permission.granted) {
+                        // All permissions are granted !
+                        IotLog.i("All permissions are granted !");
+                    } else if (permission.shouldShowRequestPermissionRationale){
+                        // At least one denied permission without ask never again
+                        IotLog.i("At least one denied permission without ask never again");
+                        DialogUtil.showCommon(SplashActivity.this, "请同意权限，否则部分功能无法使用！", "确定", new DialogUtil.MyCommonCall() {
+                            @Override
+                            public void cancel() {
+                                finish();
+                            }
+
+                            @Override
+                            public void ok() {
+                                requestPer();
+                            }
+                        });
+                    } else {
+                        // At least one denied permission with ask never again
+                        // Need to go to the setting
+                        IotLog.i("At least one denied permission with ask never again");
+                        Intent localIntent = new Intent();
+                        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        if (Build.VERSION.SDK_INT >= 9) {
+                            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                            localIntent.setData(Uri.fromParts("package", getPackageName(), null));
+                        } else if (Build.VERSION.SDK_INT <= 8) {
+                            localIntent.setAction(Intent.ACTION_VIEW);
+                            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+                            localIntent.putExtra("com.android.settings.ApplicationPkgName", getPackageName());
+                        }
+                        startActivity(localIntent);
+                    }
+                });
+    }

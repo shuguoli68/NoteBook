@@ -1,0 +1,21 @@
+【1】fileTree
+implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+意思是libs下的所有jar都依赖
+
+
+【1】多个module时相同依赖：
+
+一个module中使用api，其他的module使用相同依赖只需使用implementation
+并且要么都是远程依赖，要么都是jar包依赖
+
+多个module使用so文件：
+so文件一定要复制一份在主module下，如果提示****.so重复则在主module的build.gradle的
+android {
+*******
+packagingOptions {//哪个重复就加上哪个
+//        exclude 'lib/arm64-v8a/libne_audio.so'
+    }
+}
+
+

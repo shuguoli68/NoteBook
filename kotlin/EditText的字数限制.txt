@@ -1,0 +1,74 @@
+var editStart = 0
+        var editEnd = 0
+        skill_introduce.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0 == null)
+                    return
+                editStart = skill_introduce.selectionStart
+                editEnd = skill_introduce.selectionEnd
+                skill_introduce.removeTextChangedListener(this)
+                //当输入字符个数超过限制的大小时，进行截断操作
+                while (p0.toString().length > 50) {
+                    p0.delete(editStart - 1, editEnd)
+                    editStart--
+                    editEnd--
+                    ToastUtils.showShort("最多能输入50个字")
+                }
+                skill_introduce.setSelection(editStart)
+                skill_introduce.addTextChangedListener(this)
+//                val len = et_feedback_content.text.toString().length
+//                feedback_content_length.text = "${len}/50"
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
+
+
+
+
+<EditText
+                android:id="@+id/et_feedback_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+
+
+
+封装：
+
+/**
+         * 限制输入的字符个数
+         */
+        fun inputLen(editText: EditText, max:Int){
+            var editStart = 0
+            var editEnd = 0
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                    if (p0 == null)
+                        return
+                    editStart = editText.selectionStart
+                    editEnd = editText.selectionEnd
+                    editText.removeTextChangedListener(this)
+                    //当输入字符个数超过限制的大小时，进行截断操作
+                    while (p0.toString().length > max) {
+                        p0.delete(editStart - 1, editEnd)
+                        editStart--
+                        editEnd--
+                        ToastUtils.showShort("最多能输入${max}个字")
+                    }
+                    editText.setSelection(editStart)
+                    editText.addTextChangedListener(this)
+//                val len = et_feedback_content.text.toString().length
+//                feedback_content_length.text = "${len}/50"
+                }
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+            })
+        }

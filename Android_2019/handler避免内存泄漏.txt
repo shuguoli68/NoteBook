@@ -1,0 +1,57 @@
+public class MainActivity extends AppCompatActivity implements MainCallBack {
+    private TextView resultTextView;
+    private MyHandler handler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Button button = findViewById(R.id.btn);
+        handler = new MyHandler(this);
+        final EditText editText = findViewById(R.id.et_url);
+        resultTextView = findViewById(R.id.tv_result);
+        final MainPresenter presenter = new MainPresenter(this);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = editText.getText().toString();
+                presenter.getUrlData(url);
+            }
+        });
+
+    }
+
+    @Override
+    public void getMessage(String message) {
+        Message msg = handler.obtainMessage(0, message);
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void error() {
+        Message msg = handler.obtainMessage(1, "error");
+        handler.sendMessage(msg);
+    }
+
+    private static class MyHandler extends Handler {
+        private WeakReference<MainActivity> reference;
+
+        private MyHandler(MainActivity activity) {
+            reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            MainActivity activity = reference.get();
+            switch (msg.what) {
+                case 0:
+                    activity.resultTextView.setText(msg.obj.toString());
+                    break;
+                case 1:
+                    activity.resultTextView.setText(msg.obj.toString());
+                    break;
+            }
+        }
+    }
+}

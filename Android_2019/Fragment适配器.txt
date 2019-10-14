@@ -1,0 +1,28 @@
+Fragment适配器区别:
+
+1.FragmentStatePagerAdapter
+继承子 pager。该 PagerAdapter 的实现将只保留当前页面，当页面不在当前显示的时候，页面会清理，释放其资源。而在页面需要显示时，生成新的页面，重新生成数据。这么实现的好处就是当拥有大量的页面时，不必在内存中占用大量的内存。
+
+2.FragmentPagerAdapter
+
+同样继承于pagerAdapter,但是该适配器在页面不显示（比如滑到其他页面），他只会把当前view视图移除，但是保留了内部的数据。
+
+
+
+
+
+TabLayout属性介绍：
+1、 app:tabSelectedTextColor=”?attr/colorPrimary”  //改变选中字体的颜色
+2、 app:tabTextColor=”#000000”  //改变未选中字体的颜色
+3、 app:tabIndicatorColor=”?attr/colorPrimary”   //改变指示器下标的颜色
+4、 app:tabBackground=”color”   //改变整个TabLayout的颜色
+5、 app:tabIndicatorHeight=”4dp”   //设置指示器下标的高度
+6、 app:tabTextAppearance=”@Android:style/TextAppearance.Holo.Large”   //设置文字的外貌
+7、 app:tabMode=”fixed”  //设置TabLayout模式，默认是fixed：固定的，标签很多时候会被挤压，不能滑动。另外一种就是scrollable，可以滑动的
+8、 app:tabPadding=”xxdp”   //设置Tab内部的子控件的Padding
+9、 app:paddingEnd=”xxdp”   //设置整个TabLayout的Padding
+10、app:paddingStart=”xxdp”  //设置整个TabLayout的Padding
+11、app:tabGravity=”center”  //内容的显示模式。center是居中，如果是fill，则是充满
+12、app:tabMaxWidth=”xxdp”   //设置最大的tab宽度
+13、app:tabMinWidth=”xxdp”  //设置最小的tab宽度
+14、app:tabContentStart=”100dp”  //TabL

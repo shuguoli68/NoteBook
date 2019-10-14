@@ -1,0 +1,56 @@
+1、判断网络是否连接
+
+public static boolean isNetworkAvailable(Context context) {
+        //网络已连接，WiFi已开启并连接成功或者WiFi关闭数据流量开启
+        if (context == null) {
+            return false;
+        }
+        ConnectivityManager manager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] infos = manager.getAllNetworkInfo();
+        for (NetworkInfo info : infos) {
+            if (info.isConnected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    2、判断数据流量是否开启
+    
+    public static boolean is4GEnabled(Context context) {
+        //数据流量开启返回true，否则返回false
+        try {
+            Method getMobileDataEnabledMethod = ConnectivityManager.class.getDeclaredMethod("getMobileDataEnabled");
+            getMobileDataEnabledMethod.setAccessible(true);
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            return (Boolean) getMobileDataEnabledMethod.invoke(connectivityManager);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    
+    
+    
+    3、开启关闭WiFi
+    final WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                if(!wifi.isWifiEnabled()) {//wifi是关闭的
+                    wifi.setWifiEnabled(true);
+                    }
+         
+         
+   4、提取字符串中的所有IP：
+   String bString="java.net.SocketTimeoutException: failed to connect to /192.168.4.1 (port 8880) from /10.29.37.237 (port 49565) after 5000ms";
+                String regEx="((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)";
+                Pattern p = Pattern.compile(regEx);
+                Matcher m = p.matcher(bString);
+                while (m.find()) {
+                    String result=m.group();
+                    IotLog.i("IP:"+result);
+                }//结果：IP:192.168.4.1
+                              IP:10.29.37.237
+                              
+                              

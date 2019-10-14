@@ -1,0 +1,22 @@
+import android.view.View
+
+infix fun View.clickDelay(clickAction: () -> Unit) {//Õë¶Ôkotlin´úÂë£¬ViewÀ©Õ¹
+
+    var hash: Int = 0
+    var lastClickTime: Long = 0
+    val SPACE_TIME: Long = 1000
+
+    this.setOnClickListener {
+        if (this.hashCode() != hash) {
+            hash = this.hashCode()
+            lastClickTime = System.currentTimeMillis()
+            clickAction()
+        } else {
+            val currentTime = System.currentTimeMillis()
+            if (Math.abs(currentTime - lastClickTime) > SPACE_TIME) {
+                lastClickTime = System.currentTimeMillis()
+                clickAction()
+            }
+        }
+    }
+}
