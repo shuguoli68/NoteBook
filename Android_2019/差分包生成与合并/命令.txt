@@ -1,0 +1,51 @@
+
+生成差量包：
+
+bsdiff old.apk new.apk v1_2_1.patch
+
+
+
+合并旧版本和差分包成新版本：
+
+bspatch old.apk new2.apk v1_2_1.patch
+
+
+
+Android增量更新框架差分包升级：BigNews
+
+https://github.com/ha-excited/BigNews
+
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+dependencies {
+        implementation 'com.github.ha-excited:BigNews:0.1.2'
+    }
+
+
+合并: 从差分包/升级包和老安装包合并升级到新安装包，新安装包放在newApkPath。
+
+/**
+ * oldApkPath: 老安装包路径
+ * newApkPath: 新安装包路径（输出）
+ * patchPath: 升级/差分包路径
+ * return: 成功返回true，否则为false。
+ */
+BigNews.make(oldApkPath, newApkPath, patchPath);
+
+
+差分: 将新安装包和老安装包的差异打包为差分包/升级包，输出到patchPath。
+
+/**
+ * oldApkPath: 老安装包路径
+ * newApkPath: 新安装包路径
+ * patchPath: 升级/差分包路径（输出）
+ * return: 成功返回true，否则为false。
+ */
+BigNews.diff(oldApkPath, newApkPath, patchPath);
+项目中一般使用合并功能。
+
