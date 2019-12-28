@@ -1,0 +1,65 @@
+终于做出来和商汤face++人脸特征点一样的效果了，可以测试一下，
+运行的时候，请不要修改包名，包名与工程一致就可以：
+https://pan.baidu.com/s/1mios2pE
+
+
+
+本文主要介绍使用Google自带的FaceDetectionListener进行人脸检测，并将检测到的人脸用矩形框绘制出来。详见博文:http://blog.csdn.net/yanzi1225627/article/details/38098729
+
+
+
+OpenCV中文网站
+http://www.opencv.org.cn/forum.php?mod=viewthread&tid=33549
+
+
+在Android Studio上进行OpenCV 3.1开发环境配置【系列文章，看作者底下的下一章链接】
+http://blog.sina.com.cn/s/blog_e50d12b30102w1lc.html
+
+http://johnhany.net/2016/01/opencv-3-development-in-android-studio/
+
+http://blog.51cto.com/13591594/2067007
+
+
+Android结合OpenCV博客集
+http://blog.csdn.net/column/details/android-opencv.html
+
+
+
+人脸识别开发者中心：
+http://www.eyekey.com/devcenter/api/APIface.html
+
+
+
+【安卓随笔】使用OpenCV进行人脸跟踪和自动拍照：
+http://blog.csdn.net/vicemiami/article/details/54314193
+
+
+
+android  拍照 人脸追踪
+
+
+Android Studio 2.2 使用 OpenCV 的两种方式(傻瓜式教程)
+http://blog.csdn.net/youngpan1101/article/details/53614588
+
+
+
+w3c school opencv文档教程
+https://www.w3cschool.cn/opencv/opencv-o3xq28yx.html
+
+
+
+用OpenCV做人脸识别和性别识别contrib
+http://blog.csdn.net/yang_xian521/article/details/7736955
+
+推荐个网站 http://www.face-rec.org/databases/  这里有最全的人脸库的概述
+
+
+
+【人脸识别论文】
+
+https://wenku.baidu.com/view/525be81b6f1aff00bfd51e0c.html
+
+
+https://wenku.baidu.com/view/f37dff710812a21614791711cc7931b765ce7b39.html?rec_flag=default&mark_pay_doc=1&mark_rec_page=1&mark_rec_position=2&mark_rec=view_r_1&clear_uda_param=1
+
+

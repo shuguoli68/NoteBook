@@ -1,0 +1,227 @@
+基本：
+    compile 'com.android.support:appcompat-v7:26.+'
+
+    compile 'com.android.support:design:26.0.0+'
+
+
+最新依赖搜索：http://search.maven.org/#search%7Cga%7C1%7C
+
+【compile 'com.yanzhenjie:permission:1.1.2'】
+https://github.com/yanzhenjie/AndPermission
+AndPermission是一个运行权限管理库，兼容Android O，同时最大程度上兼容了国产机。
+CSDN博客说明： http://blog.csdn.net/yanzhenjie1003/article/details/52503533/
+
+
+【
+maven { url "https://www.jitpack.io" }
+
+compile 'com.github.yaming116:UpdateApp:1.0.4'
+
+】app更新，主要负责软件下载、软件安装等
+https://github.com/yaming116/UpdateApp
+
+
+使用Android5.0、6.0新控件：
+         compile 'com.android.support:design:23.0.0+'
+
+
+OKHttp ：   compile 'com.zhy:okhttputils:2.6.2'
+
+
+butterknife：   
+
+【
+
+Project的build.gradle文件中增加classpath内容：
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0'
+      
+  
+classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8' //增加这一句
+
+
+    }
+}
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+app的build.gradle文件中增加classpath内容：
+
+
+apply plugin: 'com.neenbedankt.android-apt'//增加这一句
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    
+
+compile 'com.jakewharton:butterknife:8.1.0'
+    
+apt 'com.jakewharton:butterknife-compiler:8.1.0'//增加这一句
+
+}
+
+】
+
+gson包： compile 'com.google.code.gson:gson:2.8.2'
+
+
+retrofit网络请求：
+    compile "com.squareup.retrofit2:retrofit:2.1.0"
+    compile "com.squareup.retrofit2:converter-gson:2.1.0"
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+
+
+网络图片的显示：
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+https://github.com/wasabeef/glide-transformations 对Glide加载的图片圆角、模糊等操作
+
+
+圆形图片，自定义ImageView：
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+
+【RecyclerView ：
+compile 'com.android.support:recyclerview-v7:24.2.0'】
+
+
+ExpandableRecyclerView可折叠分组
+compile 'com.github.ayalma:ExpandableRecyclerView:0.2.0'
+
+
+数据库：
+在project的build.gradle中dependencies 添加：
+classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'
+在app的build.gradle中添加：
+apply plugin: 'org.greenrobot.greendao'
+
+compile 'org.greenrobot:greendao:3.0.0'
+
+greendao {
+        schemaVersion 1
+        daoPackage 'com.example.gen'
+        targetGenDir 'src/main/java'
+    }
+新建一个名为gen的包，新建一个Bean格式类，加上注解@Entity
+
+
+DataBinding的依赖：
+dataBinding{
+        enabled true
+    }
+
+
+https://github.com/CaMnter/EasyRecyclerView
+EasyRecyclerView——支持下拉上拉刷新等功能全面的RecyclerView
+
+
+https://github.com/JakeWharton/butterknife
+butterknife——View注解库和配套插件android-butterknife-zelezny
+
+
+https://github.com/greenrobot/EventBus
+EventBus——事件总线
+
+
+https://github.com/bumptech/glide
+Glide——图片加载
+
+
+
+https://github.com/lguipeng/BubbleView
+BubbleView——聊天气泡自定义
+
+
+https://github.com/niniloveyou/StateButton
+https://www.jianshu.com/p/0f9ed8e733f5
+view
+StateButton——一个可以用代码设置selector背景（按下去背景颜色更改，样式变化等等）的button, 再也不用写selector了
+
+
+
+
+【compile 'com.lcodecorex:tkrefreshlayout:1.0.7'】
+https://github.com/lcodecorex/TwinklingRefreshLayout
+TwinklingRefreshLayout 支持下拉刷新和上拉加载的RefreshLayout,自带越界回弹效果，支持RecyclerView,AbsListView,ScrollView,WebView
+
+
+【compile 'com.contrarywind:Android-PickerView:3.2.7'】
+https://github.com/Bigkoo/Android-PickerView
+有时间选择器和选项选择器：
+——TimePickerView 时间选择器，支持年月日时分，年月日，年月，时分等格式。
+——OptionsPickerView 选项选择器，支持一，二，三级选项选择，并且可以设置是否联动 。
+
+
+RxTools【https://github.com/vondear/RxTools】
+Android开发人员不得不收集的工具类集合 | 支付宝支付 | 微信支付（统一下单） | 微信分享 | Zip4j压缩（支持分卷压缩与加密） | 一键集成UCrop选择圆形头像 | 一键集成二维码和条形码的扫描与生成 | 常用Dialog | WebView的封装可播放视频 | 仿斗鱼滑动验证码 | Toast封装 | 震动 | GPS | Location定位 | 图片缩放 | Exif 图片添加地理位置信息（经纬度） | 蛛网等级 | 颜色选择器
+
+
+Luban【compile 'top.zibin:Luban:1.1.3'】
+https://github.com/Curzibn/Luban
+Luban（鲁班） —— Android图片压缩工具
+
+【图片资源压缩】
+TinyPngPlugin是一个TinyPng的Gradle插件，它能够批量地压缩你项目中的图片，到https://tinypng.com/developers，然后输入你的姓名和邮箱来获得这个Key注意: 一个Key每个月可以免费压缩500张图片，超过500张后就需要付费后才能继续使用
+https://github.com/waynell/TinyPngPlugin/blob/master/README.zh-cn.md
+
+
+【CircularAnim控件的圆形动画】
+Android水波动画帮助类，轻松实现View show/hide/startActivity()特效
+https://github.com/XunMengWinter/CircularAnim
+
+
+【BaseRecyclerViewAdapterHelper】  
+官方使用指南：https://www.jianshu.com/p/b343fcff51b0
+Github ： https://github.com/CymChad/BaseRecyclerViewAdapterHelper；
+
+
+【关于使用DrawerLayout建立侧滑菜单时,下层布局依然可响应点击事件的解决方法】http://blog.csdn.net/qiang_xi/article/details/49329679；
+
+
+【数据库查看】
+【stetho】https://www.jianshu.com/p/03da9f91f41f
+
+
+
+【各种Utils，有API】
+https://github.com/Blankj/AndroidUtilCode
+
+
+【各种绚丽进度条封装库】
+compile 'com.wang.avi:library:2.1.3'
+https://github.com/81813780/AVLoadingIndicatorView
+
+
+【LrcView歌词控件】Android歌词控件，支持上下拖动歌词，歌词自动换行，自定义属性。
+https://github.com/wangchenyan/LrcView
+
+
+【Android断点续传的文件下载器】
+https://github.com/MindorksOpenSource/PRDownloader
+
+
+【FloatWindow 安卓任意界面悬浮窗】
+https://github.com/yhaolpz/FloatWindow
+
+compile 'com.umeng.analytics:analytics:latest.integration'
+
+
+【智能图片裁剪框架】
+https://github.com/pqpo/SmartCropper
+

@@ -1,0 +1,350 @@
+CSDN博客阅读器下载：http://fir.im/CSDNBlog
+
+安卓工具网站收集： APIStore http://apistore.baidu.com/
+
+Bmob: http://www.bmob.cn/products
+
+Uncode移动后端开发框架 http://www.uncode.cn/
+
+Android学习链接大放送
+
+官方网站：
+
+　　http://www.android.com/ 　　http://developer.android.com/index.html 
+　　基础知识概览:http://developer.android.com/guide/components/fundamentals.html 
+　　Common Tasks and How to Do Them in Android: 
+http://developer.android.com/guide/faq/commontasks.html 
+　　github上的源码：https://github.com/android/platform_frameworks_base 
+　　Android源码查看网址：http://grepcode.com/project/repository.grepcode.com/java/ext/com.google.android/android/ 
+论坛：
+
+　　安卓巴士（挺著名的一个论坛）：http://www.apkbus.com/ 　　很多很有用的资料哇。。 
+　　eoe社区： 　　http://www.eoeandroid.com/ 　　【eoeAndroid社区索引】最新最全Android各大类知识汇总贴:http://www.eoeandroid.com/thread-252177-1-1.html 
+　　Android开发系列教程集合： http://dev.apkbus.com/ 　　神贴集合：http://www.apkbus.com/android-19658-1-1.html 个人博客：
+
+　　Android详细教程（基础篇）：http://www.cnblogs.com/aimeng/archive/2012/10/31/2748428.html 
+　　（这个作者的Android目录目前是138篇。。.-_-||） 　　（后来我才发现。。这个博主是安卓巴士的站长。。。站长。。长。。） 
+　　入门合辑：http://www.cnblogs.com/aimeng/archive/2012/03/09/2387509.html 
+　　 　　 基础
+
+　　书籍和教程推荐： 
+　　http://www.cnblogs.com/aimeng/archive/2011/09/05/2167979.html 
+　　http://www.cnblogs.com/aimeng/archive/2011/10/30/2229554.html 
+　　http://www.cnblogs.com/aimeng/archive/2012/01/12/2320993.html 
+　　http://www.cnblogs.com/aimeng/archive/2012/03/24/2415900.html 
+　　http://www.cnblogs.com/aimeng/archive/2012/06/18/2553150.html 
+　　http://www.cnblogs.com/aimeng/archive/2012/08/02/2619522.html 
+　　用户界面教程： 　　http://www.cnblogs.com/aimeng/archive/2012/06/26/2563762.html 
+　　提高篇： 
+　　http://www.cnblogs.com/aimeng/archive/2012/06/19/2555210.html 
+　　核心分析28篇： 
+　　http://www.cnblogs.com/aimeng/archive/2012/03/17/2403298.html 
+　　这个作者推荐的Android源码： 
+　　http://www.cnblogs.com/aimeng/archive/2012/08/17/2644487.html 
+　　经典游戏源码汇总：http://www.cnblogs.com/aimeng/archive/2012/09/24/2700488.html 
+　　游戏代码：http://www.cnblogs.com/aimeng/archive/2012/06/02/2531751.html 
+　　经典源码下载：http://demo.apkbus.com/ 
+　　十五个Android开发实例：http://www.cnblogs.com/aimeng/archive/2012/03/28/2422435.html 
+　　关于Adapter的使用：http://www.cnblogs.com/devinzhang/archive/2012/01/20/2328334.html 
+　　Android开发从入门到精通：http://android.apkbus.com/ 　　http://www.cnblogs.com/linzheng/tag/android/default.html?page=1 
+　　（看见搞XNA的人总是倍感亲切。。） 　　又是一个Android学习的博客： 
+　　http://www.cnblogs.com/fly_binbin/category/270864.html 
+　　 　　关于Activity的启动模式：http://marshal.easymorse.com/archives/2950 音频相关：
+
+　　AudioTrack学习：http://www.rosoo.net/a/201204/15897.html 
+　　Android音频相关很强的一个博客，有很多底层的讨论，博文中有很多代码，但是排版做得不是很好（抱歉哈），所以可读性不是很好。 
+　　http://blog.csdn.net/hgl868/article/category/884128 
+　　关于AudioTrack的使用，找到了这个博客： 
+　　http://blog.csdn.net/conowen/article/details/7727145 
+　　http://blog.csdn.net/conowen/article/details/7799155 
+　　使用AudioTrack播放PCM音频数据：http://www.rosoo.net/a/201201/15580.html 
+NDK相关：
+
+　　NDK 编译和使用静态库、动态库：http://www.rosoo.net/a/201302/16514.html 
+　　Android.mk的用法|静态库|动态库: http://www.rosoo.net/a/201206/16108.html 
+调试相关：
+
+　　Android真机调试方法：http://www.rosoo.net/a/201205/16033.html 
+资源图片相关：
+
+　　android内置图标资源：http://docs.since2006.com/android/2.1-drawables.php 
+　　android内置图标资源：http://www.darshancomputing.com/android/1.5-drawables.html 
+　　免费的地图图标资源：http://mapicons.nicolasmollet.com/ 关于View绘制及尺寸的分析：
+
+　　Android中View绘制流程以及invalidate()等相关方法分析 
+　　Android中measure过程、WRAP_CONTENT详解以及xml布局文件解析流程浅析(上) 
+　　Android中measure过程、WRAP_CONTENT详解以及xml布局文件解析流程浅析(下) OAuth认证相关　
+
+　　OAuth官网： http://oauth.net/ 　　开源项目oauth-signpost： 
+http://code.google.com/p/oauth-signpost/
+
+Android_圣骑士Wind的博客： 
+http://www.cnblogs.com/mengdd/category/397120.html
+
+慕客网 http://www.imooc.com/view/263?src=sugc
+
+策划设计
+
+icon下载 Easyicon：http://www.easyicon.net/ 
+Findicons：http://findicons.com/ 淘宝icon库：http://www.iconfont.cn/ 
+IconArchive：http://www.iconarchive.com/ 
+Dryicons：http://dryicons.com/ Iconmonstr：http://iconmonstr.com/
+
+图片下载 全景图：http://www.quanjing.com/ Pixabay：http://pixabay.com/ 
+千图网：http://www.58pic.com/ 昵图网：http://www.nipic.com/ Twitter 
+Covers：http://www.twitrcovers.com/ 韩国Photo 
+Naver：http://photo.naver.com/
+
+网页模板 CSSwinner：http://www.csswinner.com/ 
+CSSawards：http://cssdesignawards.com/ 
+Awwwards：http://www.awwwards.com/ 
+突唯阿：http://tuweia.cn/c/home/a/discovery Reeoo：http://reeoo.com/ 
+日本酷站索引：http://bm.straightline.jp/
+
+字体设计 字体松鼠：http://www.fontsquirrel.com/ 
+A5字体：http://ziti.admin5.com/ 找字体：http://www.zhaozi.cn/ 
+字体下载宝库：http://font.knowsky.com/ 
+Abstract字体：http://www.abstractfonts.com/ Font 
+Fabric：http://fontfabric.com/
+
+logo设计 Logopond：http://logopond.com/ 
+Easylogo：http://www.easylogo.cn/ 
+LogoMoose：http://www.logomoose.com/ Logo 
+Faves：http://logofaves.com/ logo狂热者：http://logofury.com/ 
+Logo挚爱：http://www.logodesignlove.com/
+
+综合ui Freepik：http://www.freepik.com/ 
+Codrops：http://tympanus.net/codrops/ 站酷：http://www.zcool.com.cn/ 
+Codepen：http://codepen.io/ Designmodo：http://designmodo.com/ 
+Pixeden：http://www.pixeden.com/
+
+创意灵感 Pinterest：http://www.pinterest.com/all/design/ 
+9GAG：http://9gag.com/ Fubiz：http://www.fubiz.net/ 
+花瓣：http://huaban.com/ 视觉中国：http://shijue.me/home 
+Booooooom：http://www.booooooom.com/ 功能开发
+
+推送 百度云推送：http://developer.baidu.com/cloud/push 
+个推：http://www.igetui.com/ 极光推送：http://www.jpush.cn/ 
+友盟推送：http://www.umeng.com/push/ Bmob推送：http://www.codenow.cn/ 
+华为推送：http://developer.huawei.com/push/ 地图 
+百度地图：http://developer.baidu.com/map/index.php?title=%E9 
+高德地图：http://lbs.amap.com/ 谷歌地图：https://developers.google.com/ 
+腾讯地图：http://open.map.qq.com/ 苹果地图：https://developer.apple.com/cn/ 
+搜狗地图：http://map.sogou.com/api/?IPLOC=CN4101
+
+社区化分享 ShareSDK：http://mob.com/ 
+百度社会化分享：http://developer.baidu.com/soc/share 
+友盟社会化分享：http://www.umeng.com/social 友推社会化分享：http://youtui.mobi/ 
+Bshare：http://www.bshare.cn/
+
+IM 环信：http://www.easemob.com/ 融云即时通讯云：http://www.rongcloud.cn/ 
+容联·云通讯：http://www.yuntongxun.com/ 亲加即时通讯云：http://gotye.com.cn/ 
+呀呀语音：http://www.yunva.com:8080/yunva/home.html
+
+语音识别 科大讯飞语音：http://open.voicecloud.cn/ 
+微信语音：http://pr.weixin.qq.com/ 
+百度语音识别：http://developer.baidu.com/wiki/index.php?title=do 
+云知声：http://dev.hivoice.cn/usc.jsp 
+搜狗语音云：http://openspeech.sogou.com/Sogou/php/index.php 
+出门问问：http://www.mobvoi.com/
+
+第三方登录 腾讯QQ互联平台：http://wiki.connect.qq.com/sdk%E4%B8%8B%E8%BD%BD 
+百度第三方账号登陆：http://developer.baidu.com/frontia/sociallogin 
+人人连接：http://wiki.dev.renren.com/wiki/Renren_Connect 
+小米账号登陆：http://dev.xiaomi.com/doc/?page_id=1668 输入法 
+百度输入法：http://developer.baidu.com/ms/input 
+搜狗输入法：http://shouji.sogou.com/open/ FIT输入法：http://funinput.com/
+
+人脸识别 Face++人脸识别：http://www.faceplusplus.com.cn/ 
+ReKognition人脸识别：http://rekognition.com/ 
+百度人脸识别：http://developer.baidu.com/wiki/index.php?title=do 
+汉王云人脸识别：http://developer.hanvon.com/
+
+支付平台 支付宝开放平台：https://openhome.alipay.com/doc/docIndex.html 
+银联开放平台：http://mobile.unionpay.com/ 360移动开放平台：http://dev.360.cn/ 
+机锋支付：http://www.gfan.com/dev/gpay/
+
+翻译 百度翻译：http://developer.baidu.com/ms/translate 
+有道翻译：http://fanyi.youdao.com/openapi 
+谷歌翻译：https://developers.google.com/translate/?hl=zh-cn
+
+生活服务 聚合数据：http://www.juhe.cn/ 
+中国天气：http://smart.weather.com.cn/wzfw/smart/weatherapi. 
+快递100：http://www.kuaidi100.com/openapi/ PM25in：http://www.pm25.in/
+
+视频服务 优酷开放平台：http://open.youku.com/down 
+迅雷云加速开放平台：http://open.xunlei.com/ 
+百度云视频开放平台：http://developer.baidu.com/wiki/index.php?title=do 
+爱奇艺开放平台：http://open.iqiyi.com/
+
+快速开发 简网app工厂：http://www.cutt.com/app 腾讯风铃：http://fl.qq.com/ 
+Appmakr：http://appmakr.com/ Basic4Android：http://www.basic4ppc.com/ 
+AnySDK：http://www.anysdk.com/ 云适配：http://www.yunshipei.com/
+
+社区 新浪微博开放平台：http://open.weibo.com/ 
+天涯开放平台：http://open.tianya.cn/index.php 
+百度贴吧SDK：http://c.tieba.baidu.com/c/s/download/pc?src=webtb
+
+流量创收 百度联盟：http://union.baidu.com/ 同程网开放平台：http://union.ly.com/ 
+携程网站联盟：http://open.ctrip.com/ 淘宝联盟开放平台：http://u.alimama.com/
+
+手游录像 爱拍RecNow：http://recnow.aipai.com/ 
+ShareRec：http://rec.mob.com/ Kamcord SDK：http://www.kamcord.com/ 
+EveryPlay SDK：https://developers.everyplay.com/ LobiRec 
+SDK：http://qiita.com/KAMEDAkyosuke/items/ee85d8943b974 运营服务 安全加固 
+爱加密：http://www.ijiami.cn/ Apkprotect：http://apkprotect.com/
+
+统计分析 友盟应用统计分析：http://www.umeng.com/analytics 
+百度移动统计：http://mtj.baidu.com/web/welcome/login 
+机锋统计：http://www.gfan.com/dev/analytics/ 
+友盟游戏统计分析：http://www.umeng.com/analytics_games 云服务
+
+云计算 华为云服务：http://www.hwclouds.com/ 亚马逊AWS：http://www.amazonaws.cn/ 
+阿里云：http://www.aliyun.com/ 盛大云计算：http://www.grandcloud.cn/ 
+美团云：https://mos.meituan.com/ 新浪云计算：http://sinacloud.com/
+
+云存储 百度云数据库：http://developer.baidu.com/cloud/db 
+七牛云存储：http://www.qiniu.com/ 又拍云：https://www.upyun.com/ 
+新浪微盘：http://vdisk.weibo.com/developers/ Bmob：http://www.codenow.cn/
+
+云引擎 阿里云：http://www.aliyun.com/product/ace/ 
+百度应用引擎BAE：http://developer.baidu.com/cloud/rt 
+盛大云引擎：http://www.grandcloud.cn/product/ae 
+火山云引擎：http://www.volit.net/
+
+云测试 云测：http://www.testin.cn/ 
+京东云峰：http://maengine.jd.com/product/162 易测云：http://www.yiceyun.com/ 
+百度云众测：http://developer.baidu.com/yunzhongce 
+Testbird：http://www.testbird.com/ 
+中国移动终端池：http://dev.10086.cn/rts/rts/rts-home.do
+
+其它云服务 汉王云：http://developer.hanvon.com/ 
+搜狐sendcloud：http://sendcloud.sohu.com/ 灵云：http://www.hcicloud.com/ 
+百度定位云：http://lbsyun.baidu.com/location 
+百度地址搜索云：http://lbsyun.baidu.com/search kiiCloud：http://cn.kii.com/
+
+视频云 保利威视：http://www.polyv.net/ CC视频：http://www.bokecc.com/ 
+未来云：http://asdtv.com/ 石山视频：http://smvp.cn/ 
+乐视云：http://www.letvcloud.com/ 遨游讯海：http://www.573v.cn/
+
+图片云 又拍云：https://www.upyun.com/index.html 
+得图云：http://www.detuyun.com/ 七牛云存储：http://www.qiniu.com/ 营销推广
+
+广告平台 酷果广告平台：http://www.kuguopush.com/ 有米广告：http://www.youmi.net/ 
+百度联盟：http://union.baidu.com/ 多盟广告：http://www.domob.cn/ 
+点睛广告平台：http://mjoy.91.com/
+
+渠道市场 N多网：http://www.nduoa.com/developer 
+魅族开发者中心：http://developer.meizu.com/ 
+阿里云开发者市场：http://appdev.yunos.com/ 中国移动应用商店：http://mm.10086.cn/
+
+渠道聚合 AnySDK：http://www.anysdk.com/ 棱镜SDK：http://www.ljsdk.com/ 
+易接SDK：http://www.1sdk.cn/ 云接入：http://www.allsdk.co/ 
+OkSDK：http://www.oksdk.com/
+
+营销平台 360点睛营销平台：http://e.360.cn/ 天地新道：http://www.tiandixindao.com/ 
+百度网盟：http://wangmeng.baidu.com/ 一米线下渠道推广：http://www.yimipingtai.cn/ 
+百度推广：http://e.baidu.com/ 创作平台
+
+站内应用 淘宝卖家服务：http://fuwu.taobao.com/ 
+全球速卖通开放平台：http://seller.aliexpress.com/open_platform/index.h 
+当当网开放平台：http://open.dangdang.com/ 
+拍拍开放平台：http://pop.paipai.com/index
+
+介绍目前收藏 Android 开源库比较多的 GitHub 项目、网站、Twitter、App 及如何获取最新的 Android 开源库。
+
+GitHub
+Android 开源项目汇总 Android 优秀开源项目实现原理解析 
+把这两个放在前面，是因为这两个项目我和一群小伙伴在精心维护，同时任何人都可以提交 PR 参与进来。其他网站或 App 都可以以此为数据源 
+AndroidElementals 西班牙一工程师整理的，目前项目数量和介绍上与 Android 开源项目汇总 还有一定差距 
+awesome-android-libraries awesome-android-ui Aswsome Android 开源系列 
+最后别忘记了 Google，只要你要，它肯定有。
+
+网站
+Android Arsenal 囊括库最多的网站了，支持查找和分类选择 Android Libraries and Resources 
+最大的特点是按照“标签”区分，支持标题、标签、作者、关键字搜索 上面两个网站的源码也托管在了 GitHub 上 
+http://www.appance.com 这是个包含 Android、iOS、WinPhone 的开源库整理
+
+Twitter 微博
+Android Arsenal@Twitter android-arsenal 的 twitter codeKK@微博 每天发布 
+Android 和 iOS 开源项目介绍
+
+App
+Libraries for developers DevAppsDirect 23code 以上三个都是开源库汇总的 
+App，Libraries for developers 和 DevAppsDirect 为开发必备。
+
+其他
+Android Projects@Goole Code 托管在 Google Code 的项目，目前大多数在 GitHub 上都有副本 
+LIBRARIES & CODE@Android Weekly 每周的 Android 技术信息分享，看其中的 LIBRARIES & 
+CODE 模块 Android Arsenal Rss
+
+如何获取最新的开源库 Follow
+Android-Dev-Com Android-Dev-Cn 这些开发者的 Github 帐号，每天从自己的 News Feed 
+中看他们的动态 以上所有不能访问内容，可使用：VPN——云梯，高性价比 全平台支持 对你有帮助的话，去知乎点个赞让更多人了解：优秀的 
+Android 开源项目、特效推荐
+
+1、博客： http://blog.csdn.net/joe_storm/article/details/44452101
+
+2、萝卜白菜的小站： http://orgcent.com/apk-androidmanifest-axmlprinter/
+
+3、A5源码 http://down.admin5.com/android/daimaku/Calendar/
+
+4、泡在网上的日子： http://www.jcodecraeer.com/
+
+android学习资料收集整理
+
+本人习惯学习一门技术之前习惯先收集足够的相关资料后选择优秀的资料进行学习，android资料收集可以说是耗时最长的一次了，因为种种原因导致一直没有放下其他事情来专门学习，所以资料收集也是间断进行的。这里把收集的资料整理分享一下给大家（持续更新）：
+
+一、学习最好的入门资料自然是视频，而技术视频非电驴莫属了，到电驴中搜索android视频可以看到非常多的视频，但还需要分类下载才行，有页面专门为某个人录制的，找到那种页面，然后有很多相关视频再连接到其他人的专题里面，这样比较有系统性。
+
+这里推荐几个专题页面连接：（现在又有很多新的视频了，视频质量自己看了）
+
+1、MLDN李兴华的Android开发实战 http://www.verycd.com/topics/2898607/
+
+2、传智播客android系统开发全程实战课程 http://www.verycd.com/topics/2803952/
+
+3、Sundy’s Android深入浅出 http://www.verycd.com/topics/2900036/
+
+4、Android开发视频教学 http://www.verycd.com/topics/2837883/
+
+其他的通过上面几个页面相关连接基本上都可以找到了，个人比较喜欢李兴华的讲课风格，看过一个后其他的可以有选择性地听，不用都从头到尾听了，通过视频里面内容可以学习到如何获取其他相关资料的方法。
+
+二、学习网站和论坛
+
+1.官方开发网站 http://developer.android.com/sdk/index.html
+
+CMD100 中国手机开发者联盟(可以把自己的应该通过它免费发布到android应用市场) http://www.cmd100.com/
+
+eoe Android开发者门户 http://www.eoeandroid.com/portal.php
+
+机锋论坛 http://bbs.gfan.com/
+
+Android 最新资讯 http://www.oschina.net/android
+
+android技术(感觉不错的个人技术博客) http://bigcat.easymorse.com/?tag=android http://blog.csdn.net/wanglong0537
+
+51cto android专栏 http://mobile.51cto.com/android/
+
+Android面试系列 http://androidtoast.iteye.com/blog/1202945
+
+三、移动互联网报告和创业点子
+
+1、移动互联网白皮书 2011(页面下有其他相关文档的链接) http://wenku.baidu.com/view/6d0417e9998fcc22bcd10d2c.html
+
+2011年度移动开发者生存状况调研报告 http://down.51cto.com/data/282609
+
+36氪–关注互联网创新 http://www.36kr.com/
+
+四、实例和文档
+
+1.到csdn上下载
+
+2.到百度文库等地方下载
+
+3.到google code上下载开源项目
+
+4.反编译一些常用项目
+
+转载自：http://www.cnblogs.com/zdz8207/archive/2011/12/26/2302582.html
+
+Open经验库：http://www.open-open.com/lib/view/open1418262988402.html

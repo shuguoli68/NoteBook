@@ -1,0 +1,59 @@
+开发版证书指纹:
+         MD5: D7:B1:2D:57:49:EE:A7:9B:97:6B:11:41:B7:22:02:1B
+
+         SHA1: AB:C6:E6:D3:5D:E0:48:14:E2:3B:2D:AE:6A:8B:B8:A3:86:4F:36:BF
+
+         SHA256: 58:15:2F:AC:66:3E:30:0A:BF:43:02:79:05:D1:70:B3:F0:2E:2A:63:E8:B0:64:C1:8E:D8:8A:A1:82:EB:B3:A5
+         签名算法名称: SHA256withRSA
+         版本: 3
+
+
+发布版证书指纹:
+         MD5: 65:D9:D2:59:25:F1:BC:AD:DD:CF:D1:60:D4:23:AA:2A
+         SHA1: 78:D2:12:EF:D2:2B:F1:FB:1B:F6:1B:A8:0E:25:BB:08:C0:98:3B:C4
+         SHA256: 9A:A4:01:EA:4F:39:4A:E2:0D:57:A8:00:9C:96:37:7E:5E:D8:20:07:4D:64:27:53:57:70:A6:C0:EF:12:6C:88
+         签名算法名称: SHA256withRSA
+         版本: 3
+
+【google_map.jks】SHA1: D3:90:29:D1:E7:89:F1:33:EA:CC:95:75:43:75:E5:9C:21:E9:E4:79
+【SVN】
+
+路径：svn://192.168.31.200/client
+
+账号：lsg
+
+密码：10991043625399470000
+
+
+
+
+1、     【java】
+
+【Eclipse IDE for Java Developers】
+Version: Oxygen Release (4.7.0)
+
+【jdk】
+java version "1.8.0_60"
+
+【jre】
+jre 1.8
+
+【ADT】
+ADT-24.0.2
+
+【SDK】
+Revision 25.2.5
+
+2、    【Android】
+
+【android studio】
+Android Studio 2.1.2
+
+【SDK】
+Revision 25.2.5
+
+【genymotion】
+genymotion-2.9.0-vbox
+
+【VirtualBox】
+VirtualBox-5.1.24-117012-Win

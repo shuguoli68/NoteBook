@@ -1,0 +1,28 @@
+http://www.jianshu.com/p/9b400e863ce3     Android中SSL通信中使用的bks格式证书的生成
+
+
+security.provider.5=org.bouncycastle.jce.provider.BouncyCastleProvider
+
+
+一句话将.crt文件改为.bks文件：
+keytool -importcert -trustcacerts -keystore D:\SSL\wh_virtual\bks\wh_virtual_client.bks -file D:\SSL\wh_virtual\client.crt -storetype BKS -provider org.bouncycastle.jce.provider.BouncyCastleProvider
+
+
+openSSL生成.bks：
+
+openssl pkcs12 -export -in client.crt -inkey client.key -out wh_virtual_client.p12 
+
+
+
+keytool -importkeystore -srckeystore wh_virtual_client.p12 -srcstoretype pkcs12 -destkeystore wh_virtual_client.bks -deststoretype bks -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath bcprov-ext-jdk15on-157.jar 
+
+
+
+
+
+keytool -list -keystore wh_virtual_client.bks -provider org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath bcprov-ext-jdk15on-157.jar -storetype BKS -storepass 123456
+
+
+
+
+keytool -printcert -rfc -file ca.crt

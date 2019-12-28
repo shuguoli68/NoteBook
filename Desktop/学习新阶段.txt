@@ -1,0 +1,534 @@
+                                学习网站收集：http://blog.csdn.net/pillar1066527881/article/details/48471727
+ 
+                                Android技术博客精华汇总：http://www.apkbus.com/thread-313856-1-1.html
+
+
+
+
+
+
+
+
+
+
+【网络数据获取及解析】
+
+阿凡达云数据平台：    http://avatardata.cn/UserCenter/My/Index
+
+熟练android Gson的使用
+
+
+
+学习网站：
+
+安卓巴士，稀土掘金，泡在网上的日子
+
+
+
+高效Android开发者必须知道的4个工具
+http://www.codeceo.com/article/4-tools-android-development.html
+
+
+
+
+2016.4.6 Android技术集萃
+http://blog.csdn.net/wangyihero8/article/details/51072018
+
+
+
+SL 验证
+
+https
+
+接口
+
+获取权限：危险权限
+
+
+
+链接：http://pan.baidu.com/s/1nvKD0RR 密码：e9zg
+
+
+
+
+
+Android常见第三方框架：
+
+http://blog.csdn.net/liuhaomatou/article/details/44857005
+
+
+
+Android 加载动画 Android-SpinKit 
+https://www.oschina.net/p/Android-SpinKit
+
+
+
+AndroidStudio怎样导入library项目开源库
+http://jingyan.baidu.com/article/1974b2898917aff4b1f77415.html
+
+
+Android Studio添加依赖
+http://blog.csdn.net/allenwells/article/details/46965727
+
+
+ 如何在Android Studio中导入eclipse的library project
+http://blog.csdn.net/u013790519/article/details/50339023
+
+
+【2017 08 30】
+http://www.jianshu.com/p/88ede0c1e093
+[原创]Android实现微信录制小视频的计时动画
+
+
+
+http://blog.csdn.net/program_developer/article/details/54618857
+ Android属性动画—实现第三方登录的上拉展开，下拉隐藏
+
+
+
+http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/0329/4099.html
+视频在滑动列表中的异步缓存和播放
+
+
+
+http://blog.csdn.net/speverriver/article/details/51699989
+ Android音视频相关知识
+
+
+
+
+
+【2017 08 31】
+
+http://blog.csdn.net/aqi00/article/details/52511291
+Android开发笔记（一百二十五）自定义视频播放器
+
+
+http://www.2cto.com/kf/201607/526384.html
+Android自定义视频播放器(网络/本地)
+
+
+
+
+【2017 09 05】
+
+http://www.jianshu.com/p/bc5298651b30
+Android 微信摇一摇功能实现
+
+
+
+
+【20170911】
+
+ListView的item水平滑动(类QQ的左滑显示删除按钮)
+http://download.csdn.net/download/u010514380/8516043
+
+
+【20170925】
+
+Https
+
+MVP
+
+代码整洁之道
+
+大话设计模式
+
+【20170927】
+
+真正可用的免费的https、http接口，测试接口可以使用：
+
+http://blog.csdn.net/ak341221/article/details/61205789
+
+
+http免费接口测试公布：
+
+http://blog.csdn.net/zhangweibin123/article/details/51426206
+
+
+各类免费的API接口分享：
+
+http://blog.csdn.net/lsunrise_/article/details/53348113
+
+
+
+
+豆瓣API快速入门
+
+本文档为需要快速了解豆瓣API的用户提供一个概览，更为完整的豆瓣API信息请参阅《豆瓣API参考手册》。
+
+如果你编写了一个有趣的API应用，欢迎发布到API小组让更多豆友知道。另外也欢迎到API小组参与豆瓣API的讨论，提出你对豆瓣API各种意见和建议。
+
+快速入门
+下面通过一个简单的示例来演示豆瓣API的使用.
+
+这个示例中展示了使用API获得ID为1220562的书的信息, 请求的url如下：
+
+https://api.douban.com/v2/book/1220562 
+
+
+
+
+【20170929】
+
+Android Https相关完全解析 当OkHttp遇到Https
+
+http://blog.csdn.net/lmj623565791/article/details/48129405
+
+
+
+
+配置Tomcat使用https协议(配置SSL协议)：
+
+http://blog.csdn.net/jimmy609/article/details/18557955
+
+
+
+【20170930】
+
+
+Android 学习资料收集：
+
+https://segmentfault.com/a/1190000004529731
+
+
+
+Android官方培训课程中文版(v0.9.7)：
+
+http://hukai.me/android-training-course-in-chinese/index.html
+
+
+
+用知乎和gankio 网易新闻 豆瓣电影的API，模仿网易云音乐UI来完成一个基于Material Design +Rxjava + Retrofit + dagger2 + MVP构架的项目：
+
+https://github.com/laotan7237/EasyReader
+
+
+
+【20171016】
+
+http://blog.csdn.net/shaoduo/article/details/70547011
+
+SharedPreferences存取JavaBean对象或List<Bean>
+
+
+【20171023】
+
+RecyclerView    Rxjava    DataBinding
+
+
+
+【20171026】
+【谷歌宣布，将Kotlin语言作为安卓开发的一级编程语言。】
+浅谈Kotlin（一）：简介及Android Studio中配置
+
+浅谈Kotlin（一）：简介及Android Studio中配置
+
+浅谈Kotlin（二）：基本类型、基本语法、代码风格
+
+浅谈Kotlin（三）：类
+
+浅谈Kotlin（四）：控制流 
+http://www.cnblogs.com/xqxacm/category/1004346.html
+
+
+讯飞人脸识别：
+59f19173
+
+
+【20171027】
+【interface】：I/time: start 1509067525323       I/time: stop 1509067526007        I/time: fromTo 684  
+【handler】：I/time: start1509067811771         I/time: stop1509067812515         I/time: fromTo744
+
+【20171030】
+command:1021        java.io.IOException:Unexception end of stream on okhttp3.Address@10070c39
+
+command:1025        java.io.IOException:Unexception end of stream on okhttp3.Address@792f34af
+
+Android数据存储之GreenDao 3.0 详解	http://www.cnblogs.com/whoislcj/p/5651396.html
+
+
+【20171031】
+
+可展开折叠的自定义 RecyclerView ：
+
+https://github.com/huajianjiang/ExpandableRecyclerView
+
+https://github.com/ayalma/ExpandableRecyclerView
+
+
+【20171102】
+
+http://blog.csdn.net/xiaxiazaizai01/article/details/53118748   
+【Android】GreenDao 3.X 结合Volley以及Gson、ImageLoader实现数据存储
+
+http://www.jianshu.com/p/4e6d72e7f57a  GreenDao3 使用说明
+
+http://blog.csdn.net/xiaxiazaizai01/article/details/53118748
+
+
+基于bmob后端实现登录注册，轨迹地图记录，传感器计步 ，百度地图，实时天气（预报），分享，发表图文，查看笑话、有趣图片，新闻等功能：
+https://github.com/wulee510505/zuji
+
+
+
+【20171103】
+DataBinding的最佳学习资源CSDN博客：http://blog.csdn.net/qq_33689414/article/details/52205703
+
+http://p.codekk.com/     Android开源项目大全
+
+
+
+【20171106】
+NumberProgressBar
+漂亮的带数字的进度条。
+https://github.com/daimajia/NumberProgressBar
+http://blog.csdn.net/tyk9999tyk/article/details/55050002
+
+学会Kotlin语法
+http://blog.csdn.net/dwf_android/article/details/72636967
+
+图表：
+https://github.com/PhilJay/MPAndroidChart
+
+2016最流行的Android组件、工具、框架大全：
+http://blog.csdn.net/tyk9999tyk/article/details/55050002
+
+
+
+【20171107】
+
+http://www.jianshu.com/p/1f919c6eeff6        Android闹钟设置的解决方案
+
+http://www.cnblogs.com/liangblog/p/5882064.html     Android闹钟开发与展示Demo
+
+https://github.com/Fichardu/CircleProgress      CircleProgress
+
+https://github.com/ogaclejapan/ArcLayout          https://github.com/ogaclejapan/ArcLayout
+
+https://github.com/AizazAZ/Android-Ultra-Photo-Selector          Select images from Android devices
+
+https://github.com/makovkastar/LetterImageView       Android ImageView  draws a letter  colored background.
+
+
+
+
+【20171114】
+
+http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2016/1006/6659.html        一个2年安卓开发者的一些忠告
+
+https://github.com/android10/Android-CleanArchitecture            MVP (Model-View-Presenter)架构demo项目
+
+
+
+
+【20171116】
+
+http://blog.csdn.net/guolin_blog/article/details/51763825  Android状态栏微技巧，带你真正理解沉浸式模式   郭霖著
+
+http://blog.csdn.net/kkijhuybjju/article/details/54318509   SlidingMenu实现沉浸式状态栏
+
+
+
+
+【20171121】
+http://blog.csdn.net/u010687392/article/details/48496299   ORM对象关系映射之GreenDAO建立多表关联
+
+
+滑动冲突的解决方法：
+
+https://juejin.im/entry/58da1609b123db199f4d5269
+像 QQ 一样处理滑动冲突
+
+http://blog.csdn.net/zhongxiaweimian/article/details/49027039
+仿Android QQ左侧滑菜单右侧滑列表菜单——处理HorizontalScrollView和SwipeMenuListView滑动冲突
+
+
+
+【20171126】
+http://blog.csdn.net/qq_30379689/article/details/52695697  音乐中圆形旋转碟子
+
+http://blog.csdn.net/u012987546/article/details/52106086  波纹扩散
+
+http://blog.csdn.net/qq_30379689/article/details/52637226  Hensen_的博客目录（全站式导航）
+
+http://www.jianshu.com/p/fb28a5322d8a   Android捕获崩溃异常及异常后的退出或重启
+
+
+
+【20171127】
+
+滑动冲突的解决方法：
+
+https://juejin.im/entry/58da1609b123db199f4d5269
+像 QQ 一样处理滑动冲突
+
+http://blog.csdn.net/zhongxiaweimian/article/details/49027039
+仿Android QQ左侧滑菜单右侧滑列表菜单——处理HorizontalScrollView和SwipeMenuListView滑动冲突
+
+
+免费的比较好的异常管理工具，叫做bugly，它是腾讯bugly提供的，网址> http://bugly.qq.com
+
+
+学习 Kotlin 的 20 个实用资源
+http://www.apkbus.com/blog-866962-76616.html
+
+【20171205】
+
+http://892848153.iteye.com/blog/1285747    Android 列表之分组ListView
+http://blog.csdn.net/chunqiuwei/article/details/41806297
+
+
+http://blog.sina.com.cn/s/blog_e31a00bc0102xfr1.html   Android图片加载框架之Glide的基本用法
+
+https://www.cnblogs.com/wangfeng520/p/6119531.html      Android开发各类常见错误解决方案
+
+
+
+
+【20171223】
+https://github.com/search?l=Java&o=desc&q=%E5%9B%BE%E7%89%87%E6%9F%A5%E7%9C%8B%E5%99%A8&s=&type=Repositories&utf8=%E2%9C%93
+图片查看器
+https://github.com/SuperKotlin/PictureViewer           android PhotoPick(图片查看器)
+
+WebView的JavaScript与本地代码三种交互方式
+http://www.apkbus.com/blog-822715-76739.html 
+
+ 
+android自定义悬浮窗
+http://www.apkbus.com/thread-589905-1-1.html 
+
+ 
+综合资讯类APP
+http://www.apkbus.com/thread-589886-1-1.html 
+
+歌词控件、打勾动画、对比、卫星菜单、点赞、滑动按钮、TAB指示器、联系人排序、拖曳排序、侧滑删除、阴影效果.、RecyclerView嵌套RecyclerView.、地图列表Poi/抽屉效果、进度设置...
+https://github.com/Dsiner/UIUtil
+
+
+https://www.jianshu.com/p/b2ca52337fe5
+源码提供！Android即时通讯和sns开源项目汇总
+
+
+Android 通知栏Notification的整合：
+http://blog.csdn.net/vipzjyno1/article/details/25248021/
+
+
+蓝牙聊天软件，目前仅支持一对一实时通信、文件传输、好友添加、好友分组、好友在线状态更新等功能，其中消息发送支持文本、表情等方式。
+https://github.com/xiaoyaoyou1212/BluetoothChat
+
+
+Android的相关Util的APIs：
+https://github.com/Blankj/AndroidUtilCode
+
+
+ Android 5.0和6.0新增控件简单介绍：http://blog.csdn.net/android_zhengyongbo/article/details/68921395
+
+
+
+【风语者App：】
+
+1、Stetho工具，功能之一可以查看数据库；
+2、GreenDao多表的坑：https://www.jianshu.com/p/dbec25bd575f；
+3、BaseRecyclerViewAdapterHelper  官方使用指南：https://www.jianshu.com/p/b343fcff51b0
+Github ： https://github.com/CymChad/BaseRecyclerViewAdapterHelper；
+4、关于使用DrawerLayout建立侧滑菜单时,下层布局依然可响应点击事件的解决方法：http://blog.csdn.net/qiang_xi/article/details/49329679；
+5、即时通讯；
+6、直播：腾讯SDK；
+7、地图；
+8、数据库查看：【stetho】https://www.jianshu.com/p/03da9f91f41f
+
+
+
+【13个能快速开发android的经典项目】
+https://juejin.im/entry/5a3311786fb9a0450c4970ff
+
+
+
+【隐藏app图标】
+[教程] miui7.1隐藏图标，隐藏应用，通过计算器打开应用：
+http://www.miui.com/thread-3689277-1-1.html
+
+
+
+【20180129】
+Android大神博客：http://blog.csdn.net/llp1992/article/details/43768111
+
+1、【https://github.com/songixan/Wallpaper】
+屏幕透明
+
+2、【http://blog.csdn.net/lmj623565791/article/details/72170299】
+ Android 仿火萤视频桌面 神奇的LiveWallPaper
+
+3、【http://blog.csdn.net/guolin_blog/article/details/78582548】
+郭霖大神的Glide解析
+
+4、【http://blog.csdn.net/aigestudio/article/details/41212583】
+Android自定义控件
+
+5、【http://blog.csdn.net/weixin_39389323/article/details/76921026】
+从零开始开发一款Android App
+
+
+【http://tools.android-studio.org/index.php/proxy】
+Android SDK 在线更新镜像服务器资源
+
+
+【20180130】
+
+1、【http://blog.csdn.net/PZ0605/article/details/72778547】
+ 在Android Studio 2.2上集成OpenCV4Android SDK
+
+2、【http://blog.csdn.net/PZ0605/article/details/72778654】
+ Android使用OpenCV实现「人脸检测」和「人脸识别」
+
+3、百度搜索：opencv4android 可以实现年龄测试
+
+
+【各种进度】
+https://www.jianshu.com/p/8cf58a4fadbd
+
+
+【黑暗计算器（DarkCalculator）】
+https://github.com/HK-SHAO/DarkCalculator
+这是一款兼容性高，功能强大，拥有近50个函数，支持复数运算和解方程且开源的科学计算器，另外还添加了进制转换，大数运算，大写数字等功能。
+
+
+【安卓自定义View教程目录】
+http://www.gcssloop.com/customview/CustomViewIndex/
+
+
+【Socket】
+Java套接字编程简单示例，服务端-客户端：
+http://blog.csdn.net/zhangzeyuaaa/article/details/39233197
+
+
+【逐渐显示文本的TextView】
+https://github.com/msilemsile/FadeInTextView
+
+【3d卡片效果】
+https://github.com/chiemy/CardView
+
+
+【小说API】
+聚合数据：小说大全 固实科技 支持HTTPS
+海量小说资源，种类丰富。
+https://www.juhe.cn/docs/api/id/109
+
+10000本经典电子书txt打包百度网盘-好看的小说合集推荐
+http://www.xiabook.com/down.html
+
+知乎：https://www.zhihu.com/question/48725804
+
+豆瓣Api V2（测试版）：
+https://developers.douban.com/wiki/?title=api_v2
+
+
+
+【计算机开放电子书（不完全）汇总】
+https://github.com/it-ebooks/it-ebooks-archive
+
+
+【Git及GitHub快速入门图文全面详解】
+http://www.apkbus.com/blog-944603-77017.html
+

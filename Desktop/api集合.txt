@@ -1,0 +1,69 @@
+【音乐】
+【百度音乐API抓取】可用
+https://www.cnblogs.com/youlixishi/p/6132025.html
+
+
+[新]百度mp3接口（baidu mp3 api）：
+https://mrasong.com/a/baidu-mp3-api-full
+
+
+【歌词    亲测可用】
+歌词迷api歌词查询地址：http://geci.me/api/lyric/
+
+比如我要查询：   http://geci.me/api/lyric/安静/周杰伦
+
+会得到一下json串：
+{"count": 2, "code": 0, "result": [{"aid": 2223011, "artist_id": 30796, "song": "\u5b89\u9759", "lrc": "http://s.geci.me/lrc/257/25700/2570058.lrc", "sid": 2570058}, {"aid": 2336033, "artist_id": 30796, "song": "\u5b89\u9759", "lrc": "http://s.geci.me/lrc/272/27282/2728244.lrc", "sid": 2728244}]}
+
+
+360离线接口：
+<span id="tbOffline" class="y-btn y-btn-gray offline" data-cn="offline">
+        <i class="icon icon-offline"></i><span class="label">离线下载</span></span>
+
+酷狗音乐接口：
+VIP接口：http://trackercdn.kugou.com/i/?cmd=4&hash={$Hash}&key={$md5($hash . "kgcloud")}&pid=1&forceDown=0&vip=1
+安卓接口：http://trackercdn.kugou.com/i/v2/?appid=1005&pid=2&cmd=25&key={$md5($hash . "kgcloud")}&hash={$Hash}&version=7472&behavior=play&with_res_tag=1
+
+酷狗视频接口：http://static.kgimg.com/common/swf/video/videoPlayer.swf?skinurl=http://static.kgimg.com/common/swf/video/skin.swf&aspect=true&url={Mp4或Flv类型的Url}&autoplay=true&fullscreen=true&initfun=flashinit
+
+网易视频接口：http://s1.music.126.net/style/swf/MVPlayer.swf?murl={Mp4或Flv类型的Url}&autoPlay=true
+
+SongTaste接口1：http://www.songtaste.com/api/android/songurl.php?songid={$SongId}
+SongTaste接口2：http://songtaste.com/play.php?song_id={$SongId}
+
+电信爱音乐接口：www.118100.cn/v5/action/secweborder/v3/songsdata.do?it=1&songId={$SongId}  取ququAddr处代码用Base64解码
+联通音乐接口：
+http://www.10155.com/player/playContentId.do?songIds={$SongId}
+http://www.10155.com/player/playSongInfos.do?contentIds={$contentIds}_{$SongId}_not_not_not_not_not
+
+酷狗51Sing接口1：http://mobileapi.5sing.kugou.com/song/transcoding?songid=$SongId}&songtype={$SongType}
+酷狗51Sing接口2：http://5sing.kugou.com/m/detail/{$SongType}-{$SongId}-1.html
+
+酷我音乐接口1：http://antiserver.kuwo.cn/anti.s?format={$SongType}%7Cmp3&rid=MUSIC_{$SongId}&response=url&type=convert_url
+酷我音乐接口2：http://player.kuwo.cn/webmusic/st/getNewMuiseByRid?rid=MUSIC_{$SongId}
+
+网易云音乐接口：http://music.163.com/api/song/detail/?id={$SongId}&ids=%5B{$SongId}%5D&csrf_token=
+
+百度音乐接口1：
+①：http://music.baidu.com/data/music/fmlink?songIds={$SongId}&type={$SongType}
+②：http://music.baidu.com/data/music/fmlink?songIds={$SongId}&type={$SongType}&rate={$Rate}
+
+百度音乐接口2：
+①：http://ting.baidu.com/data/music/links?songIds={$SongId}&type={$SongType}
+②：http://ting.baidu.com/data/music/links?songIds={$SongId}&type={$SongType}&rate={$Rate}
+
+咪咕音乐接口：http://music.migu.cn/webfront/player/findsong.do?itemid={$SongId}&type=song
+
+搜狗音乐：http://mp3.sogou.com/tiny/song?query=getlyric&json=1&tid={$Tid}
+
+Echo回声音乐：http://echosystem.kibey.com/sound/info?sound_id={$SongId}
+
+QQ音乐接口：
+http://s.plcloud.music.qq.com/fcgi-bin/fcg_yqq_song_detail_info.fcg?songmid={$SongMid}
+http://tsmusic24.tc.QQ.com/{$SongId}.mp3
+http:/ /stream.QQmusic.tc.qq.com/{$SongId}.mp3
+http://tsmusic128.tc.qq.com/{$SongId+30000000}.mp3 （请计算出结果）
+http://tsmusic128.tc.qq.com/{$SongId+40000000}.ogg （请计算出结果）
+http://tsmusic24.tc.qq.com/{$SongId}.m4a
+http://thirdparty.gtimg.com/{$SongId}.m4a?fromtag=38
+http://thirdparty.gtimg.com/C100{$SongId}.m4a?fromtag=38

@@ -1,0 +1,16 @@
+附：各个主流网络请求库的Github地址
+
+Android-Async-Http        https://github.com/loopj/android-async-http
+Volley                   https://github.com/stormzhang/AndroidVolley
+OkHttp                 https://github.com/square/okhttp
+Retrofit                 https://github.com/square/retrofit
+
+
+开源库集合（ Android 开源代码大全）：https://github.com/XXApple/AndroidLibs
+
+
+这可能是最好的RxJava 2.x 入门教程 ： http://www.cnblogs.com/liushilin/p/7058302.html
+
+
+安卓架构文章合集（a collection of android Architecture）：
+https://github.com/CameloeAnthony/AndroidArchitectureCollection

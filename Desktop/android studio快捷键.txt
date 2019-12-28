@@ -1,0 +1,112 @@
+【我常用的Android Studio 的快捷键：】
+
+
+Shift + delete  :  删除光标所在行
+
+Ctrl+Shift+↑：光标所在位置那行代码往上移动
+
+Alt + Tab：返回上一个窗口
+
+Ctrl + Tab :返回最近的一个窗口
+
+Win + Tab：进入窗口选择界面
+
+Ctrl + Z : 回退
+
+Ctrl + Shift + Z : 前进，回退多了时使用
+
+查找：Ctrl + L
+
+替换：Ctrl + R
+
+Ctrl+F 查找文本
+
+Ctrl+空格 代码提示
+
+Ctrl+Shift+R：修改名称
+
+Alt+←：后退，定位到上个查看或者编辑的地方
+
+
+
+
+
+
+
+
+
+
+【Android Studio常用快捷键】
+Alt + Tab：返回上一个窗口
+
+Win + Tab：选择进入窗口的界面
+
+Ctrl + Z : 回退
+
+Ctrl + Shift + Z : 前进，回退多了时使用
+
+查找：Ctrl + L
+
+替换：Ctrl + R
+
+Ctrl+F 查找文本
+
+Ctrl+Shift+Space（空格） 自动补全代码
+
+Ctrl+空格 代码提示
+
+Ctrl+Alt+Space 类名或接口名提示
+
+Ctrl+P 方法参数提示
+
+Ctrl+J 自动代码
+
+Ctrl+Shift+↑：光标所在位置那行代码往上移动
+
+Ctrl+Shift+↓：光标所在位置那行代码往下移动
+
+Ctrl+D：复制光标所在位置那行代码
+
+Ctrl+X：剪切光标所在位置那行代码
+
+Alt+Shift+↓/Ctrl+C：复制光标所在行代码到下一行
+
+Ctrl+O:快捷查找当前类中的函数，变量
+
+Ctrl+Shift+R：修改名称
+
+Alt+Enter：导入包
+
+Alt+←：后退，定位到上个查看或者编辑的地方
+
+Alt+→：往前定位，比如你定位到上个点后，想回去，就可以用这个快捷键
+
+Ctrl+/：当行注释，反注释再按一次即可
+
+Ctrl+Shift+/：模块注释，反注释再按一次即可,注意这边的”/“不能用小键盘的
+
+Ctrl+Shift+小键盘/：折叠代码
+
+Ctrl+Alt+S：打开settings界面
+
+Ctrl+Alt+Shift+S：打开Project Structure界面
+
+Alt+Shift+X：运行（Run）
+
+Alt+Shift+D：调试运行（Debug）
+
+Ctrl+F9：编译工程
+
+Ctrl+Shift+K：push文件到Server（git）
+
+
+
+【Debug类快捷键】
+
+F5：但不调试进入函数内部。
+
+F7：由函数内部返回调用处。
+
+F8：执行到下一个断点，没断点则执行完成。
+
+Ctrl+Alt+F8/双击鼠标：直接查看选中位置的值，这两个快捷键稍稍有点区别

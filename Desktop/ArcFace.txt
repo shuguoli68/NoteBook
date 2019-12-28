@@ -1,0 +1,21 @@
+虹软技术：
+
+【人脸识别】FirstFace
+
+APP_Id：  EH82HGN2WRrxqPEsJftGCkUpu8Uma8gxhFzb9N9ZcUjT
+
+SDK_key:
+人脸追踪(FT) Key  ENevuKEkY93ixDG9QurLNgp5NMfCAEtEJKtxGzCRRovF
+人脸检测(FD) Key  ENevuKEkY93ixDG9QurLNgpCXkvNVsaep9j8bKSUVkDJ
+人脸识别(FR) Key  ENevuKEkY93ixDG9QurLNgphBMxzy8ftdqP928i5zreU
+年龄识别(Age) Key  ENevuKEkY93ixDG9QurLNgpwWAVNDFpP4rMzswfBTuJn
+性别识别(Gender) Key  ENevuKEkY93ixDG9QurLNgq4fZkVeQmx8HcZHxxywthW
+
+
+
+百度云：
+
+应用名称：FaceDemo
+AppID：10775239
+API Key：OuuidWGppDRkcVet3nvrk9qR
+Secret Key：Cbd07RZyHIFIw75tVaPXZfsy99VGqon1

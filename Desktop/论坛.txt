@@ -1,0 +1,50 @@
+ANDROID学习之路：
+http://stormzhang.com/android/2014/07/07/learn-android-from-rookie/
+
+CSDN--》Android论坛：    http://bbs.csdn.net/forums/Android
+
+安卓网--》安卓论坛：    http://bbs.hiapk.com/
+
+安卓开发--》Android社区    http://www.eoeandroid.com/forum.php
+
+开源中国社区--》Android开发专区    http://www.oschina.net/android/
+
+安卓巴士：    http://www.apkbus.com/
+
+机锋论坛：    http://bbs.gfan.com/
+
+
+
+小demo源码下载：
+
+http://www.apkbus.com/forum.php?mod=attachment&aid=MTE3NzU2fGJmYWVmMjY3fDEzOTY5NDc4NDN8MHwxNDA2OTY%3D
+
+
+
+Android网络开发：
+
+http://lib.csdn.net/android/node/387
+
+
+Android分享功能：
+http://blog.csdn.net/cwcwj3069/article/details/41698417
+
+
+在Android Studio 2.2上集成OpenCV4Android SDK：
+
+http://lib.csdn.net/article/android/66858
+
+http://blog.csdn.net/PZ0605/article/details/72778654
+
+http://blog.lwons.com/archieve/use_opencv_in_android_to_detect_faces_from_camera_frames.html
+
+http://blog.csdn.net/u012341163/article/details/51065310
+
+http://lib.csdn.net/article/android/66848
+
+
+Android知识库：
+
+http://lib.csdn.net/android/node/170
+
+http://lib.csdn.net/base/android

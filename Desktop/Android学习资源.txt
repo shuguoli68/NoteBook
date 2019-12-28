@@ -1,0 +1,14 @@
+http://www.open-open.com/lib/view/open1328069889514.html     Git详解之三 Git分支
+
+http://blog.csdn.net/hmh0512/article/details/53818058  怎样将自己的工程改造成库，并上传到Github作为依赖
+
+http://p.codekk.com/     Android开源项目大全
+
+https://github.com/Trinea/android-open-project  github上Android 开源项目分类汇总
+
+http://hukai.me/android-training-course-in-chinese/index.html
+https://github.com/kesenhoo/android-training-course-in-chinese  Android官方培训课程中文版
+
+https://github.com/aporter/coursera-android  
+一个android教程类项目，8周完成结业。基本上囊括了android所有知识点，如果你想把android方面的知识系统地整理一遍，可以果断也把它fork下来，一个一个开始练习，总共有100多个例子。
+https://www.coursera.org/learn/android-programming   教程视频
