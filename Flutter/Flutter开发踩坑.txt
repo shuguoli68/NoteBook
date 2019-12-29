@@ -1,0 +1,51 @@
+记录一下入手Flutter后实际开发中踩过的一些坑，这些坑希望后来者踩的越少越好。本文章默认读者已经掌握Flutter初步开发基础。
+
+坑1
+问题：在debug模式下，App启动第一个页面会很慢，甚至是黑屏。
+解决：请切换到release模式，或者使用flutter build apk 打出来的release包不用修改任何代码就可以解决问题。
+坑指数：??????
+
+坑2
+问题：使用官方做法集成现有Android 项目：https://github.com/flutter/flutter/wiki/Add-Flutter-to-existing-apps 。集成后，在debug模式下，ListView、GridView列表滑动若干下后显示白屏。
+特别说明：有2个前置条件。一是按照官方的做法集成现有项目，二是Debug模式。缺一不可。如果是默认工程，debug模式下不会有此问题。
+解决：使用release模式构建解决，不用修改任何代码。
+指数：???????? （网上几乎找不到同样问题的解决方案，包括Flutter issue）
+
+坑3
+问题：图片加载的缓存机制。Image.file(),Image.network()该不该用
+过程说明：图片显示过程大体分为加载+计算+渲染。举个例子，如果是从sdcard下获取一张图片显示。有两种方案：一、使用Flutter 的Image.file()加载 二、配合原生的图片缓存框架+Image.memory()加载二进制数据。
+解决：通过对比发现同样的环境下第二种方案在列表中的显示效率更高更快。
+结论：原生的图片装载速度比Flutter的图片装载速度更快。（待详细验证）
+指数：??
+
+坑4
+问题：使用 https://github.com/BaseflowIT/flutter-permission-handler 插件。在除第一个Activity以外的其他activity中请求，权限弹窗只弹第一次，在程序运行期间若再次请求则会报错，也收不到插件的权限结果回调。
+特别说明：了解了插件的处理过程后发现，Flutter会根据插件会自动生成一个GeneratedPluginRegistrant类。如下
+并且说明该类自动生成，不可修改。所以导致了在程序启动的第一个Activity（FlutterActivity）里把所有插件都注册完。后续不会再进行注册，在注册时会同时将这个Activity示例和插件绑定。因为权限处理和当前Activity耦合度高，不是当前Activity是不会回调activity
+的onRequestPermissionsResult方法，这个方法是用户点击了权限取消或者确认后回调的。这个方法不回调的话，插件监听这个方法就会失效，最终导致插件的请求权限逻辑没有走完，导致下次请求时permissionhandler直接报错了。
+解决：修改插件，让插件提供一个
+
+public static void setPermissionListener(Activity activity){
+      Log.e("PermissionHandlerPlugin", "setPermissionListener");
+      mCurrentActivity = activity;
+  }
+监听方法，并在插件请求权限时，走到
+
+     ActivityCompat.requestPermissions(mCurrentActivity, requestPermissions, PERMISSION_CODE);
+
+的地方将原先绑定的Activity替换成监听的Activity。在需要申请权限的Activity中添加该监听。
+特别说明：其他类似跟当前Activity耦合度高的插件可能也会出现这个问题（怀疑插件：image_picker ?）。
+问题解决。看似是插件的bug，目前在网上资源中寻找只有这个star也是最高的，虽然才不到三百。（哈哈，网上资源不多）现已联系作者讨论下该问题的最终解决方法。
+指数：??????
+
+坑5
+问题：如果你接入Flutter只是想把UI逻辑交给Flutter实现。业务逻辑还是想使用原生的。那么会遇到一个Flutter page和原生的业务通信和生命周期同步的问题。
+过程描述：
+制定方案1：使用一个Activity，所有的Flutter Page显示销毁时都通过MethodChannel告诉原生，来确保原生资源的调度和销毁。看似可行，但这样的话总感觉第一不太友好，Flutter Page不仅要管自己的逻辑，还要管原生的逻辑。第二，给”一个Activity“设置了局限性。总有使用到两个Activity的时候吧。
+制定方案2：采用咸鱼优秀的开源的框架 https://github.com/alibaba/flutter_boost。Flutter Page栈管理统一采用原生的栈管理方式。简述下这个框架的实现逻辑是每一个Activity承载一个FlutterView，同时FlutterView是全局唯一且复用，外加一个将就的使用截图的方式来缓解FlutterView移除所带来的闪屏和黑屏问题，但还是会感觉些许的打开Flutter Page闪屏和黑屏。后面尝试解决这个问题，最终以最小改动的方法解决了这个问题。
+解决：自己手动解决了闪屏问题，通过这个问题的交流了解了大神们的Flutter_Boost后续的规划，看好未来他的发展并采用了Flutter_Boost的方案。也期待这个框架为后续Flutter开发者带来福音~ 少踩我这种坑?
+指数：??
+（后续还有遇到坑的话会持续在这个文章里更新）
+————————————————
+版权声明：本文为CSDN博主「乐成康」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/u014665060/article/details/92071247
