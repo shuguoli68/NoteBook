@@ -1,0 +1,83 @@
+导入第三方库踩坑小结：
+（编译器：VsCode）
+ 
+
+1.把第三方库 写入pubspec.yaml文件中
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+  english_words: ^3.1.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+2.在底部终端 运行：
+
+flutter packages get
+或点击右上角的 Get Packages 按钮
+
+ 
+
+ 运行结果：
+
+Running "flutter packages get" in lwflutterapp...                   0.6s
+　3.之后 在main.dart 文件中 导入
+
+import ‘package:english_words/english_words.dart‘;
+发现报错，如图：技术分享图片
+
+ 
+
+原因： 依赖库没有成功导入，可以看一下刚才上面的导入时间只有0.6s，一般不会这么快，
+
+坑1.：把第三方库的名字写入文件后，忘记保存，直接运行了 flutter packages get，
+
+ 
+
+坑2：当保存之后，再次加载第三方库，发现会一直卡在这个地方，等半天也没有结束
+
+技术分享图片
+
+原因： storage.googleapis.com 撞墙了，
+
+解决方式：
+
+1：配置一下环境变量
+
+Linux 或 Mac：
+
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+
+Windows：
+
+PUB_HOSTED_URL ===== https://pub.flutter-io.cn
+FLUTTER_STORAGE_BASE_URL ===== https://storage.flutter-io.cn
+
+2:执行一下 flutter doctor -v 命令。（可有可无）
+
+3:然后再执行 flutter packages get
+
+ 
+
+坑3：当你配置完环境变量之后，再次运行  flutter packages get的时候发现，flutter的文件是被锁状态，因为有一个任务一直未完成状态，就是刚才卡死的那个任务，
+
+终端显示：
+
+Waiting for another flutter command to release the startup lock...
+解决方法，如下： 
+
+　　1、打开flutter的安装目录/bin/cache/ 
+
+　　2、删除lockfile文件 
+
+　　3、重启vsCode
+
+ 
+
+然后就可以 正常的导入第三方了（需要几分钟的时间），导入的头文件也不会再保存了，
