@@ -1,0 +1,76 @@
+https://www.cnblogs.com/fengchuxiaodai/p/12131545.html
+
+
+1，,下载flutter，配置环境变量，运行flutter doctor检测
+
+2， 1步骤中，检测发现as的flutter和dart插件没有安装，打开as，搜索插件后安装
+
+3，再次flutter doctor，发现插件还是提示未安装（此处记录，as使用的是zip解压版的，缓存目录通过local.properties配置到了别的路径，不知道是否跟这个有关系）
+
+4，打开as，新建flutter project ，可以正常运行
+
+5，新建android 原生项目，在原生项目中新建flutter的module，能够正常添加成功，但是有几个小问题(问题可以通过其他方法解决，具体原因还不清楚)
+
+　　a，新建的module中缺失东西
+
+　　
+
+ 
+
+ 　　b，cp过来的facade包中，java代码报错，发现有包少引入
+
+　　
+
+1
+2
+3
+implementation 'com.android.support:support-v13:27.1.1'
+implementation 'com.android.support:support-annotations:27.1.1'
+implementation 'android.arch.lifecycle:livedata:1.1.1'
+　　
+
+　　c，flutter的module单独安装时，能正常安装为flutter的app
+
+　　d，在项目的setting.gradle中添加flutter的module的引入
+
+　　
+
+ 
+
+1
+2
+3
+4
+5
+6
+7
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir,                                             //module所在的目录(针对当前文件的相对路径)
+        'my_flutter1/.android/include_flutter.groovy'            //基本都一样
+))
+ 
+include ':my_flutter1'//引入flutter的module
+　　
+
+　　e，在主工程中引入flutter的module
+
+ 　　
+
+1
+implementation project(':flutter')
+　　
+
+ 6，经过上面几部，as的原生项目就可以引入flutter的module，并且可以跳转至flutter中的页面了
+
+复制代码
+ final FlutterView flutterView = Flutter.createView(SecondActivity.this,getLifecycle(),"flutter_activity_1");//创建flutterview，路由id为flutter_activity_1
+flutterView.setVisibility(View.INVISIBLE);//静默创建flutterview
+ViewGroup.LayoutParams layout = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                flutterView.addFirstFrameListener(new FlutterView.FirstFrameListener() {
+                    @Override
+                    public void onFirstFrame() {
+                        flutterView.setVisibility(View.VISIBLE);//当flutterview初始化完成后，显示
+                    }
+});
+addContentView(flutterView, layout);//添加flutterview进布局
