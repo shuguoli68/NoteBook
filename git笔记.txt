@@ -49,8 +49,11 @@ git checkout dev   //切换分支
 git checkout -b dev   //也可以合并成一行：创建加切换
 
 git branch -d dev   //删除分支，当前HEAD必须不能指向dev分支
+git branch -D dev   //强制删除分支，没合并的分支也可以
 
-git push origin :dev # 删除远端指定分支dev
+git push origin --delete dev_pre # 删除远端指定分支dev_re
+
+git branch -a  查看所有分支，本地及远程
 
 git merge dev   //切换到master后，使用git merge dev相当于合并指定分支dev到当前分支master
 
